@@ -1,0 +1,258 @@
+@import "tailwindcss";
+
+/*
+  Sistema visual de Guardian. La definición completa vive en
+  `.claude/skills/diseno-guardian/SKILL.md`; acá están los tokens.
+
+  Color: verde de campo como marca y como "verificado" —son la misma afirmación,
+  Guardian aprueba o no aprueba—, violeta como acento sin significado, y ámbar y
+  rojo solamente para lo que pide atención y lo que está mal. Los neutros están
+  sesgados al verde: un gris puro se lee como no elegido.
+
+  Tipografía: Poppins para la interfaz, JetBrains Mono para todo dato que venga de
+  un documento oficial (RENSPA, CUVE, DT-e, caravanas). El mono hace trabajo
+  semántico, no decorativo: marca que ese valor salió de un papel, no del formulario.
+
+  La raíz está en 112,5 % para que 1rem sean 18px: esto lo usan productores de
+  sesenta y pico, en el teléfono, a veces con sol de frente.
+*/
+
+:root {
+  --papel: #f5f5f3;
+  --superficie: #ffffff;
+  --superficie-2: #ecece8;
+  --borde: #dcdcd6;
+  --borde-fuerte: #c4c4bd;
+
+  --tinta: #17211d;
+  --tinta-suave: #5c5b56;
+  /* Sobre superficie-2 este token da 4.71:1 a 15,75px. Con #6e6d67 daba 4.38 y
+     no llegaba al mínimo de texto normal. El de tema oscuro ya pasaba. */
+  --tinta-tenue: #66655f;
+
+  --marca: #085041;
+  --marca-fuerte: #043329;
+  --marca-viva: #1d9e75;
+  --marca-suave: #e1f5ee;
+  --marca-contraste: #ffffff;
+
+  --acento: #7f77dd;
+  --acento-texto: #514aa6;
+  --acento-suave: #eeedfe;
+
+  --alerta: #8a5410;
+  --alerta-suave: #fbf0de;
+  --error: #96271f;
+  --error-suave: #f9e9e7;
+
+  --sombra-baja: 0 1px 2px rgb(23 33 29 / 0.06);
+  --sombra-alta: 0 2px 4px rgb(23 33 29 / 0.06), 0 8px 20px rgb(23 33 29 / 0.07);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    color-scheme: dark;
+
+    --papel: #10130f;
+    --superficie: #181c18;
+    --superficie-2: #212620;
+    --borde: #2e342d;
+    --borde-fuerte: #414a40;
+
+    --tinta: #e9ece8;
+    --tinta-suave: #adb3ab;
+    --tinta-tenue: #8e948c;
+
+    --marca: #3fc194;
+    --marca-fuerte: #62d3ac;
+    --marca-viva: #1d9e75;
+    --marca-suave: #10281f;
+    --marca-contraste: #06170f;
+
+    --acento: #a9a2f0;
+    --acento-texto: #bdb7f5;
+    --acento-suave: #1d1b33;
+
+    --alerta: #d8a765;
+    --alerta-suave: #2a2116;
+    --error: #e08a82;
+    --error-suave: #2c1a18;
+
+    --sombra-baja: 0 1px 2px rgb(0 0 0 / 0.4);
+    --sombra-alta: 0 2px 4px rgb(0 0 0 / 0.4), 0 8px 20px rgb(0 0 0 / 0.3);
+  }
+}
+
+:root[data-theme="dark"] {
+  color-scheme: dark;
+
+  --papel: #10130f;
+  --superficie: #181c18;
+  --superficie-2: #212620;
+  --borde: #2e342d;
+  --borde-fuerte: #414a40;
+
+  --tinta: #e9ece8;
+  --tinta-suave: #adb3ab;
+  --tinta-tenue: #8e948c;
+
+  --marca: #3fc194;
+  --marca-fuerte: #62d3ac;
+  --marca-viva: #1d9e75;
+  --marca-suave: #10281f;
+  --marca-contraste: #06170f;
+
+  --acento: #a9a2f0;
+  --acento-texto: #bdb7f5;
+  --acento-suave: #1d1b33;
+
+  --alerta: #d8a765;
+  --alerta-suave: #2a2116;
+  --error: #e08a82;
+  --error-suave: #2c1a18;
+
+  --sombra-baja: 0 1px 2px rgb(0 0 0 / 0.4);
+  --sombra-alta: 0 2px 4px rgb(0 0 0 / 0.4), 0 8px 20px rgb(0 0 0 / 0.3);
+}
+
+@theme inline {
+  --color-papel: var(--papel);
+  --color-superficie: var(--superficie);
+  --color-superficie-2: var(--superficie-2);
+  --color-borde: var(--borde);
+  --color-borde-fuerte: var(--borde-fuerte);
+
+  --color-tinta: var(--tinta);
+  --color-tinta-suave: var(--tinta-suave);
+  --color-tinta-tenue: var(--tinta-tenue);
+
+  --color-marca: var(--marca);
+  --color-marca-fuerte: var(--marca-fuerte);
+  --color-marca-viva: var(--marca-viva);
+  --color-marca-suave: var(--marca-suave);
+  --color-marca-contraste: var(--marca-contraste);
+
+  --color-acento: var(--acento);
+  --color-acento-texto: var(--acento-texto);
+  --color-acento-suave: var(--acento-suave);
+
+  --color-alerta: var(--alerta);
+  --color-alerta-suave: var(--alerta-suave);
+  --color-error: var(--error);
+  --color-error-suave: var(--error-suave);
+
+  --font-sans: var(--font-poppins);
+  --font-mono: var(--font-jetbrains);
+}
+
+/* 1rem = 18px. El piso de tamaño de texto de todo el sistema sale de acá. */
+html {
+  font-size: 112.5%;
+  /* El encabezado es pegajoso, así que el navegador tiene que dejarle lugar
+     cuando lleva un elemento al foco: sin esto, tabulando hacia abajo el campo
+     enfocado queda debajo de la barra y se escribe a ciegas. */
+  scroll-padding-top: 5rem;
+  /* Saca el retardo de 300ms al tocar. Esto se usa en el campo, con el teléfono
+     en la mano: medio segundo de más por toque se nota. */
+  touch-action: manipulation;
+  /* Permite que una sección se salga del contenedor y ocupe el ancho de la
+     pantalla sin abrir scroll horizontal. `clip` y no `hidden`: `hidden` crearía
+     un contenedor de scroll y rompería la barra pegajosa. */
+  overflow-x: clip;
+}
+
+body {
+  background: var(--papel);
+  /* Junto con el `clip` de arriba, deja que una sección se salga al ancho de la
+     pantalla sin que aparezca scroll horizontal por el ancho de la barra. */
+  overflow-x: clip;
+  color: var(--tinta);
+  font-family: var(--font-poppins), system-ui, sans-serif;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+}
+
+h1,
+h2,
+h3 {
+  text-wrap: balance;
+  line-height: 1.2;
+}
+
+/* Dato que salió de un documento oficial: se lee como código, no como prosa. */
+.codigo {
+  font-family: var(--font-jetbrains), ui-monospace, monospace;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: -0.01em;
+}
+
+/* Cifras que se comparan en columna. */
+.tabular {
+  font-variant-numeric: tabular-nums;
+}
+
+/* Rótulo de sección: versalita espaciada, en Poppins.
+   No lleva mono: la monoespaciada está reservada para valores que salieron de un
+   documento, y un rótulo de sección no salió de ninguno. */
+.rotulo {
+  font-size: 0.875rem;
+  font-weight: 600;
+  line-height: 1.3;
+  letter-spacing: 0.09em;
+  text-transform: uppercase;
+}
+
+/* Tailwind v4 sacó el cursor de mano del preflight de los botones. Va acá y no
+   componente por componente: lo que se puede apretar tiene que parecer que se
+   puede apretar, sin depender de que cada botón nuevo se acuerde de la clase. */
+button:not(:disabled),
+[role="button"]:not([aria-disabled="true"]),
+summary,
+label:has(> input[type="checkbox"]) {
+  cursor: pointer;
+}
+
+*:focus-visible {
+  outline: 2px solid var(--marca);
+  outline-offset: 2px;
+}
+
+/*
+  Una entrada corta y una sola vez, para las tarjetas que explican el contrato.
+  Arrancan visibles al 0 % y terminan en su lugar: si el navegador ignora la
+  animación, la tarjeta igual se ve, porque el estado final es el normal.
+  Con movimiento reducido dura 0,01ms y queda quieta, que es lo que pide el
+  bloque de más abajo.
+*/
+@keyframes aparecer {
+  from {
+    opacity: 0;
+    transform: translateY(0.75rem);
+  }
+}
+
+.aparece {
+  animation: aparecer 0.5s ease-out both;
+}
+
+/*
+  Movimiento reducido no es "sin movimiento". Que un botón cambie de color al
+  pasarle por encima es información, y apagarla deja al usuario sin saber qué
+  está tocando. Se sacan los desplazamientos, los tamaños y las repeticiones, y
+  se dejan las transiciones de color y opacidad, más cortas.
+*/
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 120ms !important;
+    transition-property: color, background-color, border-color, outline-color, opacity,
+      box-shadow !important;
+  }
+
+  html {
+    scroll-behavior: auto !important;
+  }
+}
