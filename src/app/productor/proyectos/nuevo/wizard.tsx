@@ -69,14 +69,13 @@ const PASOS = [
 type Borrador = Record<ClaveFicha, string> & {
   modalidad: Modalidad;
   /**
-   * Lo que pide el plan de operaciones según la modalidad. Todavía no son campos
+   * Lo que pide el plan de operaciones según si el lote ya existe. Todavía no son campos
    * del proyecto: viven en el borrador del alta hasta que haya backend que los
    * guarde, y están anotados en el backlog.
    */
   vendedor: string;
   establecimientoReceptor: string;
   proveedores: string;
-  fuenteRepago: string;
   calendario: string;
   tipoPosesion: TipoPosesion;
   sistemaProductivo: SistemaProductivo;
@@ -88,7 +87,6 @@ const INICIAL: Borrador = {
   vendedor: "",
   establecimientoReceptor: "",
   proveedores: "",
-  fuenteRepago: "",
   calendario: "Por hito",
   tipoPosesion: "existencia_comprobada",
   sistemaProductivo: "corral",
@@ -522,6 +520,7 @@ function Paso3({
 }) {
   const monto = Number(b.montoObjetivoArs) || 0;
   const porCabeza = cabezas > 0 ? monto / cabezas : 0;
+  const comprando = b.tipoPosesion !== "existencia_comprobada";
 
   return (
     <div className="space-y-6">
@@ -539,21 +538,21 @@ function Paso3({
         />
       </div>
 
-      {/* Cada modalidad necesita datos distintos y son pocos: en compra hay
-          que saber a quién se le compra y dónde entra la hacienda; en capital de
-          trabajo, a quién se le paga y con qué se devuelve. */}
+      {/* Si el lote todavía hay que comprarlo, hay que saber a quién se le compra y
+          dónde entra la hacienda; si ya es del productor, a quién se le pagan los
+          insumos del ciclo. */}
       <div>
         <TituloBloque
           descripcion={
-            b.modalidad === "compra_engorde"
+            comprando
               ? "A quién le comprás y dónde entra la hacienda."
-              : "A quién se le paga y con qué se devuelve."
+              : "A quién se le pagan la ración, la sanidad y los servicios del ciclo."
           }
         >
-          {b.modalidad === "compra_engorde" ? "La compra" : "Los gastos"}
+          {comprando ? "La compra" : "Los proveedores"}
         </TituloBloque>
         <div className="grid gap-5 sm:grid-cols-2">
-          {b.modalidad === "compra_engorde" ? (
+          {comprando ? (
             <>
               <Campo
                 etiqueta="Vendedor"
@@ -569,20 +568,12 @@ function Paso3({
               />
             </>
           ) : (
-            <>
-              <Campo
-                etiqueta="Proveedores principales"
-                ayuda="A quién se le compra la ración, la sanidad o el servicio."
-                value={b.proveedores}
-                onChange={(e) => set("proveedores", e.target.value)}
-              />
-              <Campo
-                etiqueta="Fuente prevista de repago"
-                ayuda="Con qué se devuelve. No es una garantía."
-                value={b.fuenteRepago}
-                onChange={(e) => set("fuenteRepago", e.target.value)}
-              />
-            </>
+            <Campo
+              etiqueta="Proveedores principales"
+              ayuda="A quién se le compra la ración, la sanidad o el servicio."
+              value={b.proveedores}
+              onChange={(e) => set("proveedores", e.target.value)}
+            />
           )}
           <Seleccion
             etiqueta="Calendario de desembolsos"

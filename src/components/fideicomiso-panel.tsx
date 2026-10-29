@@ -27,7 +27,7 @@ export function FideicomisoPanel({
       </TituloBloque>
 
       <dl className="grid gap-x-8 gap-y-5 sm:grid-cols-2">
-        <Dato etiqueta="Fiduciario" ayuda="Administra el patrimonio separado y rinde cuentas.">
+        <Dato etiqueta="Fiduciario" ayuda="Un tercero independiente de Guardian: administra el patrimonio separado y rinde cuentas.">
           {f.fiduciario}
         </Dato>
         <Dato etiqueta="Fiduciantes" ayuda="Quiénes aportan al fideicomiso.">
@@ -65,8 +65,10 @@ export function FideicomisoPanel({
 
       <div className="mt-6 space-y-4 border-t border-borde pt-5">
         <Aviso titulo="Qué hace Guardian y qué no">
-          Guardian conecta y verifica la documentación del lote. No es el fiduciario ni
-          garantiza el resultado, que sale de la venta del lote.
+          El fiduciario es un tercero independiente: administra el patrimonio de la serie,
+          rinde cuentas y responde por su gestión. Guardian conecta y verifica la
+          documentación del lote. Nadie garantiza el resultado, que sale de la venta del
+          lote.
         </Aviso>
 
         {paraColaborador ? (

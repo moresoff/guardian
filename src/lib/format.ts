@@ -76,39 +76,31 @@ export const MONEDA_LABEL: Record<"ARS", string> = {
 
 export const MODALIDAD_LABEL: Record<Modalidad, string> = {
   compra_engorde: "Compra y engorde",
-  capital_trabajo: "Capital de trabajo",
 };
 
 /**
- * Qué financia cada modalidad. Son dos y no tres: un proyecto que compra
- * hacienda y además paga la ración sigue siendo compra y engorde, porque lo que
- * define la modalidad es si el capital adquiere el animal.
+ * Qué financia Guardian: el proceso productivo de engorde. Si el lote todavía hay
+ * que comprarlo, el capital incluye la compra; si ya es del productor, financia
+ * el resto del proceso. Esa diferencia la dice la posesión del lote.
  *
  * Lo que un gasto tenga de fijo o de variable depende del contrato y del rubro,
  * no de la modalidad, así que no se afirma acá.
  */
 export const MODALIDAD_DESCRIPCION: Record<Modalidad, string> = {
   compra_engorde:
-    "El capital compra la hacienda y la termina, y puede pagar los gastos de ese ciclo. Los fondos salen contra la compra y después contra la existencia del lote.",
-  capital_trabajo:
-    "El capital no compra ni una cabeza: paga los gastos del ciclo sobre un lote que ya es del productor, contra el presupuesto aprobado.",
+    "El capital financia el proceso productivo de engorde: compra la hacienda si todavía hay que comprarla y paga los gastos del ciclo. Los fondos salen contra la documentación de cada etapa.",
 };
 
-/** Qué recibe el colaborador en cada modalidad. No es lo mismo y no se mezcla. */
+/** Qué recibe el colaborador. */
 export const MODALIDAD_RETORNO: Record<Modalidad, string> = {
   compra_engorde:
     "Participación en el resultado efectivo de la venta. Si el ciclo va mal, el resultado puede ser menor al proyectado o negativo.",
-  capital_trabajo:
-    "Capital más la tasa pactada en el contrato. No depende del precio de la hacienda: el riesgo es que el productor no cumpla.",
 };
 
-/** El rótulo de una modalidad que todavía no se determinó. */
-export const modalidadLabel = (m: Modalidad | null) =>
-  m === null ? "Modalidad sin determinar" : MODALIDAD_LABEL[m];
+export const modalidadLabel = (m: Modalidad) => MODALIDAD_LABEL[m];
 
 /** Solo para trazabilidad: cómo estaba clasificado un proyecto antes. */
 export const DESTINO_LABEL: Record<DestinoFondos, string> = {
-  capital_trabajo: "Capital de trabajo",
   ciclo_engorde: "Ciclo de engorde",
   mixto: "Las dos cosas",
 };

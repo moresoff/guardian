@@ -178,8 +178,8 @@ export default async function ValidacionProyecto({
               </div>
             ) : null}
 
-            {/* Publicar no depende solo de los documentos: si falta el reparto,
-                la tasa o la modalidad, el colaborador estaría decidiendo sobre
+            {/* Publicar no depende solo de los documentos: si falta el reparto
+                del resultado, el colaborador estaría decidiendo sobre
                 condiciones que todavía no existen. */}
             {!publicabilidad.puede ? (
               <div className="mt-4 border-t border-borde pt-4">

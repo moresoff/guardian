@@ -101,8 +101,7 @@ export default async function FichaProyecto({
   const liquidacion = puedeLiquidarse(proyecto);
   const comisionesCapital = comisionesSobreCapital(proyecto);
   const demostrativo =
-    proyecto.condiciones.participacion?.fuente === "demostrativo" ||
-    proyecto.condiciones.tasa?.fuente === "demostrativo";
+    proyecto.condiciones.participacion?.fuente === "demostrativo";
   const avisoDemostrativo = demostrativo
     ? "Condición de demostración: no sale de un contrato firmado."
     : undefined;
@@ -154,18 +153,12 @@ export default async function FichaProyecto({
             <dl className="grid grid-cols-2 gap-x-6 gap-y-5 sm:grid-cols-3">
               <Dato
                 etiqueta="Modalidad"
-                ayuda={
-                  proyecto.modalidad
-                    ? MODALIDAD_DESCRIPCION[proyecto.modalidad]
-                    : "Sin determinar."
-                }
+                ayuda={MODALIDAD_DESCRIPCION[proyecto.modalidad]}
               >
                 {modalidadLabel(proyecto.modalidad)}
               </Dato>
-              {/* La tasa de capital de trabajo y la participación de compra y
-                  engorde no son lo mismo y no comparten etiqueta: una es una
-                  obligación del productor y la otra depende de cómo salga el
-                  ciclo. */}
+              {/* La participación depende de cómo salga el ciclo: no es una
+                  obligación del productor ni un rendimiento asegurado. */}
               <Dato etiqueta={retorno.etiqueta} ayuda={avisoDemostrativo}>
                 {retorno.valor}
               </Dato>
@@ -204,9 +197,7 @@ export default async function FichaProyecto({
             <div className="mt-5 rounded-lg border border-borde bg-superficie-2 p-4">
               <p className="text-sm font-medium">Qué recibe el colaborador</p>
               <p className="mt-1 text-sm text-tinta-suave">
-                {proyecto.modalidad
-                  ? MODALIDAD_RETORNO[proyecto.modalidad]
-                  : "Hasta que no se determine la modalidad no se puede decir qué recibe el colaborador."}
+                {MODALIDAD_RETORNO[proyecto.modalidad]}
               </p>
             </div>
 
@@ -270,17 +261,10 @@ export default async function FichaProyecto({
             </div>
 
             <div className="mt-4">
-              {proyecto.modalidad === "capital_trabajo" ? (
-                <Aviso tono="alerta" titulo="La tasa es contractual, no un rendimiento asegurado">
-                  El productor se obliga a devolverla, y eso no elimina el riesgo de que no
-                  cumpla. Si no cumple, se ejecuta la garantía constituida.
-                </Aviso>
-              ) : (
-                <Aviso tono="alerta" titulo="El resultado proyectado no está garantizado">
-                  Es una estimación del productor. El resultado sale de la venta cobrada y
-                  puede ser menor, o negativo.
-                </Aviso>
-              )}
+              <Aviso tono="alerta" titulo="El resultado proyectado no está garantizado">
+                Es una estimación del productor. El resultado sale de la venta cobrada y
+                puede ser menor, o negativo.
+              </Aviso>
             </div>
           </section>
 

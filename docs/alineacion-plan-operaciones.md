@@ -4,9 +4,48 @@ Fecha: 2026-09-27. Este documento acompaña los cambios de código de la etapa A
 (coherencia de dominio) y de la parte de la etapa B que llega hasta la cuenta del
 colaborador. Dice qué quedó implementado, qué se simula y qué falta.
 
+## 0. Cambio de alcance (2026-10-29)
+
+Este cambio **reemplaza** lo que dicen las secciones siguientes sobre las dos
+modalidades, la tasa contractual y Guardian como fiduciario. Las secciones se
+conservan como historia de cómo se llegó hasta acá.
+
+- **Guardian financia solamente el proceso productivo de engorde.** Ya no hace
+  capital de trabajo. Hay una sola modalidad, `compra_engorde`: si el lote todavía
+  hay que comprarlo, el capital incluye la compra; si ya es del productor, financia
+  el resto del proceso (ración, sanidad, corral, flete). Esa diferencia la dice
+  `tipoPosesion`, no la modalidad. El colaborador participa del resultado efectivo
+  de la venta; no hay tasa contractual.
+- **Desaparece el "sin determinar".** Existía para decidir entre dos modalidades.
+  `Proyecto.modalidad` ya no es nula y `motivoRevisionModalidad` se eliminó. `pry-14`
+  sigue siendo un borrador que no se puede publicar, pero porque le faltan el
+  reparto, el mínimo de inicio y la garantía.
+- **Guardian ya no es el fiduciario.** El fiduciario de cada serie es un tercero
+  independiente. En los datos de prueba se llama "Fiduciaria Independiente S.A.",
+  un nombre genérico que hay que reemplazar por el real. Guardian conecta y verifica
+  la documentación; el fiduciario administra el patrimonio separado, rinde cuentas
+  y responde por su gestión. Nadie garantiza el resultado.
+- **Los 11 proyectos de capital de trabajo del seed** pasaron a compra y engorde.
+  Los que tenían tasa pactada ahora llevan participación 65/35 (60/40 en `pry-13`),
+  que es lo que ya decía el reparto del fideicomiso de cada serie. Los que tenían la
+  tasa sin pactar quedan con el reparto "Sin pactar". El presupuesto y el cronograma
+  derivados distinguen si el lote ya existe (`existencia_comprobada`) o hay que
+  comprarlo.
+- **Esquema.** `supabase/migrations/0002_solo_engorde.sql` deja el enum `modalidad`
+  con un solo valor y obligatorio, saca `capital_trabajo` de `destino_fondos`,
+  elimina las columnas `tasa_*` y `motivo_revision_modalidad`, y cambia el
+  fiduciario de las series que nombraban a Guardian. El runner de migraciones corre
+  todas las migraciones desde cero (no lleva registro de las aplicadas): sobre una
+  base que ya tiene la 0001 hay que correr la 0002 a mano.
+- **Interfaz.** El filtro por modalidad del catálogo se sacó (había una sola
+  opción), el alta ya no pregunta la modalidad y pide vendedor y establecimiento
+  receptor solo si el lote hay que comprarlo, o proveedores si ya existe.
+
 ## 1. Lo que cambió en el dominio
 
 ### Modalidad en lugar de destino de fondos
+
+> Histórico: ver la sección 0. Hoy hay una sola modalidad.
 
 `DestinoFondos` (`capital_trabajo | ciclo_engorde | mixto`) dejó de ser el eje del
 proyecto. Ahora hay dos modalidades y una tercera posibilidad que no es una
@@ -82,9 +121,9 @@ la aclaración en el tipo de que no mide cobertura económica.
 
 | Requisito del encargo | Implementación | Cómo se comprueba | Pendiente |
 |---|---|---|---|
-| Dos modalidades, sin "mixto" | `Modalidad` en `types.ts`, `MODALIDAD_*` en `format.ts` | Catálogo, ficha, alta y panel de validación muestran la modalidad | — |
-| Registro ambiguo no se migra ni se publica | `modalidad: null` + `motivoRevisionModalidad`; `puedePublicarse()` | `/productor/proyectos/pry-14` | Pantalla para resolver la modalidad |
-| Tasa contractual vs resultado proyectado | `retornoDelProyecto()`, avisos por modalidad | `/proyectos/pry-1` (tasa) y `/proyectos/pry-2` (participación) | — |
+| Una modalidad (antes dos), sin "mixto" | `Modalidad` en `types.ts`, `MODALIDAD_*` en `format.ts` | Catálogo, ficha, alta y panel de validación muestran la modalidad | — |
+| Condiciones incompletas no se publican | `puedePublicarse()` | `/productor/proyectos/pry-14` | — |
+| Resultado proyectado no garantizado | `retornoDelProyecto()`, aviso en la ficha | `/proyectos/pry-1` y `/proyectos/pry-2` (participación) | — |
 | Condiciones incompletas bloquean | `condicionesPendientes()`, checklist del admin | `/admin/proyectos/pry-5` | Bloqueo del lado del servidor |
 | Porcentaje sobre aportes acreditados | `calcularFondeo()` | Barra de la ficha y de la cartera | — |
 | Adhesión no acredita | Flujo `Adherir` → orden de suscripción → instrucciones | `/proyectos/pry-1`, botón "Adherir al proyecto" | Conciliación real |
@@ -103,13 +142,13 @@ servidor**: nada de lo que se carga en pantalla persiste.
 
 | Escenario | Dónde | Qué muestra |
 |---|---|---|
-| Capital de trabajo abierto | `/proyectos/pry-1` | Tasa contractual, aviso de riesgo de incumplimiento, adhesión habilitada |
-| Compra y engorde | `/proyectos/pry-2` | Participación, proyección con supuestos y fecha, acreditado vs adherido |
+| Compra y engorde, lote que ya existe | `/proyectos/pry-1` | Participación 65/35, presupuesto sin compra de hacienda, adhesión habilitada |
+| Compra y engorde, lote a comprar | `/proyectos/pry-2` | Participación, proyección con supuestos y fecha, acreditado vs adherido |
 | Fondeo parcial con diferencia | `/colaborador/cartera` | Un aporte acreditado, uno parcial con su observación y uno pendiente |
 | Ciclo en curso | `/proyectos/pry-9` | Seguimiento con pesadas, ganancia diaria y gasto acumulado |
 | Ciclo cerrado | `/proyectos/pry-6` | Resultado del romaneo y liquidación pagada en la cartera |
 | Condiciones sin pactar | `/admin/proyectos/pry-5` | Checklist que impide publicar |
-| Modalidad sin determinar | `/productor/proyectos/pry-14` | Aviso, trazabilidad del valor anterior y bloqueo |
+| Borrador con el reparto sin pactar | `/productor/proyectos/pry-14` | Condiciones pendientes y bloqueo de publicación |
 
 ## 4. Chequeos ejecutados
 
@@ -137,9 +176,9 @@ Por orden de importancia para la etapa siguiente:
    simulación explícita del proveedor.
 5. **Múltiples establecimientos** por productor y legajo por establecimiento.
 6. **Permisos.** Hoy no hay autenticación: cualquiera ve cualquier pantalla.
-7. **Alta ramificada completa.** El alta ya elige modalidad, pero todavía no pide
-   vendedor y establecimiento receptor en compra, ni proveedores, calendario y
-   fuente de repago en capital de trabajo.
+7. **Alta ramificada completa.** El alta pide vendedor y establecimiento receptor
+   si el lote hay que comprarlo, y proveedores si ya existe, pero esos datos
+   todavía no se guardan: viven en el borrador hasta que haya backend.
 
 ## 6. Decisiones que no se inventaron
 
@@ -181,6 +220,9 @@ liquidaciones, restricciones) y agregar `/colaborador/cartera` a las pantallas.
 
 ## 7 bis. El frente del colaborador (2026-09-27)
 
+> Lo que sigue sobre Guardian como fiduciario quedó superado por la sección 0:
+> el fiduciario es ahora un tercero independiente.
+
 Guardian pasó a ser **el fiduciario** de cada serie, y no un tercero que coloca y
 monitorea. En la interfaz eso cambió tres cosas: el dato "Fiduciario" de cada
 proyecto dice Guardian, el aviso de "qué hace Guardian y qué no" ya no promete
@@ -220,7 +262,7 @@ La lista de la sección "Para el colaborador" del plan, contra lo que hoy muestr
 | Cronograma de desembolsos | Está: hitos con momento, monto y condición de liberación |
 | Plazo del ciclo | Está |
 | Plazo de cobro | Está, separado del plazo del ciclo |
-| Rendimiento proyectado o tasa contractual | Está, separado por modalidad |
+| Rendimiento proyectado | Está, como participación en el resultado |
 | Moneda de aporte y devolución | Está |
 | Criterio de conversión | No aplica: una sola moneda |
 | Gastos y comisiones | Está: concepto, base, porcentaje, quién la paga y cuándo |

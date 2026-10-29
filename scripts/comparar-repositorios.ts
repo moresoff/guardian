@@ -43,10 +43,6 @@ async function main() {
       correr: (r) => r.getProyectosPublicos({ provincia: "Córdoba" }),
     },
     {
-      nombre: "getProyectosPublicos({ modalidad: 'capital_trabajo' })",
-      correr: (r) => r.getProyectosPublicos({ modalidad: "capital_trabajo" }),
-    },
-    {
       nombre: "getProyectosPublicos({ montoMaximo: 60_000_000 })",
       correr: (r) => r.getProyectosPublicos({ montoMaximo: 60_000_000 }),
     },

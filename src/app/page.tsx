@@ -54,9 +54,9 @@ const CONTRATO = [
   },
   {
     n: "02",
-    titulo: "El resultado sale de la venta",
+    titulo: "Un fiduciario independiente",
     texto:
-      "Guardian conecta y verifica la documentación, pero no garantiza el resultado: lo determina la venta del lote.",
+      "La serie la administra un tercero, no Guardian. Guardian conecta y verifica la documentación, y nadie garantiza el resultado: sale de la venta.",
   },
   {
     n: "03",
@@ -68,7 +68,7 @@ const CONTRATO = [
     n: "04",
     titulo: "Rendición de cuentas",
     texto:
-      "La serie rinde cuentas y esa obligación no se puede renunciar. El resultado sale del romaneo.",
+      "El fiduciario rinde cuentas y no puede renunciar a esa obligación. El resultado sale del romaneo.",
   },
 ];
 
@@ -303,8 +303,8 @@ export default async function Home() {
               </ul>
 
               <p className="mt-6 text-sm text-tinta-suave">
-                Cada proyecto publicado muestra su serie: plazos, reparto y quién soporta
-                la mortandad.
+                Cada proyecto publicado muestra su serie: fiduciario, plazos, reparto y
+                quién soporta la mortandad.
               </p>
             </div>
 

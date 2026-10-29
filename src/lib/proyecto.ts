@@ -15,29 +15,10 @@ import type { Aporte, Modalidad, Proyecto } from "@/lib/types";
 export function condicionesPendientes(proyecto: Proyecto): string[] {
   const faltan: string[] = [];
 
-  if (proyecto.modalidad === null) {
-    faltan.push(
-      "La modalidad no está determinada: sin eso no se sabe si el colaborador participa del resultado o cobra una tasa",
-    );
-    return faltan;
-  }
-
-  if (proyecto.modalidad === "compra_engorde") {
-    const p = proyecto.condiciones.participacion;
-    if (!p) faltan.push("Falta el reparto del resultado entre colaboradores y productor");
-    else if (p.colaboradoresPct === null || p.productorPct === null) {
-      faltan.push("El reparto del resultado todavía no está pactado");
-    }
-  }
-
-  if (proyecto.modalidad === "capital_trabajo") {
-    const t = proyecto.condiciones.tasa;
-    if (!t) faltan.push("Falta la tasa pactada y su calendario");
-    else {
-      if (t.tasaPct === null) faltan.push("La tasa todavía no está pactada");
-      // Una tasa sin base temporal no se puede calcular ni comparar contra otra.
-      if (t.base === null) faltan.push("Falta la base de la tasa: anual, mensual o del ciclo");
-    }
+  const p = proyecto.condiciones.participacion;
+  if (!p) faltan.push("Falta el reparto del resultado entre colaboradores y productor");
+  else if (p.colaboradoresPct === null || p.productorPct === null) {
+    faltan.push("El reparto del resultado todavía no está pactado");
   }
 
   return faltan;
@@ -75,41 +56,13 @@ export function retornoDelProyecto(proyecto: Proyecto): {
   /** Si el número es una estimación y no una obligación contractual. */
   esProyeccion: boolean;
 } {
-  if (proyecto.modalidad === "capital_trabajo") {
-    const t = proyecto.condiciones.tasa;
-    const base =
-      t?.base === "anual"
-        ? "anual"
-        : t?.base === "mensual"
-          ? "mensual"
-          : t?.base === "ciclo"
-            ? "del ciclo"
-            : null;
-    return {
-      etiqueta: "Tasa contractual",
-      valor:
-        t?.tasaPct !== null && t?.tasaPct !== undefined && base !== null
-          ? `${t.tasaPct} % ${base}`
-          : "Pendiente de definición",
-      esProyeccion: false,
-    };
-  }
-
-  if (proyecto.modalidad === "compra_engorde") {
-    const p = proyecto.condiciones.participacion;
-    return {
-      etiqueta: "Participación en el resultado",
-      valor:
-        p?.colaboradoresPct !== null && p?.colaboradoresPct !== undefined
-          ? `${p.colaboradoresPct} % del resultado`
-          : "Pendiente de definición",
-      esProyeccion: true,
-    };
-  }
-
+  const p = proyecto.condiciones.participacion;
   return {
-    etiqueta: "Condiciones",
-    valor: "Pendientes de definición",
+    etiqueta: "Participación en el resultado",
+    valor:
+      p?.colaboradoresPct !== null && p?.colaboradoresPct !== undefined
+        ? `${p.colaboradoresPct} % del resultado`
+        : "Pendiente de definición",
     esProyeccion: true,
   };
 }
@@ -194,7 +147,7 @@ export function puedeAdherirse(
 }
 
 /** Las modalidades, en el orden en que se muestran en los filtros. */
-export const MODALIDADES: Modalidad[] = ["compra_engorde", "capital_trabajo"];
+export const MODALIDADES: Modalidad[] = ["compra_engorde"];
 
 /** Las comisiones que todavía no tienen porcentaje: sin eso no se liquida. */
 export function comisionesPendientes(proyecto: Proyecto): string[] {
@@ -244,12 +197,8 @@ export function retornoCompacto(proyecto: Proyecto): {
 } {
   const r = retornoDelProyecto(proyecto);
 
-  if (proyecto.modalidad === null) {
-    return { etiqueta: "Condiciones", valor: "Sin definir" };
-  }
-
   return {
-    etiqueta: proyecto.modalidad === "capital_trabajo" ? "Tasa" : "Participación",
+    etiqueta: "Participación",
     valor: r.valor.replace(" del resultado", "").replace("Pendiente de definición", "—"),
   };
 }

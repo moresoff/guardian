@@ -26,7 +26,6 @@ import {
   getSeguimientoDeProyecto,
 } from "@/lib/data";
 import {
-  DESTINO_LABEL,
   DOCUMENTO_LABEL,
   modalidadLabel,
   GARANTIA_LABEL,
@@ -109,27 +108,6 @@ export default async function DetalleProyectoProductor({
           >
             Guardian no publica el proyecto hasta que estén resueltas. Revisá cada una más
             abajo: podés corregir el dato del proyecto o subir el documento que corresponda.
-          </Aviso>
-        </div>
-      ) : null}
-
-      {/* Un proyecto sin modalidad no se puede publicar y conviene decirlo
-          arriba de todo: lo que falta no es un dato más, es saber si el colaborador
-          participa del resultado o cobra una tasa. */}
-      {proyecto.modalidad === null ? (
-        <div className="mt-5">
-          <Aviso tono="alerta" titulo="Este proyecto quedó sin modalidad">
-            {proyecto.motivoRevisionModalidad}
-            {proyecto.destinoFondosPrevio ? (
-              <p className="mt-2">
-                Antes estaba cargado como{" "}
-                <span className="font-medium text-tinta">
-                  {DESTINO_LABEL[proyecto.destinoFondosPrevio]}
-                </span>
-                . No se convirtió solo: hay que elegir compra y engorde o capital de
-                trabajo antes de poder enviarlo a revisión.
-              </p>
-            ) : null}
           </Aviso>
         </div>
       ) : null}

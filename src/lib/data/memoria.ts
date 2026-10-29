@@ -59,7 +59,6 @@ export const repositorioEnMemoria: Repositorio = {
     return proyectos
       .filter(publicos)
       .filter((p) => !filtros.provincia || p.provincia === filtros.provincia)
-      .filter((p) => !filtros.modalidad || p.modalidad === filtros.modalidad)
       .filter((p) => !filtros.montoMaximo || p.montoObjetivoArs <= filtros.montoMaximo)
       .sort((a, b) => (b.publicadoAt ?? "").localeCompare(a.publicadoAt ?? ""));
   },

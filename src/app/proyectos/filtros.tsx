@@ -8,21 +8,15 @@ import Link from "next/link";
  */
 export function FiltrosCatalogo({
   provincias,
-  modalidades,
   provinciaActual,
-  modalidadActual,
 }: {
   provincias: string[];
-  modalidades: { valor: string; label: string }[];
   provinciaActual?: string;
-  modalidadActual?: string;
 }) {
   const href = (cambio: Record<string, string | undefined>) => {
     const params = new URLSearchParams();
     const provincia = "provincia" in cambio ? cambio.provincia : provinciaActual;
-    const modalidad = "modalidad" in cambio ? cambio.modalidad : modalidadActual;
     if (provincia) params.set("provincia", provincia);
-    if (modalidad) params.set("modalidad", modalidad);
     const qs = params.toString();
     return qs ? `/proyectos?${qs}` : "/proyectos";
   };
@@ -43,21 +37,6 @@ export function FiltrosCatalogo({
         {provincias.map((p) => (
           <Link key={p} href={href({ provincia: p })} className={chip(provinciaActual === p)}>
             {p}
-          </Link>
-        ))}
-      </Grupo>
-
-      <Grupo etiqueta="Modalidad">
-        <Link href={href({ modalidad: undefined })} className={chip(!modalidadActual)}>
-          Todas
-        </Link>
-        {modalidades.map((m) => (
-          <Link
-            key={m.valor}
-            href={href({ modalidad: m.valor })}
-            className={chip(modalidadActual === m.valor)}
-          >
-            {m.label}
           </Link>
         ))}
       </Grupo>

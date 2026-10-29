@@ -155,7 +155,7 @@ criterio de orden explícito, igual de los dos lados.
 
 Además de las tres restricciones del plan, la base ahora rechaza: acreditar más
 de lo comprometido, un aporte "acreditado" con menos dinero del comprometido,
-retirar más de lo liberado, liberar más de lo recaudado, publicar sin modalidad,
+retirar más de lo liberado, liberar más de lo recaudado,
 un reparto que no suma cien, una liquidación pagada sin fecha de pago, una
 discrepancia resuelta sin decir cómo, y un DT-e "verificado" sin CUVE.
 
@@ -206,7 +206,8 @@ no un camino de datos de la aplicación.
 ## 4. Orden de trabajo sugerido
 
 1. Esquema y migraciones, con las tres restricciones de arriba.
-2. Autenticación y permisos por rol, incluidas las atribuciones del fiduciario.
+2. Autenticación y permisos por rol, incluidas las atribuciones del fiduciario
+   (un tercero independiente de Guardian).
 3. Reemplazo del cuerpo de `src/lib/data/index.ts` contra la base real.
 4. Archivos privados con versionado y URL firmada de vencimiento corto.
 5. Flujo 1 y flujo 2 de n8n (lectura y reglas).

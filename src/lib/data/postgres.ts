@@ -91,7 +91,7 @@ const textoOpc = (v: unknown): string | undefined =>
 /* ------------------------------------------------------------------ */
 
 const COLUMNAS_PROYECTO = `
-  id, productor_id, titulo, modalidad, motivo_revision_modalidad,
+  id, productor_id, titulo, modalidad,
   destino_fondos_previo, destino_detalle,
   tipo_posesion, sistema_productivo, cabezas, categoria, raza, peso_entrada_kg,
   peso_salida_objetivo_kg, monto_objetivo_ars, monto_recaudado_ars,
@@ -220,14 +220,11 @@ async function armarProyectos(consultar: Consultar, filas: Fila[]): Promise<Proy
       id,
       productorId: texto(p.productor_id),
       titulo: texto(p.titulo),
-      modalidad: (p.modalidad as Proyecto["modalidad"]) ?? null,
-      motivoRevisionModalidad: textoOpc(p.motivo_revision_modalidad),
+      modalidad: p.modalidad as Proyecto["modalidad"],
       destinoFondosPrevio: (p.destino_fondos_previo as Proyecto["destinoFondosPrevio"]) ?? undefined,
       condiciones: {
         monedaAporte: "ARS",
         monedaDevolucion: "ARS",
-        // Participación y tasa se guardan en la misma fila y son excluyentes por
-        // modalidad: se arma la que tenga datos, no las dos.
         participacion:
           c && c.participacion_base !== null && c.participacion_base !== undefined
             ? {
@@ -235,16 +232,6 @@ async function armarProyectos(consultar: Consultar, filas: Fila[]): Promise<Proy
                 productorPct: numOpc(c.participacion_productor_pct),
                 base: texto(c.participacion_base),
                 fuente: c.participacion_fuente as "contrato" | "demostrativo",
-              }
-            : undefined,
-        tasa:
-          c && c.tasa_calculo !== null && c.tasa_calculo !== undefined
-            ? {
-                tasaPct: numOpc(c.tasa_pct),
-                base: (c.tasa_base as "anual" | "mensual" | "ciclo" | null) ?? null,
-                calculo: texto(c.tasa_calculo),
-                vencimientos: texto(c.tasa_vencimientos),
-                fuente: c.tasa_fuente as "contrato" | "demostrativo",
               }
             : undefined,
         proyeccion:
@@ -496,13 +483,11 @@ export function crearRepositorioPostgres(consultar: Consultar): Repositorio {
         `select ${COLUMNAS_PROYECTO} from proyectos
          where estado::text in ${estados.sql}
            and ($${n + 1}::text is null or provincia = $${n + 1})
-           and ($${n + 2}::text is null or modalidad::text = $${n + 2})
-           and ($${n + 3}::numeric is null or monto_objetivo_ars <= $${n + 3})
+           and ($${n + 2}::numeric is null or monto_objetivo_ars <= $${n + 2})
          order by publicado_at desc nulls last, id`,
         [
           ...estados.params,
           filtros.provincia ?? null,
-          filtros.modalidad ?? null,
           filtros.montoMaximo ?? null,
         ],
       );

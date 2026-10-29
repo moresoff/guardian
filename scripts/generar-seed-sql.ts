@@ -109,7 +109,7 @@ const garantiasConDocumento = garantias.filter((g) => g.documentoId);
 tabla(
   "proyectos",
   [
-    "id", "productor_id", "titulo", "modalidad", "motivo_revision_modalidad",
+    "id", "productor_id", "titulo", "modalidad",
     "destino_detalle", "tipo_posesion", "sistema_productivo", "cabezas", "categoria",
     "destino_fondos_previo", "raza", "peso_entrada_kg", "peso_salida_objetivo_kg",
     "monto_objetivo_ars",
@@ -121,7 +121,7 @@ tabla(
     "resultado_fecha",
   ],
   proyectos.map((p) => [
-    p.id, p.productorId, p.titulo, p.modalidad, p.motivoRevisionModalidad ?? null,
+    p.id, p.productorId, p.titulo, p.modalidad,
     p.destinoDetalle, p.tipoPosesion, p.sistemaProductivo, p.cabezas, p.categoria,
     p.destinoFondosPrevio ?? null, p.raza, p.pesoEntradaKg, p.pesoSalidaObjetivoKg,
     p.montoObjetivoArs,
@@ -141,7 +141,6 @@ tabla(
     "proyecto_id", "version",
     "participacion_colaboradores_pct", "participacion_productor_pct",
     "participacion_base", "participacion_fuente",
-    "tasa_pct", "tasa_base", "tasa_calculo", "tasa_vencimientos", "tasa_fuente",
     "proyeccion_fecha", "proyeccion_supuestos", "proyeccion_ingresos_estimados_ars",
     "proyeccion_costos_estimados_ars", "proyeccion_comisiones_estimadas_ars",
   ],
@@ -151,8 +150,6 @@ tabla(
       p.id, 1,
       c.participacion?.colaboradoresPct ?? null, c.participacion?.productorPct ?? null,
       c.participacion?.base ?? null, c.participacion?.fuente ?? null,
-      c.tasa?.tasaPct ?? null, c.tasa?.base ?? null, c.tasa?.calculo ?? null,
-      c.tasa?.vencimientos ?? null, c.tasa?.fuente ?? null,
       c.proyeccion?.fecha ?? null, c.proyeccion?.supuestos ?? [],
       c.proyeccion?.ingresosEstimadosArs ?? null,
       c.proyeccion?.costosEstimadosArs ?? null,

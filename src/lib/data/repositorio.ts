@@ -25,7 +25,6 @@ import type {
 
 export interface FiltrosCatalogo {
   provincia?: string;
-  modalidad?: string;
   montoMaximo?: number;
 }
 

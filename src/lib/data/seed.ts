@@ -179,16 +179,15 @@ const proyectosDeclarados: ProyectoDeclarado[] = [
     id: "pry-1",
     productorId: "prod-1",
     titulo: "Engorde a corral — 180 novillitos",
-    modalidad: "capital_trabajo",
-    destinoFondosPrevio: "capital_trabajo",
+    modalidad: "compra_engorde",
+    destinoFondosPrevio: "ciclo_engorde",
     condiciones: {
       monedaAporte: "ARS",
       monedaDevolucion: "ARS",
-      tasa: {
-        tasaPct: 34,
-        base: "ciclo",
-        calculo: "Sobre el capital aportado, devengado a lo largo del ciclo y sin capitalización",
-        vencimientos: "Un único vencimiento al cierre del ciclo, a los 120 días",
+      participacion: {
+        colaboradoresPct: 65,
+        productorPct: 35,
+        base: "Sobre el resultado neto de la venta, una vez cubiertos los gastos reconocidos del ciclo",
         fuente: "demostrativo",
       },
     },
@@ -214,7 +213,7 @@ const proyectosDeclarados: ProyectoDeclarado[] = [
     provincia: "Buenos Aires",
     fideicomiso: {
       serie: "Guardian Ganadero — Serie I",
-      fiduciario: "Guardian S.A.S., fiduciario de la serie",
+      fiduciario: "Fiduciaria Independiente S.A., fiduciario de la serie (tercero ajeno a Guardian)",
       fiduciantes:
         "Los colaboradores del proyecto, que aportan el capital, y TROPA AGROGANADERA S.A., que aporta la hacienda, el campo y el trabajo",
       fideicomisarios:
@@ -286,7 +285,7 @@ const proyectosDeclarados: ProyectoDeclarado[] = [
     provincia: "Córdoba",
     fideicomiso: {
       serie: "Guardian Ganadero — Serie II",
-      fiduciario: "Guardian S.A.S., fiduciario de la serie",
+      fiduciario: "Fiduciaria Independiente S.A., fiduciario de la serie (tercero ajeno a Guardian)",
       fiduciantes:
         "Los colaboradores del proyecto, que aportan el capital, y LA REDENCIÓN S.R.L., que aporta la hacienda, el campo y el trabajo",
       fideicomisarios:
@@ -358,7 +357,7 @@ const proyectosDeclarados: ProyectoDeclarado[] = [
     provincia: "Santa Fe",
     fideicomiso: {
       serie: "Guardian Ganadero — Serie III",
-      fiduciario: "Guardian S.A.S., fiduciario de la serie",
+      fiduciario: "Fiduciaria Independiente S.A., fiduciario de la serie (tercero ajeno a Guardian)",
       fiduciantes:
         "Los colaboradores del proyecto, que aportan el capital, y GANADERA EL AMANECER S.A., que aporta la hacienda, el campo y el trabajo",
       fideicomisarios:
@@ -385,16 +384,15 @@ const proyectosDeclarados: ProyectoDeclarado[] = [
     id: "pry-4",
     productorId: "prod-1",
     titulo: "Engorde a corral — 200 vaquillonas",
-    modalidad: "capital_trabajo",
-    destinoFondosPrevio: "capital_trabajo",
+    modalidad: "compra_engorde",
+    destinoFondosPrevio: "ciclo_engorde",
     condiciones: {
       monedaAporte: "ARS",
       monedaDevolucion: "ARS",
-      tasa: {
-        tasaPct: 33,
-        base: "ciclo",
-        calculo: "Sobre el capital aportado, devengado a lo largo del ciclo y sin capitalización",
-        vencimientos: "Un único vencimiento al cierre del ciclo, a los 120 días",
+      participacion: {
+        colaboradoresPct: 65,
+        productorPct: 35,
+        base: "Sobre el resultado neto de la venta, una vez cubiertos los gastos reconocidos del ciclo",
         fuente: "demostrativo",
       },
     },
@@ -424,16 +422,15 @@ const proyectosDeclarados: ProyectoDeclarado[] = [
     id: "pry-5",
     productorId: "prod-2",
     titulo: "Terminación a corral — 95 novillos",
-    modalidad: "capital_trabajo",
-    destinoFondosPrevio: "capital_trabajo",
+    modalidad: "compra_engorde",
+    destinoFondosPrevio: "ciclo_engorde",
     condiciones: {
       monedaAporte: "ARS",
       monedaDevolucion: "ARS",
-      tasa: {
-        tasaPct: null,
-        base: null,
-        calculo: "Sin pactar",
-        vencimientos: "Sin pactar",
+      participacion: {
+        colaboradoresPct: null,
+        productorPct: null,
+        base: "Sin pactar",
         fuente: "demostrativo",
       },
     },
@@ -463,16 +460,15 @@ const proyectosDeclarados: ProyectoDeclarado[] = [
     id: "pry-6",
     productorId: "prod-1",
     titulo: "Engorde a corral — 28 cabezas (ciclo cerrado)",
-    modalidad: "capital_trabajo",
-    destinoFondosPrevio: "capital_trabajo",
+    modalidad: "compra_engorde",
+    destinoFondosPrevio: "ciclo_engorde",
     condiciones: {
       monedaAporte: "ARS",
       monedaDevolucion: "ARS",
-      tasa: {
-        tasaPct: 31,
-        base: "ciclo",
-        calculo: "Sobre el capital aportado, devengado a lo largo del ciclo y sin capitalización",
-        vencimientos: "Un único vencimiento al cierre del ciclo, a los 110 días",
+      participacion: {
+        colaboradoresPct: 65,
+        productorPct: 35,
+        base: "Sobre el resultado neto de la venta, una vez cubiertos los gastos reconocidos del ciclo",
         fuente: "demostrativo",
       },
     },
@@ -498,7 +494,7 @@ const proyectosDeclarados: ProyectoDeclarado[] = [
     provincia: "Buenos Aires",
     fideicomiso: {
       serie: "Guardian Ganadero — Serie IV",
-      fiduciario: "Guardian S.A.S., fiduciario de la serie",
+      fiduciario: "Fiduciaria Independiente S.A., fiduciario de la serie (tercero ajeno a Guardian)",
       fiduciantes:
         "Los colaboradores del proyecto, que aportan el capital, y TROPA AGROGANADERA S.A., que aporta la hacienda, el campo y el trabajo",
       fideicomisarios:
@@ -574,16 +570,15 @@ const proyectosDeclarados: ProyectoDeclarado[] = [
     id: "pry-8",
     productorId: "prod-1",
     titulo: "Recría a corral — 90 terneras",
-    modalidad: "capital_trabajo",
-    destinoFondosPrevio: "capital_trabajo",
+    modalidad: "compra_engorde",
+    destinoFondosPrevio: "ciclo_engorde",
     condiciones: {
       monedaAporte: "ARS",
       monedaDevolucion: "ARS",
-      tasa: {
-        tasaPct: null,
-        base: null,
-        calculo: "Sin pactar",
-        vencimientos: "Sin pactar",
+      participacion: {
+        colaboradoresPct: null,
+        productorPct: null,
+        base: "Sin pactar",
         fuente: "demostrativo",
       },
     },
@@ -609,21 +604,23 @@ const proyectosDeclarados: ProyectoDeclarado[] = [
     provincia: "Buenos Aires",
     creadoAt: "2026-09-24",
   },
-  // El caso que quedó sin clasificar al pasar de destino a modalidad. Se dejó
-  // así a propósito: el texto no permite saber si el capital compra hacienda o
-  // solo paga gastos, y adivinar sería peor que frenarlo. No se puede publicar
-  // hasta que alguien lo resuelva.
+  // Un borrador al que todavía le falta casi todo: reparto sin pactar, mínimo de
+  // inicio y garantía. No se puede publicar hasta que alguien lo complete.
   {
     id: "pry-14",
     productorId: "prod-1",
     titulo: "Ciclo 2026 — 110 novillitos",
-    modalidad: null,
-    motivoRevisionModalidad:
-      "El proyecto venía cargado como mixto y el detalle no dice si el capital compra hacienda o solo financia los gastos del lote que ya está en el corral. Hasta saberlo no se puede decir si el colaborador participa del resultado o cobra una tasa.",
+    modalidad: "compra_engorde",
     destinoFondosPrevio: "mixto",
     condiciones: {
       monedaAporte: "ARS",
       monedaDevolucion: "ARS",
+      participacion: {
+        colaboradoresPct: null,
+        productorPct: null,
+        base: "Sin pactar",
+        fuente: "demostrativo",
+      },
     },
     montoMinimoInicioArs: null,
     destinoDetalle:
@@ -653,16 +650,15 @@ const proyectosDeclarados: ProyectoDeclarado[] = [
     id: "pry-9",
     productorId: "prod-1",
     titulo: "Terminación a corral — 120 novillos",
-    modalidad: "capital_trabajo",
-    destinoFondosPrevio: "capital_trabajo",
+    modalidad: "compra_engorde",
+    destinoFondosPrevio: "ciclo_engorde",
     condiciones: {
       monedaAporte: "ARS",
       monedaDevolucion: "ARS",
-      tasa: {
-        tasaPct: 28,
-        base: "ciclo",
-        calculo: "Sobre el capital aportado, devengado a lo largo del ciclo y sin capitalización",
-        vencimientos: "Un único vencimiento al cierre del ciclo, a los 90 días",
+      participacion: {
+        colaboradoresPct: 65,
+        productorPct: 35,
+        base: "Sobre el resultado neto de la venta, una vez cubiertos los gastos reconocidos del ciclo",
         fuente: "demostrativo",
       },
     },
@@ -688,7 +684,7 @@ const proyectosDeclarados: ProyectoDeclarado[] = [
     provincia: "Buenos Aires",
     fideicomiso: {
       serie: "Guardian Ganadero — Serie V",
-      fiduciario: "Guardian S.A.S., fiduciario de la serie",
+      fiduciario: "Fiduciaria Independiente S.A., fiduciario de la serie (tercero ajeno a Guardian)",
       fiduciantes:
         "Los colaboradores del proyecto, que aportan el capital, y TROPA AGROGANADERA S.A., que aporta la hacienda, el campo y el trabajo",
       fideicomisarios:
@@ -717,16 +713,15 @@ const proyectosDeclarados: ProyectoDeclarado[] = [
     id: "pry-10",
     productorId: "prod-1",
     titulo: "Engorde a corral — 150 novillitos (ciclo 2025/26)",
-    modalidad: "capital_trabajo",
-    destinoFondosPrevio: "capital_trabajo",
+    modalidad: "compra_engorde",
+    destinoFondosPrevio: "ciclo_engorde",
     condiciones: {
       monedaAporte: "ARS",
       monedaDevolucion: "ARS",
-      tasa: {
-        tasaPct: 32,
-        base: "ciclo",
-        calculo: "Sobre el capital aportado, devengado a lo largo del ciclo y sin capitalización",
-        vencimientos: "Un único vencimiento al cierre del ciclo, a los 115 días",
+      participacion: {
+        colaboradoresPct: 65,
+        productorPct: 35,
+        base: "Sobre el resultado neto de la venta, una vez cubiertos los gastos reconocidos del ciclo",
         fuente: "demostrativo",
       },
     },
@@ -752,7 +747,7 @@ const proyectosDeclarados: ProyectoDeclarado[] = [
     provincia: "Buenos Aires",
     fideicomiso: {
       serie: "Guardian Ganadero — Serie VI",
-      fiduciario: "Guardian S.A.S., fiduciario de la serie",
+      fiduciario: "Fiduciaria Independiente S.A., fiduciario de la serie (tercero ajeno a Guardian)",
       fiduciantes:
         "Los colaboradores del proyecto, que aportan el capital, y TROPA AGROGANADERA S.A., que aporta la hacienda, el campo y el trabajo",
       fideicomisarios:
@@ -787,16 +782,15 @@ const proyectosDeclarados: ProyectoDeclarado[] = [
     id: "pry-11",
     productorId: "prod-1",
     titulo: "Recría a corral — 95 vaquillonas (ciclo 2025)",
-    modalidad: "capital_trabajo",
-    destinoFondosPrevio: "capital_trabajo",
+    modalidad: "compra_engorde",
+    destinoFondosPrevio: "ciclo_engorde",
     condiciones: {
       monedaAporte: "ARS",
       monedaDevolucion: "ARS",
-      tasa: {
-        tasaPct: 29,
-        base: "ciclo",
-        calculo: "Sobre el capital aportado, devengado a lo largo del ciclo y sin capitalización",
-        vencimientos: "Un único vencimiento al cierre del ciclo, a los 130 días",
+      participacion: {
+        colaboradoresPct: 65,
+        productorPct: 35,
+        base: "Sobre el resultado neto de la venta, una vez cubiertos los gastos reconocidos del ciclo",
         fuente: "demostrativo",
       },
     },
@@ -822,7 +816,7 @@ const proyectosDeclarados: ProyectoDeclarado[] = [
     provincia: "Buenos Aires",
     fideicomiso: {
       serie: "Guardian Ganadero — Serie VII",
-      fiduciario: "Guardian S.A.S., fiduciario de la serie",
+      fiduciario: "Fiduciaria Independiente S.A., fiduciario de la serie (tercero ajeno a Guardian)",
       fiduciantes:
         "Los colaboradores del proyecto, que aportan el capital, y TROPA AGROGANADERA S.A., que aporta la hacienda, el campo y el trabajo",
       fideicomisarios:
@@ -857,16 +851,15 @@ const proyectosDeclarados: ProyectoDeclarado[] = [
     id: "pry-12",
     productorId: "prod-1",
     titulo: "Engorde a corral — 60 novillitos (primer ciclo)",
-    modalidad: "capital_trabajo",
-    destinoFondosPrevio: "capital_trabajo",
+    modalidad: "compra_engorde",
+    destinoFondosPrevio: "ciclo_engorde",
     condiciones: {
       monedaAporte: "ARS",
       monedaDevolucion: "ARS",
-      tasa: {
-        tasaPct: 27,
-        base: "ciclo",
-        calculo: "Sobre el capital aportado, devengado a lo largo del ciclo y sin capitalización",
-        vencimientos: "Un único vencimiento al cierre del ciclo, a los 105 días",
+      participacion: {
+        colaboradoresPct: 65,
+        productorPct: 35,
+        base: "Sobre el resultado neto de la venta, una vez cubiertos los gastos reconocidos del ciclo",
         fuente: "demostrativo",
       },
     },
@@ -892,7 +885,7 @@ const proyectosDeclarados: ProyectoDeclarado[] = [
     provincia: "Buenos Aires",
     fideicomiso: {
       serie: "Guardian Ganadero — Serie VIII",
-      fiduciario: "Guardian S.A.S., fiduciario de la serie",
+      fiduciario: "Fiduciaria Independiente S.A., fiduciario de la serie (tercero ajeno a Guardian)",
       fiduciantes:
         "Los colaboradores del proyecto, que aportan el capital, y TROPA AGROGANADERA S.A., que aporta la hacienda, el campo y el trabajo",
       fideicomisarios:
@@ -927,16 +920,15 @@ const proyectosDeclarados: ProyectoDeclarado[] = [
     id: "pry-13",
     productorId: "prod-1",
     titulo: "Ración y sanidad — 210 novillitos en engorde",
-    modalidad: "capital_trabajo",
-    destinoFondosPrevio: "capital_trabajo",
+    modalidad: "compra_engorde",
+    destinoFondosPrevio: "ciclo_engorde",
     condiciones: {
       monedaAporte: "ARS",
       monedaDevolucion: "ARS",
-      tasa: {
-        tasaPct: 29,
-        base: "ciclo",
-        calculo: "Sobre el capital aportado, devengado a lo largo del ciclo y sin capitalización",
-        vencimientos: "Un único vencimiento al cierre del ciclo, a los 135 días",
+      participacion: {
+        colaboradoresPct: 60,
+        productorPct: 40,
+        base: "Sobre el resultado neto de la venta, una vez cubiertos los gastos reconocidos del ciclo",
         fuente: "demostrativo",
       },
     },
@@ -962,7 +954,7 @@ const proyectosDeclarados: ProyectoDeclarado[] = [
     provincia: "Buenos Aires",
     fideicomiso: {
       serie: "Guardian Ganadero — Serie IX",
-      fiduciario: "Guardian S.A.S., fiduciario de la serie",
+      fiduciario: "Fiduciaria Independiente S.A., fiduciario de la serie (tercero ajeno a Guardian)",
       fiduciantes:
         "Los colaboradores del proyecto, que aportan el capital para los insumos, y TROPA AGROGANADERA S.A., que aporta la hacienda, el campo y el trabajo",
       fideicomisarios:
@@ -993,10 +985,7 @@ const proyectosDeclarados: ProyectoDeclarado[] = [
  * frigorífico no paga contra entrega, así que el colaborador espera más que el
  * animal. Treinta días para una venta a faena, diez para una venta en pie.
  */
-const PLAZO_COBRO: Record<string, number> = {
-  compra_engorde: 30,
-  capital_trabajo: 15,
-};
+const PLAZO_COBRO_DIAS = 30;
 
 function presupuestoDe(p: ProyectoDeclarado): RubroPresupuesto[] {
   const total = p.montoObjetivoArs;
@@ -1004,7 +993,9 @@ function presupuestoDe(p: ProyectoDeclarado): RubroPresupuesto[] {
 
   const periodo = `Los ${p.plazoDias} días del ciclo`;
 
-  if (p.modalidad === "compra_engorde") {
+  // Si el lote todavía hay que comprarlo, la compra es el primer rubro; si ya es
+  // del productor, el capital financia solo el proceso de engorde.
+  if (p.tipoPosesion !== "existencia_comprobada") {
     return [
       {
         rubro: "Hacienda",
@@ -1065,7 +1056,7 @@ function cronogramaDe(p: ProyectoDeclarado): HitoDesembolso[] {
   const total = p.montoObjetivoArs;
   if (total === 0) return [];
 
-  if (p.modalidad === "compra_engorde") {
+  if (p.tipoPosesion !== "existencia_comprobada") {
     return [
       {
         hito: "Compra de la hacienda",
@@ -1269,7 +1260,7 @@ export const proyectos: Proyecto[] = proyectosDeclarados.map((p) => ({
     comisiones: comisionesDe(p),
     contingencias: contingenciasDe(p),
   },
-  plazoCobroDias: p.modalidad ? PLAZO_COBRO[p.modalidad] : null,
+  plazoCobroDias: p.modalidad ? PLAZO_COBRO_DIAS : null,
   presupuesto: presupuestoDe(p),
   cronograma: cronogramaDe(p),
   controles: controlesDe(p),

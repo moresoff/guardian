@@ -3,40 +3,30 @@
 
 export type Rol = "productor" | "colaborador" | "admin";
 
-/** Destino de los fondos pedidos. */
 /**
- * Guardian financia dos cosas distintas y la línea entre ellas es si el capital
- * compra cabezas o no.
+ * Clasificación vieja del destino de los fondos, anterior a que Guardian
+ * financiara solamente el proceso productivo de engorde. Se guarda solo para
+ * rastrear cómo estaba cargado un proyecto: no decide nada.
  *
- * `ciclo_engorde` es el capital que va sobre el animal: la compra de la hacienda
- * y lo que la hace engordar, incluida la puesta a feedlot. `capital_trabajo` es
- * todo lo indirecto —ración, sanidad, alquiler del corral, flete, servicios— sobre
- * un lote que el productor ya tiene. `mixto` cuando el mismo proyecto hace las dos.
- *
- * El destino no es una etiqueta suelta: decide qué respalda al colaborador. En un
- * ciclo de engorde el respaldo se compra con el capital; en capital de trabajo el
- * respaldo ya existe antes de que entre un peso.
+ * `ciclo_engorde` es el capital que va sobre el animal y lo que lo hace engordar;
+ * `mixto` cuando el detalle no permitía separar una cosa de la otra.
  */
-export type DestinoFondos = "capital_trabajo" | "ciclo_engorde" | "mixto";
+export type DestinoFondos = "ciclo_engorde" | "mixto";
 
 /**
- * Las dos modalidades con las que Guardian financia un ciclo. No son tres: lo
- * que antes se llamaba `mixto` es casi siempre compra y engorde con gastos del
- * ciclo adentro, y meterlo en una categoría propia hacía que el colaborador no
- * supiera qué estaba comprando.
+ * La modalidad con la que Guardian financia un ciclo: el proceso productivo de
+ * engorde. Si el lote todavía hay que comprarlo, el capital incluye la compra; si
+ * ya es del productor, financia el resto del proceso (ración, sanidad, corral,
+ * flete). Esa diferencia la dice `TipoPosesion`, no la modalidad.
  *
- * `compra_engorde` es el capital que adquiere hacienda y la termina, y puede
- * incluir los gastos del ciclo sobre ese mismo lote. El colaborador participa del
- * resultado efectivo de la venta.
+ * El colaborador participa del resultado efectivo de la venta. Guardian no
+ * financia capital de trabajo suelto ni paga una tasa fija: hay una sola
+ * modalidad y por eso nunca queda "sin determinar".
  *
- * `capital_trabajo` financia gastos sobre un lote que el productor ya tiene. El
- * colaborador recibe capital más la tasa pactada, y el riesgo es de incumplimiento
- * del productor, no de precio de la hacienda.
- *
- * Que un gasto sea fijo o variable depende del objeto financiado y del contrato,
- * no de la modalidad: esa clasificación no se deduce acá.
+ * Que un gasto sea fijo o variable depende del objeto financiado y del contrato:
+ * esa clasificación no se deduce acá.
  */
-export type Modalidad = "compra_engorde" | "capital_trabajo";
+export type Modalidad = "compra_engorde";
 
 /**
  * Qué se puede afirmar de una condición económica. `demostrativo` es el dato
@@ -45,23 +35,13 @@ export type Modalidad = "compra_engorde" | "capital_trabajo";
  */
 export type FuenteCondicion = "contrato" | "demostrativo";
 
-/** Compra y engorde: el colaborador participa del resultado, no cobra una tasa. */
+/** El colaborador participa del resultado de la venta: no cobra una tasa. */
 export interface ParticipacionResultado {
   /** null mientras el reparto no esté pactado: bloquea publicar y liquidar. */
   colaboradoresPct: number | null;
   productorPct: number | null;
   /** Sobre qué se calcula el reparto, con las palabras del contrato. */
   base: string;
-  fuente: FuenteCondicion;
-}
-
-/** Capital de trabajo: capital más tasa, con su base temporal explícita. */
-export interface TasaPactada {
-  tasaPct: number | null;
-  /** Una tasa sin base temporal no se puede calcular ni comparar. */
-  base: "anual" | "mensual" | "ciclo" | null;
-  calculo: string;
-  vencimientos: string;
   fuente: FuenteCondicion;
 }
 
@@ -128,7 +108,6 @@ export interface CondicionesEconomicas {
   monedaAporte: "ARS";
   monedaDevolucion: "ARS";
   participacion?: ParticipacionResultado;
-  tasa?: TasaPactada;
   proyeccion?: ProyeccionResultado;
   /** Vacío es "sin definir": bloquea liquidar, no publicar. */
   comisiones: Comision[];
@@ -266,14 +245,15 @@ export interface Colaborador {
  * seguro e inscripción registral. Si alguno falta, no hay contrato válido, así
  * que ninguno es opcional.
  *
- * Guardian es el fiduciario de cada serie: administra el patrimonio separado,
- * rinde cuentas y responde por su gestión. Eso es distinto de garantizar el
- * resultado, que depende de la venta del lote y no de la administración.
+ * El fiduciario de cada serie es un tercero independiente de Guardian: administra
+ * el patrimonio separado, rinde cuentas y responde por su gestión. Eso es
+ * distinto de garantizar el resultado, que depende de la venta del lote y no de
+ * la administración. Guardian conecta y verifica la documentación.
  */
 export interface Fideicomiso {
   /** "Guardian Ganadero — Serie IV". El marco es uno; cada ciclo es una serie. */
   serie: string;
-  /** Quien administra el patrimonio separado: Guardian. */
+  /** Quien administra el patrimonio separado: un tercero, no Guardian. */
   fiduciario: string;
   /** Quienes aportan: los colaboradores ponen dinero, el productor hacienda o trabajo. */
   fiduciantes: string;
@@ -354,15 +334,9 @@ export interface Proyecto {
   id: string;
   productorId: string;
   titulo: string;
-  /**
-   * La modalidad del proyecto. `null` es "sin determinar": un registro viejo que
-   * no se pudo clasificar sin leerlo. No se adivina, no se publica y queda a la
-   * vista para que alguien lo resuelva.
-   */
-  modalidad: Modalidad | null;
-  /** Por qué quedó sin determinar, cuando es el caso. */
-  motivoRevisionModalidad?: string;
-  /** El valor anterior, para poder rastrear de dónde salió la modalidad. */
+  /** La modalidad del proyecto: hoy hay una sola. */
+  modalidad: Modalidad;
+  /** La clasificación anterior, para poder rastrear de dónde salió el proyecto. */
   destinoFondosPrevio?: DestinoFondos;
   condiciones: CondicionesEconomicas;
   /**
@@ -378,10 +352,8 @@ export interface Proyecto {
   restricciones?: Restriccion[];
   /**
    * En qué se gasta el capital, con las palabras del productor. El destino dice
-   * la categoría —capital de trabajo, ciclo de engorde, mixto—; esto dice si
-   * es ración, sanidad, mano de obra o los animales en sí. El colaborador de un
-   * proyecto de capital de trabajo está financiando insumos, no hacienda, y
-   * tiene derecho a leerlo antes de poner el dinero.
+   * la categoría; esto dice si es ración, sanidad, mano de obra o los animales
+   * en sí. El colaborador tiene derecho a leerlo antes de poner el dinero.
    */
   destinoDetalle: string;
   tipoPosesion: TipoPosesion;
