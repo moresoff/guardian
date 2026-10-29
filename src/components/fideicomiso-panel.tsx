@@ -65,9 +65,8 @@ export function FideicomisoPanel({
 
       <div className="mt-6 space-y-4 border-t border-borde pt-5">
         <Aviso titulo="Qué hace Guardian y qué no">
-          Guardian es el fiduciario: administra el patrimonio de la serie, rinde cuentas y
-          responde por su gestión. No garantiza el resultado, que sale de la venta del
-          lote.
+          Guardian conecta y verifica la documentación del lote. No es el fiduciario ni
+          garantiza el resultado, que sale de la venta del lote.
         </Aviso>
 
         {paraColaborador ? (

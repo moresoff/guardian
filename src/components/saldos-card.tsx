@@ -8,7 +8,7 @@ import { formatArs, formatArsCompacto } from "@/lib/format";
  * No es una billetera y el texto lo dice: en Guardian no hay un saldo que se
  * pueda mover. El dinero está en la cuenta del fideicomiso de cada proyecto y
  * sale como desembolso autorizado, contra documentación y por decisión del
- * fiduciario. El acumulado histórico va último a propósito: es el número más
+ * fiduciario de la serie. El acumulado histórico va último a propósito: es el número más
  * grande y arriba se confundiría con dinero disponible.
  */
 export function SaldosCard({ saldos }: { saldos: Saldos }) {
@@ -18,7 +18,7 @@ export function SaldosCard({ saldos }: { saldos: Saldos }) {
       valor: saldos.pendienteDeRetiro,
       total: saldos.liberadoHistorico,
       ayuda:
-        "Desembolsos ya aprobados a tu favor que el fiduciario todavía no pagó. No es un saldo que puedas mover: se paga según el contrato.",
+        "Desembolsos ya aprobados a tu favor que todavía no se pagaron. No es un saldo que puedas mover: se paga según el contrato.",
     },
     {
       titulo: "En el fideicomiso",

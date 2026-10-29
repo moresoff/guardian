@@ -19,15 +19,13 @@ const jetbrains = JetBrains_Mono({
 export const metadata: Metadata = {
   title: "Guardian — Financiamiento de ciclos ganaderos",
   description:
-    "Plataforma que conecta colaboradores con productores ganaderos que necesitan capital de trabajo para el ciclo de engorde.",
+    "Plataforma que conecta colaboradores con productores ganaderos y financia el proceso productivo de engorde.",
 };
 
 /** La barra del navegador en el teléfono acompaña el fondo de la página. */
 export const viewport: Viewport = {
-  themeColor: [
-    { media: "(prefers-color-scheme: light)", color: "#f5f5f3" },
-    { media: "(prefers-color-scheme: dark)", color: "#10130f" },
-  ],
+  themeColor: "#f5f5f3",
+  colorScheme: "light",
 };
 
 export default function RootLayout({ children }: LayoutProps<"/">) {

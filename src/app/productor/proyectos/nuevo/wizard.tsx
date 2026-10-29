@@ -84,7 +84,7 @@ type Borrador = Record<ClaveFicha, string> & {
 };
 
 const INICIAL: Borrador = {
-  modalidad: "capital_trabajo",
+  modalidad: "compra_engorde",
   vendedor: "",
   establecimientoReceptor: "",
   proveedores: "",
@@ -399,22 +399,16 @@ function Paso1({
   return (
     <div className="space-y-8">
       <div>
-        <TituloBloque descripcion="La diferencia es si el capital compra hacienda o no.">
-          Modalidad del proyecto
+        <TituloBloque descripcion="Guardian financia el proceso productivo de engorde: el capital compra la hacienda y la termina.">
+          Qué financia el proyecto
         </TituloBloque>
-        <GrupoOpciones
-          etiqueta="Modalidad del proyecto"
-          valor={b.modalidad}
-          onCambio={(v) => set("modalidad", v)}
-          opciones={(["compra_engorde", "capital_trabajo"] as Modalidad[]).map((m) => ({
-            valor: m,
-            titulo: MODALIDAD_LABEL[m],
-            descripcion: MODALIDAD_DESCRIPCION[m],
-          }))}
-        />
-        {/* Lo que el colaborador va a recibir cambia con la modalidad y conviene
-            que el productor lo vea al elegirla: en una participa del resultado
-            y en la otra cobra una tasa que el productor se obliga a pagar. */}
+        <div className="rounded-lg border border-borde bg-superficie p-4">
+          <p className="text-sm font-medium">{MODALIDAD_LABEL.compra_engorde}</p>
+          <p className="mt-1 text-sm text-tinta-suave">
+            {MODALIDAD_DESCRIPCION.compra_engorde}
+          </p>
+        </div>
+        {/* Lo que va a recibir el colaborador, a la vista de quien publica. */}
         <div className="mt-4 rounded-lg border border-borde bg-superficie-2 p-4">
           <p className="text-sm font-medium">Qué va a recibir el colaborador</p>
           <p className="mt-1 text-sm text-tinta-suave">{MODALIDAD_RETORNO[b.modalidad]}</p>

@@ -6,7 +6,7 @@ user-invocable: true
 
 # Sistema de diseño de Guardian
 
-Guardian financia ciclos de engorde: un productor publica el capital de trabajo que necesita y un grupo de inversores lo pone. Las dos puntas miran las mismas cifras y las dos tienen dinero de por medio.
+Guardian financia ciclos de engorde: un productor publica el capital que necesita para el proceso productivo de engorde y un grupo de inversores lo pone. Las dos puntas miran las mismas cifras y las dos tienen dinero de por medio.
 
 ## Las tres reglas que mandan sobre todo lo demás
 
@@ -61,9 +61,9 @@ La paleta de marca no tiene color de advertencia ni de error, y hacen falta. Est
 
 El verde de marca es **también** el color de "verificado". No son dos verdes: que Guardian apruebe algo y la identidad de Guardian son la misma afirmación.
 
-### Tema oscuro
+### Tema
 
-Tres estados, no dos: la elección explícita estampa `data-theme` en la raíz, y el default del sistema no estampa nada. Se declara la paleta clara completa en `:root` pelado, se redefinen **solo los tokens** en `@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) }` y otra vez en `:root[data-theme="dark"]`, con `color-scheme: dark` en los dos. Ningún color tiene su única definición adentro de un bloque de tema.
+Guardian es siempre claro, sin importar el modo del sistema. No hay tema oscuro: la paleta vive entera en `:root` con `color-scheme: light`, y no se agregan `prefers-color-scheme: dark`, `data-theme` ni variantes `dark:`.
 
 ---
 
@@ -172,7 +172,7 @@ Prohibiciones concretas, ordenadas por frecuencia con la que aparecen solas:
 
 1. ¿Se lee a 375px de ancho sin scroll horizontal?
 2. ¿Todo texto llega a 4,5:1 de contraste? ¿Los objetos de interfaz a 3:1?
-3. ¿Los dos temas, claro y oscuro, están definidos y probados?
+3. ¿Se ve igual con el sistema en modo oscuro? (No hay tema oscuro: tiene que verse claro.)
 4. ¿Se puede recorrer con teclado y el foco se ve en cada paso?
 5. ¿Los datos de documentos están en mono y los tipeados no?
 6. ¿Hay estado vacío, de carga y de error para cada pantalla que trae datos?

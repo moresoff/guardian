@@ -11,7 +11,7 @@ import { buscarImagen } from "@/lib/imagenes";
 export const metadata = {
   title: "Guardian — Crecé, ayudando a crecer",
   description:
-    "Guardian conecta colaboradores con productores ganaderos que necesitan capital de trabajo para el ciclo de engorde, con la documentación del lote a la vista.",
+    "Guardian conecta colaboradores con productores ganaderos y financia el proceso productivo de engorde, con la documentación del lote a la vista.",
 };
 
 /**
@@ -54,9 +54,9 @@ const CONTRATO = [
   },
   {
     n: "02",
-    titulo: "Guardian es el fiduciario",
+    titulo: "El resultado sale de la venta",
     texto:
-      "Administra la serie y responde por su gestión. Eso no es garantizar el resultado: el resultado sale de la venta.",
+      "Guardian conecta y verifica la documentación, pero no garantiza el resultado: lo determina la venta del lote.",
   },
   {
     n: "03",
@@ -68,7 +68,7 @@ const CONTRATO = [
     n: "04",
     titulo: "Rendición de cuentas",
     texto:
-      "Guardian rinde cuentas y no puede renunciar a esa obligación. El resultado sale del romaneo.",
+      "La serie rinde cuentas y esa obligación no se puede renunciar. El resultado sale del romaneo.",
   },
 ];
 
@@ -186,7 +186,7 @@ export default async function Home() {
               Crecé, ayudando a crecer
             </p>
             <p className="mt-5 hidden max-w-md text-white/85 sm:block">
-              Capital de trabajo para el ciclo de engorde, con el activo real a la vista:
+              Financiamos el proceso productivo de engorde, con el activo real a la vista:
               un lote concreto, en un establecimiento con nombre y RENSPA.
             </p>
           </div>
@@ -239,24 +239,18 @@ export default async function Home() {
                 Qué financia Guardian
               </h2>
               <p className="mt-3 text-tinta-suave">
-                Dos modalidades, y la diferencia es si el capital compra hacienda. Los
-                plazos son los del animal: entre 90 y 180 días.
+                El proceso productivo de engorde: el capital compra la hacienda y la
+                termina. Los plazos son los del animal: entre 90 y 180 días.
               </p>
             </div>
 
-            <dl className="mt-9 grid gap-5 sm:grid-cols-2">
+            <dl className="mt-9 grid gap-5">
               {[
                 {
                   t: "Compra y engorde",
                   costo: "Participación en el resultado",
                   d: "El capital compra la hacienda y la termina, y puede pagar los gastos de ese ciclo. El colaborador participa del resultado de la venta.",
                   verifica: "Se verifica: la compra, la recepción y las caravanas",
-                },
-                {
-                  t: "Capital de trabajo",
-                  costo: "Capital más tasa pactada",
-                  d: "El lote ya es del productor. El capital paga ración, sanidad, corral y flete, contra el presupuesto aprobado.",
-                  verifica: "Se verifica: que el lote exista y sea del productor",
                 },
               ].map((x) => (
                 <div
@@ -309,8 +303,8 @@ export default async function Home() {
               </ul>
 
               <p className="mt-6 text-sm text-tinta-suave">
-                Cada proyecto publicado muestra su serie: fiduciario, plazos, reparto y
-                quién soporta la mortandad.
+                Cada proyecto publicado muestra su serie: plazos, reparto y quién soporta
+                la mortandad.
               </p>
             </div>
 
