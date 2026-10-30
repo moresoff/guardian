@@ -44,7 +44,7 @@ const idDeCampo = (clave: ClaveFicha) => `alta-${clave}`;
  * condición porque el botón tiene que poder nombrar lo que falta.
  */
 const OBLIGATORIOS: Record<number, ClaveFicha[]> = {
-  1: ["cabezas", "pesoEntradaKg", "pesoSalidaObjetivoKg"],
+  1: ["cabezas", "pesoEntradaKg"],
   2: ["montoObjetivoArs"],
 };
 
@@ -119,7 +119,6 @@ const INICIAL: Borrador = {
   categoria: "Novillito",
   raza: "Angus",
   pesoEntradaKg: "",
-  pesoSalidaObjetivoKg: "",
   destinoDetalle: "",
   montoObjetivoArs: "",
   plazoDias: String(CICLOS.corral.plazoDias),
@@ -380,44 +379,17 @@ function Paso1({
   set: <K extends keyof Borrador>(k: K, v: Borrador[K]) => void;
   huecos: ClaveFicha[];
 }) {
-  const entrada = Number(b.pesoEntradaKg) || 0;
-  const salida = Number(b.pesoSalidaObjetivoKg) || 0;
-  const ganancia = salida - entrada;
-
   return (
     <div className="space-y-8">
       <div>
         <h2 className="text-2xl font-semibold tracking-tight">¿Qué animales vas a engordar?</h2>
         <p className="mt-1.5 text-tinta-suave">
-          Contanos cuántos son y cuánto pesan hoy. Después lo comparamos con tus papeles.
+          Contanos cuántos son y cuánto pesan hoy, en promedio. Después lo comparamos con tus papeles.
         </p>
         <div className="mt-5 grid gap-5 sm:grid-cols-2">
           <CamposDeFicha grupo="El lote" b={b} set={set} huecos={huecos} />
         </div>
 
-        {ganancia > 0 ? (
-          <div className="mt-4">
-            <Aviso tono="marca">
-              Cada animal tiene que ganar{" "}
-              <strong className="font-medium text-tinta">{ganancia} kg</strong>
-              {Number(b.cabezas) > 0 ? (
-                <>
-                  , unos{" "}
-                  <strong className="font-medium text-tinta">
-                    {formatNum(ganancia * Number(b.cabezas))} kg
-                  </strong>{" "}
-                  en todo el lote
-                </>
-              ) : null}
-              .
-            </Aviso>
-          </div>
-        ) : null}
-        {ganancia < 0 ? (
-          <div className="mt-4">
-            <Aviso tono="error">El peso final es menor al de entrada. Revisá los números.</Aviso>
-          </div>
-        ) : null}
       </div>
 
       <div>

@@ -18,7 +18,6 @@ export type ClaveFicha =
   | "categoria"
   | "raza"
   | "pesoEntradaKg"
-  | "pesoSalidaObjetivoKg"
   | "destinoDetalle"
   | "montoObjetivoArs"
   | "plazoDias"
@@ -81,14 +80,6 @@ export const CAMPOS_FICHA: CampoFicha[] = [
     tipo: "numero",
     sufijo: "kg",
     ayuda: "Promedio por cabeza al arrancar el ciclo.",
-  },
-  {
-    clave: "pesoSalidaObjetivoKg",
-    etiqueta: "Peso objetivo",
-    grupo: "El lote",
-    tipo: "numero",
-    sufijo: "kg",
-    ayuda: "Promedio por cabeza al que esperás llegar.",
   },
   {
     clave: "destinoDetalle",
