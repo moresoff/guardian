@@ -50,7 +50,7 @@ export function TarjetaProyecto({ item }: { item: ItemProyecto }) {
           {modalidadLabel(p.modalidad)} · creado el {formatFecha(p.creadoAt)}
         </p>
         <h3 className="mt-1.5 text-lg font-semibold tracking-tight">
-          <Link href={`/productor/proyectos/${p.id}`} className="hover:text-marca">
+          <Link href={`/proyectos/${p.id}`} className="hover:text-marca">
             <span className="absolute inset-0" aria-hidden />
             {p.titulo}
           </Link>

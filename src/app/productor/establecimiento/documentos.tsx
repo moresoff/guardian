@@ -41,7 +41,7 @@ export async function Documentos() {
       carpeta = {
         id,
         titulo: e.proyecto?.titulo ?? "Documentos generales",
-        href: e.proyecto ? `/productor/proyectos/${e.proyecto.id}` : undefined,
+        href: e.proyecto ? `/proyectos/${e.proyecto.id}` : undefined,
         archivos: [],
       };
       porCarpeta.set(id, carpeta);

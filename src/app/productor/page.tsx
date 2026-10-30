@@ -63,7 +63,7 @@ export default async function ResumenProductor() {
           sinResolver.length === 1 ? "discrepancia" : "discrepancias"
         } sin resolver`,
         texto: `En ${p.titulo}. Guardian no lo publica hasta que los números cierren con la documentación.`,
-        href: `/productor/proyectos/${p.id}`,
+        href: `/proyectos/${p.id}`,
         accion: "Revisar",
       });
     }
@@ -104,7 +104,7 @@ export default async function ResumenProductor() {
           ]
             .filter(Boolean)
             .join(" y ")} para poder enviarlo a revisión.`,
-          href: `/productor/proyectos/${p.id}`,
+          href: `/proyectos/${p.id}`,
           accion: "Completar",
         });
       }
@@ -128,7 +128,7 @@ export default async function ResumenProductor() {
         texto: `${p.titulo} cerró con un rendimiento de faena de ${formatPct(p.resultado.rendimientoPct)} sobre ${formatNum(
           p.resultado.kilosVivos,
         )} kg vivos, según el romaneo.`,
-        href: `/productor/proyectos/${p.id}`,
+        href: `/proyectos/${p.id}`,
         accion: "Ver el cierre",
       });
     }

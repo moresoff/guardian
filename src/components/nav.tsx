@@ -19,7 +19,7 @@ const MENUS = {
     items: [
       // Inicio y lista de proyectos son la misma pantalla: «Mis proyectos» está
       // activa en ella y en la ficha o el alta de un proyecto.
-      { href: "/productor", label: "Mis proyectos", exacta: true, tambien: ["/productor/proyectos"] },
+      { href: "/productor", label: "Mis proyectos", exacta: true, tambien: ["/productor/proyectos", "/proyectos/"] },
       { href: "/productor/establecimiento", label: "Mi establecimiento" },
     ],
   },
@@ -40,8 +40,11 @@ const MENUS = {
 
 type Area = keyof typeof MENUS | null;
 
-function areaDe(pathname: string): Area {
+function areaDe(pathname: string, lado: "productor" | "colaborador" | null): Area {
   if (pathname.startsWith("/productor")) return "productor";
+  // La ficha de un proyecto es de todos; para quien entró por el lado del
+  // productor es también la pantalla de su proyecto, así que no cambia de menú.
+  if (lado === "productor" && /^\/proyectos\/[^/]+/.test(pathname)) return "productor";
   if (pathname.startsWith("/colaborador") || pathname.startsWith("/proyectos"))
     return "colaborador";
   if (pathname.startsWith("/admin")) return "admin";
@@ -138,11 +141,19 @@ function CambiarVista({ area }: { area: Area }) {
   );
 }
 
-export function Nav({ conSesion, nombre }: { conSesion: boolean; nombre: string | null }) {
+export function Nav({
+  conSesion,
+  nombre,
+  lado,
+}: {
+  conSesion: boolean;
+  nombre: string | null;
+  lado: "productor" | "colaborador" | null;
+}) {
   const pathname = usePathname();
   const router = useRouter();
   // Sin cuenta no hay menú de ningún lado: el catálogo se ve, pero desde afuera.
-  const area = conSesion ? areaDe(pathname) : null;
+  const area = conSesion ? areaDe(pathname, lado) : null;
   const menu = area ? MENUS[area] : null;
 
   return (

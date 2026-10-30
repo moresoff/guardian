@@ -50,7 +50,7 @@ export default async function RootLayout({ children }: LayoutProps<"/">) {
         >
           Saltar al contenido
         </a>
-        <Nav conSesion={conSesion} nombre={usuario?.nombre ?? null} />
+        <Nav conSesion={conSesion} nombre={usuario?.nombre ?? null} lado={usuario?.lado ?? null} />
         <main id="contenido" className="mx-auto w-full max-w-6xl flex-1 px-4 py-6">
           {children}
         </main>

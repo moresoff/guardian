@@ -337,5 +337,7 @@ por rubro y la suma se controla contra el capital pedido.
 
 - **Productor:** «Mis proyectos» (`/productor`: tablero y lista en una sola pantalla), «Mi establecimiento» (`/productor/establecimiento`, pestañas Mis datos / Documentos y garantías / Trayectoria) y el botón «Publicar un proyecto» (`/productor/proyectos/nuevo`, una sola pantalla).
 - **Colaborador:** «Catálogo» (`/proyectos`) y «Mi cartera» (`/colaborador/cartera`, pestañas Mis aportes / Mis datos).
-- Las rutas viejas (`/productor/proyectos`, `/productor/perfil`, `/productor/documentacion`, `/colaborador/perfil`) redirigen a las nuevas.
+- **Ficha única:** el dueño de un proyecto lo abre en `/proyectos/[id]` y ve dos pestañas, «Mi proyecto» (ficha técnica, saldos, seguimiento y documentos) y «Cómo lo ve el colaborador» (`?tab=colaborador`). Un borrador solo muestra «Mi proyecto».
+- **Validación:** la revisión de un proyecto se abre dentro de la cola (`/admin?proyecto=<id>`), con el resto de la cola como pastillas arriba.
+- Las rutas viejas (`/productor/proyectos`, `/productor/proyectos/[id]`, `/productor/perfil`, `/productor/documentacion`, `/colaborador/perfil`, `/admin/proyectos/[id]`) redirigen a las nuevas.
 - La cola de validación (`/admin`) no se enlaza desde la portada.

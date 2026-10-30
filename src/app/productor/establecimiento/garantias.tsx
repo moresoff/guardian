@@ -130,7 +130,7 @@ export function Garantias({ garantias }: { garantias: GarantiaEnPantalla[] }) {
                             <span key={p.id}>
                               {i > 0 ? " y " : ""}
                               <Link
-                                href={`/productor/proyectos/${p.id}`}
+                                href={`/proyectos/${p.id}`}
                                 className="underline underline-offset-2 hover:text-marca"
                               >
                                 {p.titulo}

@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { EstadoProyectoBadge } from "@/components/estados";
 import { Aviso, Badge, Panel, Vacio } from "@/components/ui/primitivos";
+import { RevisionProyecto } from "./revision";
 import {
   getDiscrepanciasDeProyecto,
   getDocumentosVigentesDeProyecto,
@@ -17,7 +18,16 @@ import {
 
 export const metadata = { title: "Cola de validación — Guardian" };
 
-export default async function AdminPage() {
+/**
+ * La cola y la revisión en una sola pantalla: elegir un proyecto lo abre debajo
+ * (`?proyecto=`), con la cola reducida a una fila para pasar de uno a otro.
+ */
+export default async function AdminPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ proyecto?: string }>;
+}) {
+  const { proyecto: elegido } = await searchParams;
   const proyectos = await getProyectosEnValidacion();
 
   const filas = await Promise.all(
@@ -36,6 +46,38 @@ export default async function AdminPage() {
       };
     }),
   );
+
+  if (elegido) {
+    return (
+      <div>
+        <nav aria-label="Cola de validación" className="mb-6 flex flex-wrap items-center gap-1.5">
+          <span className="mr-1 text-sm text-tinta-suave">Cola de validación</span>
+          {filas.map(({ proyecto }) => (
+            <Link
+              key={proyecto.id}
+              href={`/admin?proyecto=${proyecto.id}`}
+              aria-current={proyecto.id === elegido ? "page" : undefined}
+              scroll={false}
+              className={`flex min-h-11 max-w-full items-center truncate rounded-full px-4 text-sm font-medium transition-colors ${
+                proyecto.id === elegido
+                  ? "bg-marca text-marca-contraste"
+                  : "bg-superficie-2 text-tinta-suave hover:bg-borde hover:text-tinta"
+              }`}
+            >
+              {proyecto.titulo}
+            </Link>
+          ))}
+          <Link
+            href="/admin"
+            className="flex min-h-11 items-center rounded-full px-3 text-sm text-tinta-suave hover:text-marca"
+          >
+            Ver la cola completa
+          </Link>
+        </nav>
+        <RevisionProyecto id={elegido} />
+      </div>
+    );
+  }
 
   return (
     <div>
@@ -68,7 +110,7 @@ export default async function AdminPage() {
                   <div>
                     <h2 className="font-semibold">
                       <Link
-                        href={`/admin/proyectos/${proyecto.id}`}
+                        href={`/admin?proyecto=${proyecto.id}`}
                         className="hover:text-marca"
                       >
                         <span className="absolute inset-0" aria-hidden />

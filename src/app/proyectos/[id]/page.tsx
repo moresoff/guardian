@@ -7,7 +7,9 @@ import {
 } from "@/components/estados";
 import { CondicionesPanel } from "@/components/condiciones-panel";
 import { FichaPublica } from "@/components/ficha-publica";
-import { haySesion } from "@/lib/sesion";
+import { usuarioActual } from "@/lib/sesion";
+import { Pestanas } from "@/components/pestanas";
+import { GestionProyecto } from "./gestion";
 import { BloqueGarantia, DatoGarantia } from "@/components/garantia";
 import { Seguimiento } from "@/components/seguimiento";
 import {
@@ -18,6 +20,7 @@ import {
   TituloBloque,
 } from "@/components/ui/primitivos";
 import {
+  PRODUCTOR_DEMO,
   getDocumentosVigentesDeProyecto,
   getGarantia,
   getProductor,
@@ -70,10 +73,13 @@ export async function generateMetadata({
 
 export default async function FichaProyecto({
   params,
+  searchParams,
 }: {
   params: Promise<{ id: string }>;
+  searchParams: Promise<{ tab?: string }>;
 }) {
   const { id } = await params;
+  const { tab } = await searchParams;
   const proyecto = await getProyecto(id);
   if (!proyecto) notFound();
 
@@ -89,10 +95,31 @@ export default async function FichaProyecto({
   const registros = await getSeguimientoDeProyecto(proyecto.id);
 
   // Sin cuenta se ve de qué va el proyecto y nada de lo económico.
-  if (!(await haySesion())) {
+  const usuario = await usuarioActual();
+  if (!usuario) {
     return (
       <FichaPublica proyecto={proyecto} productor={productor?.nombre} documentos={documentos} />
     );
+  }
+
+  // El dueño del proyecto abre la misma dirección que el catálogo y encuentra
+  // además sus herramientas. Un borrador solo existe para él, así que no tiene
+  // «cómo lo ve el colaborador» todavía.
+  const esDueno =
+    usuario.lado === "productor" && proyecto.productorId === PRODUCTOR_DEMO;
+  const pestanasDueno =
+    esDueno && proyecto.estado !== "borrador" ? (
+      <Pestanas
+        base={`/proyectos/${proyecto.id}`}
+        activa={tab === "colaborador" ? "colaborador" : "gestion"}
+        pestanas={[
+          { clave: "gestion", titulo: "Mi proyecto" },
+          { clave: "colaborador", titulo: "Cómo lo ve el colaborador" },
+        ]}
+      />
+    ) : undefined;
+  if (esDueno && (proyecto.estado === "borrador" || tab !== "colaborador")) {
+    return <GestionProyecto proyecto={proyecto} pestanas={pestanasDueno} />;
   }
 
   /**
@@ -116,6 +143,7 @@ export default async function FichaProyecto({
 
   return (
     <div>
+      {pestanasDueno ? <div className="mb-5">{pestanasDueno}</div> : null}
       <PortadaProyecto proyecto={proyecto} productor={productor?.nombre} />
 
       <div className="mt-6 grid gap-6 lg:grid-cols-[1fr_20rem]">

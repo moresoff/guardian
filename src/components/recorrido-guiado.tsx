@@ -50,7 +50,7 @@ const PASOS: Record<Lado, Paso[]> = {
     },
     {
       titulo: "Armá tu proyecto",
-      texto: "Elegís el tipo de ciclo —feedlot puro, mixto o pastura pura— y cargás el lote: cabezas, categoría, pesos de entrada y de salida, y qué necesitás para el ciclo.",
+      texto: "Elegís el tipo de ciclo —feedlot puro, mixto o pastura pura— y cargás el lote: cabezas, categoría, peso de entrada, y qué necesitás para el ciclo.",
       href: "/productor/proyectos/nuevo",
     },
     {
