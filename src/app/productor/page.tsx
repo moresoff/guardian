@@ -175,7 +175,7 @@ export default async function ResumenProductor() {
               href="/productor/proyectos"
               className="text-sm font-medium text-marca underline underline-offset-4"
             >
-              Ver todos ({proyectos.length})
+              Ver todos
             </Link>
           </div>
 

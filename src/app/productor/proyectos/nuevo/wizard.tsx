@@ -1,6 +1,6 @@
 "use client";
 
-import Link from "next/link";
+import { ChevronDown } from "lucide-react";
 import { useMemo, useState } from "react";
 import { EnviadoAValidacion } from "@/components/enviado-a-validacion";
 import {
@@ -14,7 +14,6 @@ import {
   Boton,
   Panel,
   Progreso,
-  TituloBloque,
 } from "@/components/ui/primitivos";
 import {
   CAMPOS_FICHA,
@@ -23,12 +22,7 @@ import {
   type OpcionGarantia,
 } from "@/lib/ficha";
 import {
-  MODALIDAD_DESCRIPCION,
-  MODALIDAD_LABEL,
-  MODALIDAD_RETORNO,
   DOCUMENTO_LABEL,
-  POSESION_DESCRIPCION,
-  POSESION_LABEL,
   documentosRequeridos,
   formatArs,
   formatNum,
@@ -50,15 +44,44 @@ const idDeCampo = (clave: ClaveFicha) => `alta-${clave}`;
  * condición porque el botón tiene que poder nombrar lo que falta.
  */
 const OBLIGATORIOS: Record<number, ClaveFicha[]> = {
-  2: ["cabezas", "pesoEntradaKg", "pesoSalidaObjetivoKg"],
-  3: ["montoObjetivoArs", "plazoDias"],
+  1: ["cabezas", "pesoEntradaKg", "pesoSalidaObjetivoKg"],
+  2: ["montoObjetivoArs"],
 };
 
+/** Tres pasos, cada uno con una pregunta: qué animales, cómo y cuánto, y los papeles. */
 const PASOS = [
-  { n: 1, titulo: "Tipo de proyecto" },
-  { n: 2, titulo: "El lote" },
-  { n: 3, titulo: "Condiciones" },
-  { n: 4, titulo: "Documentación" },
+  { n: 1, titulo: "Tus animales" },
+  { n: 2, titulo: "El ciclo" },
+  { n: 3, titulo: "Documentos" },
+] as const;
+
+/** La pregunta de si los animales ya existen, en palabras del campo. Define qué papeles se piden. */
+const TENENCIA: { valor: TipoPosesion; titulo: string; descripcion: string }[] = [
+  {
+    valor: "existencia_comprobada",
+    titulo: "Sí, ya los tengo",
+    descripcion: "Los animales ya están en mi campo.",
+  },
+  {
+    valor: "promesa_inversion",
+    titulo: "No, los tengo que comprar",
+    descripcion: "Todavía no los compré.",
+  },
+  {
+    valor: "hibrido",
+    titulo: "Una parte sí y otra la compro",
+    descripcion: "Una parte ya está en mi campo y el resto lo compro.",
+  },
+];
+
+/** En qué se puede usar lo que se junta. Se elige tocando, sin escribir. */
+const USOS = [
+  "Compra de hacienda",
+  "Ración",
+  "Sanidad",
+  "Mano de obra",
+  "Sales minerales",
+  "Flete a faena",
 ] as const;
 
 /**
@@ -81,6 +104,7 @@ type Borrador = Record<ClaveFicha, string> & {
   tipoPosesion: TipoPosesion;
   sistemaProductivo: SistemaProductivo;
   tieneSeguro: boolean;
+  usos: string[];
 };
 
 const INICIAL: Borrador = {
@@ -102,6 +126,7 @@ const INICIAL: Borrador = {
   plazoCobroDias: "30",
   garantiaId: "",
   tieneSeguro: false,
+  usos: ["Ración", "Sanidad", "Mano de obra"],
 };
 
 /**
@@ -203,9 +228,6 @@ export function WizardPublicacion({ garantias }: { garantias: OpcionGarantia[] }
   const [paso, setPaso] = useState(1);
   const [b, setB] = useState<Borrador>(INICIAL);
   const [cargas, setCargas] = useState<Record<string, EstadoCarga>>({});
-  const [presupuesto, setPresupuesto] = useState<FilaPresupuesto[]>([
-    { rubro: "Alimentación", concepto: "", monto: "" },
-  ]);
 
   const set = <K extends keyof Borrador>(k: K, v: Borrador[K]) =>
     setB((prev) => ({ ...prev, [k]: v }));
@@ -216,7 +238,6 @@ export function WizardPublicacion({ garantias }: { garantias: OpcionGarantia[] }
   );
 
   const cabezasNum = Number(b.cabezas) || 0;
-
   const completos = requeridos.filter((t) => cargas[t]?.fase === "listo").length;
 
   const discrepancias = requeridos
@@ -252,6 +273,7 @@ export function WizardPublicacion({ garantias }: { garantias: OpcionGarantia[] }
       return;
     }
     setPaso((p) => p + 1);
+    window.scrollTo({ top: 0 });
   };
 
   const intentarEnviar = () => {
@@ -265,77 +287,77 @@ export function WizardPublicacion({ garantias }: { garantias: OpcionGarantia[] }
   };
 
   return (
-    <div className="grid gap-6 lg:grid-cols-[1fr_17rem]">
-      <div>
-        <Panel className="p-6">
-          {paso === 1 ? <Paso1 b={b} set={set} /> : null}
-          {paso === 2 ? <Paso2 b={b} set={set} huecos={huecos} /> : null}
-          {paso === 3 ? (
-            <Paso3
-              presupuesto={presupuesto}
-              setPresupuesto={setPresupuesto}
-              b={b}
-              set={set}
-              cabezas={cabezasNum}
-              garantias={garantias}
-              huecos={huecos}
-            />
-          ) : null}
-          {paso === 4 ? (
-            <Paso4
-              requeridos={requeridos}
-              cargas={cargas}
-              setCargas={setCargas}
-              cabezas={cabezasNum}
-              discrepancias={discrepancias}
-              posesion={b.tipoPosesion}
-            />
-          ) : null}
-        </Panel>
+    <div className="mx-auto max-w-2xl">
+      {/* Dónde estoy: una barra partida en tres y el nombre del paso. */}
+      <div className="flex gap-1.5" aria-hidden>
+        {PASOS.map((p) => (
+          <span
+            key={p.n}
+            className={`h-1.5 flex-1 rounded-full ${p.n <= paso ? "bg-marca" : "bg-borde"}`}
+          />
+        ))}
+      </div>
+      <p className="tabular mt-2 text-sm text-tinta-tenue" aria-live="polite">
+        Paso {paso} de {PASOS.length} · {PASOS[paso - 1].titulo}
+      </p>
 
-        <div className="mt-4 flex items-center justify-between gap-3">
-          <Boton
-            variante="secundario"
-            onClick={() => setPaso((p) => Math.max(1, p - 1))}
-            disabled={paso === 1}
-          >
+      <Panel className="mt-4 rounded-3xl p-6 sm:p-8">
+        {paso === 1 ? <Paso1 b={b} set={set} huecos={huecos} /> : null}
+        {paso === 2 ? (
+          <Paso2 b={b} set={set} cabezas={cabezasNum} garantias={garantias} huecos={huecos} />
+        ) : null}
+        {paso === 3 ? (
+          <Paso3
+            b={b}
+            requeridos={requeridos}
+            cargas={cargas}
+            setCargas={setCargas}
+            cabezas={cabezasNum}
+            discrepancias={discrepancias}
+          />
+        ) : null}
+      </Panel>
+
+      <div className="mt-4 flex items-center justify-between gap-3">
+        {paso > 1 ? (
+          <Boton variante="secundario" onClick={() => setPaso((p) => p - 1)}>
             Atrás
           </Boton>
-
-          <p className="text-sm text-tinta-tenue">Paso {paso} de 4</p>
-
-          {paso < 4 ? (
-            <Boton onClick={intentarAvanzar}>Continuar</Boton>
-          ) : (
-            <Boton onClick={intentarEnviar}>Enviar a validación</Boton>
-          )}
-        </div>
-
-        {huecos.length > 0 ? (
-          <p className="mt-3 text-right text-sm text-alerta">
-            {huecos.length === 1
-              ? "Falta un dato: "
-              : `Faltan ${huecos.length} datos: `}
-            {huecos
-              .map((c) => CAMPOS_FICHA.find((x) => x.clave === c)?.etiqueta ?? c)
-              .join(", ")}
-            .
-          </p>
-        ) : null}
-
-        {paso === 4 && faltanDocs ? (
-          <p className="mt-3 text-right text-sm text-alerta">
-            Faltan {requeridos.length - completos} de {requeridos.length} comprobantes
-            obligatorios.
-          </p>
-        ) : null}
-
-        {paso === 4 && discrepancias.length > 0 ? (
-          <p className="mt-3 text-right text-sm text-alerta">
-            Resolvé las discrepancias antes de enviar el proyecto.
-          </p>
-        ) : null}
+        ) : (
+          <span />
+        )}
+        {paso < PASOS.length ? (
+          <Boton onClick={intentarAvanzar}>Continuar</Boton>
+        ) : (
+          <Boton onClick={intentarEnviar}>Enviar a validación</Boton>
+        )}
       </div>
+
+      {huecos.length > 0 ? (
+        <p className="mt-3 text-right text-sm text-alerta" role="alert">
+          {huecos.length === 1 ? "Falta un dato: " : `Faltan ${huecos.length} datos: `}
+          {huecos
+            .map((c) => CAMPOS_FICHA.find((x) => x.clave === c)?.etiqueta ?? c)
+            .join(", ")}
+          .
+        </p>
+      ) : null}
+
+      {paso === 3 && faltanDocs ? (
+        <p className="mt-3 text-right text-sm text-alerta" role="alert">
+          Faltan {requeridos.length - completos} de {requeridos.length} documentos.
+        </p>
+      ) : null}
+
+      {paso === 3 && discrepancias.length > 0 ? (
+        <p className="mt-3 text-right text-sm text-alerta" role="alert">
+          Resolvé las diferencias antes de enviar el proyecto.
+        </p>
+      ) : null}
+
+      <p className="mt-6 text-center text-sm text-tinta-tenue">
+        Lo que cargás se guarda como borrador. Podés dejarlo por la mitad y seguir después.
+      </p>
 
       <EnviadoAValidacion
         abierto={enviado}
@@ -343,108 +365,13 @@ export function WizardPublicacion({ garantias }: { garantias: OpcionGarantia[] }
         documentos={completos}
         onCerrar={() => setEnviado(false)}
       />
-
-      <aside className="lg:sticky lg:top-20 lg:self-start">
-        <Panel className="p-5">
-          <ol className="space-y-3">
-            {PASOS.map((p) => {
-              const actual = p.n === paso;
-              const hecho = p.n < paso;
-              return (
-                <li key={p.n} className="flex items-center gap-3">
-                  <span
-                    className={`grid size-6 shrink-0 place-items-center rounded-full text-sm font-medium ${
-                      actual
-                        ? "bg-marca text-marca-contraste"
-                        : hecho
-                          ? "bg-marca-suave text-marca"
-                          : "bg-superficie-2 text-tinta-tenue"
-                    }`}
-                  >
-                    {hecho ? "✓" : p.n}
-                  </span>
-                  <span
-                    className={`text-sm ${actual ? "font-medium" : "text-tinta-suave"}`}
-                  >
-                    {p.titulo}
-                  </span>
-                </li>
-              );
-            })}
-          </ol>
-
-          <div className="mt-5 border-t border-borde pt-4">
-            <p className="text-sm text-tinta-tenue">
-              El borrador se guarda en cada paso. Podés dejarlo por la mitad y seguir
-              después.
-            </p>
-          </div>
-        </Panel>
-      </aside>
     </div>
   );
 }
 
-/* ---------- Paso 1 ---------- */
+/* ---------- Paso 1: los animales ---------- */
 
 function Paso1({
-  b,
-  set,
-}: {
-  b: Borrador;
-  set: <K extends keyof Borrador>(k: K, v: Borrador[K]) => void;
-}) {
-  return (
-    <div className="space-y-8">
-      <div>
-        <TituloBloque descripcion="Los aportes cubren el proceso productivo de engorde: la hacienda, si todavía hay que comprarla, y los gastos del ciclo.">
-          Qué cubre el proyecto
-        </TituloBloque>
-        <div className="rounded-xl border border-borde bg-superficie p-4">
-          <p className="text-sm font-medium">{MODALIDAD_LABEL.compra_engorde}</p>
-          <p className="mt-1 text-sm text-tinta-suave">
-            {MODALIDAD_DESCRIPCION.compra_engorde}
-          </p>
-        </div>
-        {/* Lo que va a recibir el colaborador, a la vista de quien publica. */}
-        <div className="mt-4 rounded-xl border border-borde bg-superficie-2 p-4">
-          <p className="text-sm font-medium">Qué va a recibir el colaborador</p>
-          <p className="mt-1 text-sm text-tinta-suave">{MODALIDAD_RETORNO[b.modalidad]}</p>
-        </div>
-      </div>
-
-      <div>
-        <TituloBloque descripcion="Define qué documentación se te va a pedir. Elegí según el estado real de los animales.">
-          ¿Ya tenés la hacienda?
-        </TituloBloque>
-        <GrupoOpciones
-          etiqueta="¿Ya tenés la hacienda?"
-          valor={b.tipoPosesion}
-          onCambio={(v) => set("tipoPosesion", v)}
-          opciones={(Object.keys(POSESION_LABEL) as TipoPosesion[]).map((t) => ({
-            valor: t,
-            titulo: POSESION_LABEL[t],
-            descripcion: POSESION_DESCRIPCION[t],
-          }))}
-        />
-
-        <div className="mt-4">
-          <Aviso titulo="Documentación que se te va a pedir">
-            <ul className="mt-1 list-inside list-disc">
-              {documentosRequeridos(b.tipoPosesion).map((t) => (
-                <li key={t}>{DOCUMENTO_LABEL[t]}</li>
-              ))}
-            </ul>
-          </Aviso>
-        </div>
-      </div>
-    </div>
-  );
-}
-
-/* ---------- Paso 2 ---------- */
-
-function Paso2({
   b,
   set,
   huecos,
@@ -458,68 +385,68 @@ function Paso2({
   const ganancia = salida - entrada;
 
   return (
-    <div className="space-y-6">
-      <TituloBloque descripcion="Los animales que entran al ciclo y hasta dónde los querés llevar.">
-        El lote
-      </TituloBloque>
+    <div className="space-y-8">
+      <div>
+        <h2 className="text-2xl font-semibold tracking-tight">¿Qué animales vas a engordar?</h2>
+        <p className="mt-1.5 text-tinta-suave">
+          Contanos cuántos son y cuánto pesan hoy. Después lo comparamos con tus papeles.
+        </p>
+        <div className="mt-5 grid gap-5 sm:grid-cols-2">
+          <CamposDeFicha grupo="El lote" b={b} set={set} huecos={huecos} />
+        </div>
 
-      <div className="grid gap-5 sm:grid-cols-2">
-        <CamposDeFicha grupo="El lote" b={b} set={set} huecos={huecos} />
+        {ganancia > 0 ? (
+          <div className="mt-4">
+            <Aviso tono="marca">
+              Cada animal tiene que ganar{" "}
+              <strong className="font-medium text-tinta">{ganancia} kg</strong>
+              {Number(b.cabezas) > 0 ? (
+                <>
+                  , unos{" "}
+                  <strong className="font-medium text-tinta">
+                    {formatNum(ganancia * Number(b.cabezas))} kg
+                  </strong>{" "}
+                  en todo el lote
+                </>
+              ) : null}
+              .
+            </Aviso>
+          </div>
+        ) : null}
+        {ganancia < 0 ? (
+          <div className="mt-4">
+            <Aviso tono="error">El peso final es menor al de entrada. Revisá los números.</Aviso>
+          </div>
+        ) : null}
       </div>
 
       <div>
-        <TituloBloque descripcion="Define el plazo y cómo se reparte el resultado entre el productor y los colaboradores.">
-          Tipo de ciclo
-        </TituloBloque>
-        <GrupoOpciones
-          etiqueta="Tipo de ciclo"
-          valor={b.sistemaProductivo}
-          onCambio={(v) => {
-            set("sistemaProductivo", v);
-            set("plazoDias", String(CICLOS[v].plazoDias));
-          }}
-          opciones={SISTEMAS_EN_ORDEN.map((k) => ({
-            valor: k,
-            titulo: `${CICLOS[k].nombre} · ${CICLOS[k].plazoDias} días`,
-            descripcion: `${CICLOS[k].descripcion} El productor se queda con el ${formatPct(CICLOS[k].productorPct)} del resultado y los colaboradores con el ${formatPct(CICLOS[k].colaboradoresPct)}. Rentabilidad anual estimada para el productor: ${formatPct(CICLOS[k].rentabilidadAnualProductorPct)}.`,
-          }))}
-        />
+        <h3 className="text-lg font-semibold tracking-tight">¿Los animales ya son tuyos?</h3>
+        <p className="mt-1 text-sm text-tinta-suave">
+          Según eso te pedimos unos papeles u otros.
+        </p>
+        <div className="mt-3">
+          <GrupoOpciones
+            etiqueta="¿Los animales ya son tuyos?"
+            valor={b.tipoPosesion}
+            onCambio={(v) => set("tipoPosesion", v)}
+            opciones={TENENCIA}
+          />
+        </div>
       </div>
-
-      {ganancia > 0 ? (
-        <Aviso tono="marca">
-          Ganancia de peso objetivo:{" "}
-          <strong className="font-medium text-tinta">{ganancia} kg por cabeza</strong>, es
-          decir{" "}
-          <strong className="font-medium text-tinta">
-            {formatNum(ganancia * (Number(b.cabezas) || 0))} kg
-          </strong>{" "}
-          en todo el lote.
-        </Aviso>
-      ) : null}
-
-      {ganancia < 0 ? (
-        <Aviso tono="error">
-          El peso objetivo es menor al de entrada. Revisá los valores.
-        </Aviso>
-      ) : null}
     </div>
   );
 }
 
-/* ---------- Paso 3 ---------- */
+/* ---------- Paso 2: el ciclo y lo que necesitás ---------- */
 
-function Paso3({
+function Paso2({
   b,
   set,
   cabezas,
   garantias,
   huecos,
-  presupuesto,
-  setPresupuesto,
 }: {
-  presupuesto: FilaPresupuesto[];
-  setPresupuesto: (f: FilaPresupuesto[]) => void;
   b: Borrador;
   set: <K extends keyof Borrador>(k: K, v: Borrador[K]) => void;
   cabezas: number;
@@ -530,140 +457,202 @@ function Paso3({
   const porCabeza = cabezas > 0 ? monto / cabezas : 0;
   const comprando = b.tipoPosesion !== "existencia_comprobada";
 
+  const alternar = (uso: string) =>
+    set("usos", b.usos.includes(uso) ? b.usos.filter((u) => u !== uso) : [...b.usos, uso]);
+
   return (
-    <div className="space-y-6">
-      <TituloBloque descripcion="Cuánto capital pedís, por cuánto tiempo y qué lo respalda.">
-        Condiciones
-      </TituloBloque>
-
-      <div className="grid gap-5 sm:grid-cols-2">
-        <CamposDeFicha
-          grupo="Condiciones"
-          b={b}
-          set={set}
-          garantias={garantias}
-          huecos={huecos}
-        />
-      </div>
-
-      {/* Si el lote todavía hay que comprarlo, hay que saber a quién se le compra y
-          dónde entra la hacienda; si ya es del productor, a quién se le pagan los
-          insumos del ciclo. */}
+    <div className="space-y-8">
       <div>
-        <TituloBloque
-          descripcion={
-            comprando
-              ? "A quién le comprás y dónde entra la hacienda."
-              : "A quién se le pagan la ración, la sanidad y los servicios del ciclo."
-          }
-        >
-          {comprando ? "La compra" : "Los proveedores"}
-        </TituloBloque>
-        <div className="grid gap-5 sm:grid-cols-2">
-          {comprando ? (
-            <>
-              <Campo
-                etiqueta="Vendedor"
-                ayuda="Quién vende la hacienda."
-                value={b.vendedor}
-                onChange={(e) => set("vendedor", e.target.value)}
-              />
-              <Campo
-                etiqueta="Establecimiento receptor"
-                ayuda="Dónde entra el lote."
-                value={b.establecimientoReceptor}
-                onChange={(e) => set("establecimientoReceptor", e.target.value)}
-              />
-            </>
-          ) : (
-            <Campo
-              etiqueta="Proveedores principales"
-              ayuda="A quién se le compra la ración, la sanidad o el servicio."
-              value={b.proveedores}
-              onChange={(e) => set("proveedores", e.target.value)}
-            />
-          )}
-          <Seleccion
-            etiqueta="Calendario de desembolsos"
-            opciones={["Por hito", "Mensual", "Todo al inicio"]}
-            value={b.calendario}
-            onChange={(e) => set("calendario", e.target.value)}
+        <h2 className="text-2xl font-semibold tracking-tight">¿Cómo los vas a engordar?</h2>
+        <p className="mt-1.5 text-tinta-suave">
+          Elegí el tipo de ciclo. Define cuánto dura y cómo se reparte el resultado.
+        </p>
+        <div className="mt-4">
+          <GrupoOpciones
+            etiqueta="Tipo de ciclo"
+            valor={b.sistemaProductivo}
+            onCambio={(v) => {
+              set("sistemaProductivo", v);
+              set("plazoDias", String(CICLOS[v].plazoDias));
+            }}
+            opciones={SISTEMAS_EN_ORDEN.map((k) => ({
+              valor: k,
+              titulo: `${CICLOS[k].nombre} · ${CICLOS[k].plazoDias} días`,
+              descripcion: `${CICLOS[k].descripcion} Reparto: productor ${formatPct(CICLOS[k].productorPct)}, colaboradores ${formatPct(CICLOS[k].colaboradoresPct)}. Rentabilidad anual estimada para el productor: ${formatPct(CICLOS[k].rentabilidadAnualProductorPct)}.`,
+            }))}
           />
         </div>
       </div>
 
-      <PresupuestoEditor
-        filas={presupuesto}
-        onCambio={setPresupuesto}
-        objetivo={Number(b.montoObjetivoArs) || 0}
-      />
+      <div>
+        <h3 className="text-lg font-semibold tracking-tight">¿Cuánto necesitás para el ciclo?</h3>
+        <div className="mt-3 max-w-xs">
+          <Campo
+            id={idDeCampo("montoObjetivoArs")}
+            etiqueta="Monto en pesos"
+            inputMode="numeric"
+            className="tabular"
+            placeholder="Por ejemplo, 45000000…"
+            error={huecos.includes("montoObjetivoArs") ? "Falta completar este dato." : undefined}
+            value={b.montoObjetivoArs}
+            onChange={(e) => set("montoObjetivoArs", e.target.value)}
+          />
+        </div>
+        {porCabeza > 0 ? (
+          <p className="mt-2 text-sm text-tinta-suave">
+            Son unos{" "}
+            <strong className="font-medium text-tinta">{formatArs(Math.round(porCabeza))}</strong>{" "}
+            por animal.
+          </p>
+        ) : null}
+      </div>
 
-      <Aviso titulo="La garantía no es la documentación del lote">
-        Los documentos muestran qué hay; la garantía es lo que se ejecuta si el ciclo no
-        se cumple. Se configura una vez en{" "}
-        <Link href="/productor/documentacion#garantias" className="font-medium text-marca">
-          Mi documentación
-        </Link>
-        .
-      </Aviso>
+      <div>
+        <h3 className="text-lg font-semibold tracking-tight">¿En qué lo vas a usar?</h3>
+        <p className="mt-1 text-sm text-tinta-suave">Tocá todo lo que corresponda.</p>
+        <ul className="mt-3 flex flex-wrap gap-2" aria-label="En qué se usa">
+          {USOS.map((u) => {
+            const activo = b.usos.includes(u);
+            return (
+              <li key={u}>
+                <button
+                  type="button"
+                  aria-pressed={activo}
+                  onClick={() => alternar(u)}
+                  className={`min-h-11 rounded-full border px-4 text-sm font-medium transition-colors ${
+                    activo
+                      ? "border-marca bg-marca text-marca-contraste"
+                      : "border-borde-fuerte bg-superficie text-tinta hover:border-marca hover:bg-marca-suave"
+                  }`}
+                >
+                  {u}
+                </button>
+              </li>
+            );
+          })}
+        </ul>
+        <div className="mt-4">
+          <CampoLargo
+            etiqueta="Algo más que quieras contar (opcional)"
+            value={b.destinoDetalle}
+            onChange={(e) => set("destinoDetalle", e.target.value)}
+          />
+        </div>
+      </div>
 
-      <label className="flex items-start gap-3">
-        <input
-          type="checkbox"
-          checked={b.tieneSeguro}
-          onChange={(e) => set("tieneSeguro", e.target.checked)}
-          className="mt-0.5 size-4 accent-[var(--marca)]"
-        />
-        <span className="text-sm">Tengo seguro de mortandad sobre el lote</span>
-      </label>
-
-      {porCabeza > 0 ? (
-        <Aviso tono="marca">
-          Estás pidiendo{" "}
-          <strong className="font-medium text-tinta">
-            {formatArs(Math.round(porCabeza))} por cabeza
-          </strong>{" "}
-          sobre {formatNum(cabezas)} cabezas.
-        </Aviso>
-      ) : null}
-
-      <Aviso>
-        Lo que cargues se le muestra al colaborador como proyección tuya, no como un retorno
-        garantizado.
-      </Aviso>
+      <details className="group rounded-2xl border border-borde p-4">
+        <summary className="flex min-h-11 cursor-pointer list-none items-center justify-between text-sm font-medium text-tinta-suave [&::-webkit-details-marker]:hidden">
+          Más opciones (opcional)
+          <ChevronDown
+            className="size-5 transition-transform group-open:rotate-180"
+            strokeWidth={1.75}
+            aria-hidden
+          />
+        </summary>
+        <div className="mt-4 space-y-5">
+          <div className="grid gap-5 sm:grid-cols-2">
+            {comprando ? (
+              <>
+                <Campo
+                  etiqueta="¿Quién te vende la hacienda?"
+                  value={b.vendedor}
+                  onChange={(e) => set("vendedor", e.target.value)}
+                />
+                <Campo
+                  etiqueta="¿A qué campo entra el lote?"
+                  value={b.establecimientoReceptor}
+                  onChange={(e) => set("establecimientoReceptor", e.target.value)}
+                />
+              </>
+            ) : (
+              <Campo
+                etiqueta="¿A quién le comprás ración y sanidad?"
+                value={b.proveedores}
+                onChange={(e) => set("proveedores", e.target.value)}
+              />
+            )}
+            {garantias.length > 0 ? (
+              <Seleccion
+                etiqueta="Garantía que ofrecés"
+                opciones={[
+                  { valor: "", label: "Ninguna por ahora" },
+                  ...garantias.map((g) => ({
+                    valor: g.id,
+                    label: g.disponible ? g.label : `${g.label} — sin cupo`,
+                    disabled: !g.disponible,
+                  })),
+                ]}
+                value={b.garantiaId}
+                onChange={(e) => set("garantiaId", e.target.value)}
+              />
+            ) : null}
+          </div>
+          <label className="flex items-start gap-3">
+            <input
+              type="checkbox"
+              checked={b.tieneSeguro}
+              onChange={(e) => set("tieneSeguro", e.target.checked)}
+              className="mt-0.5 size-4 accent-[var(--marca)]"
+            />
+            <span className="text-sm">Tengo seguro de mortandad sobre el lote</span>
+          </label>
+        </div>
+      </details>
     </div>
   );
 }
 
-/* ---------- Paso 4 ---------- */
+/* ---------- Paso 3: los papeles ---------- */
 
-function Paso4({
+function Paso3({
+  b,
   requeridos,
   cargas,
   setCargas,
   cabezas,
   discrepancias,
-  posesion,
 }: {
+  b: Borrador;
   requeridos: TipoDocumento[];
   cargas: Record<string, EstadoCarga>;
   setCargas: React.Dispatch<React.SetStateAction<Record<string, EstadoCarga>>>;
   cabezas: number;
   discrepancias: { tipo: TipoDocumento; declarado: number; extraido: number }[];
-  posesion: TipoPosesion;
 }) {
   const listos = requeridos.filter((t) => cargas[t]?.fase === "listo").length;
   const pct = Math.round((listos / requeridos.length) * 100);
 
   return (
     <div id="documentacion-alta" className="scroll-mt-24 space-y-6">
-      <TituloBloque
-        descripcion={`Lo que se pide por haber declarado "${POSESION_LABEL[
-          posesion
-        ].toLowerCase()}". Cada archivo se lee al subirlo.`}
-      >
-        Documentación
-      </TituloBloque>
+      <div>
+        <h2 className="text-2xl font-semibold tracking-tight">Subí tus papeles</h2>
+        <p className="mt-1.5 text-tinta-suave">
+          Los leemos al subirlos y los comparamos con lo que cargaste. Si ya los subiste antes,
+          no hace falta repetirlos.
+        </p>
+      </div>
+
+      {/* Un resumen corto de lo que se va a enviar, para revisar antes de mandar. */}
+      <dl className="grid grid-cols-2 gap-x-4 gap-y-3 rounded-2xl bg-superficie-2 p-4 sm:grid-cols-4">
+        <div>
+          <dt className="text-sm text-tinta-tenue">Animales</dt>
+          <dd className="font-semibold">
+            {formatNum(cabezas)} {b.categoria.toLowerCase()}s
+          </dd>
+        </div>
+        <div>
+          <dt className="text-sm text-tinta-tenue">Ciclo</dt>
+          <dd className="font-semibold">{CICLOS[b.sistemaProductivo].nombre}</dd>
+        </div>
+        <div>
+          <dt className="text-sm text-tinta-tenue">Duración</dt>
+          <dd className="font-semibold">{b.plazoDias} días</dd>
+        </div>
+        <div>
+          <dt className="text-sm text-tinta-tenue">Monto</dt>
+          <dd className="tabular font-semibold">{formatArs(Number(b.montoObjetivoArs) || 0)}</dd>
+        </div>
+      </dl>
 
       <div>
         <div className="mb-2 flex items-baseline justify-between text-sm">
@@ -672,7 +661,7 @@ function Paso4({
           </span>
           <span className="tabular text-tinta-tenue">{pct} %</span>
         </div>
-        <Progreso valor={pct} label="Documentación cargada" />
+        <Progreso valor={pct} label="Documentos cargados" />
       </div>
 
       <div className="space-y-4">
@@ -695,136 +684,24 @@ function Paso4({
         <Aviso
           tono="alerta"
           titulo={`${discrepancias.length} ${
-            discrepancias.length === 1 ? "discrepancia" : "discrepancias"
-          } entre lo declarado y la documentación`}
+            discrepancias.length === 1 ? "diferencia" : "diferencias"
+          } entre lo que cargaste y tus papeles`}
         >
           <ul className="mt-1 space-y-1">
             {discrepancias.map((d) => (
               <li key={d.tipo}>
-                <strong className="font-medium text-tinta">
-                  {DOCUMENTO_LABEL[d.tipo]}
-                </strong>
-                : declaraste {formatNum(d.declarado)} cabezas y el documento ampara{" "}
+                <strong className="font-medium text-tinta">{DOCUMENTO_LABEL[d.tipo]}</strong>:
+                cargaste {formatNum(d.declarado)} cabezas y el documento ampara{" "}
                 {formatNum(d.extraido)}.
               </li>
             ))}
           </ul>
           <p className="mt-2">
-            Corregí la cantidad en el paso 2 o subí el documento del lote completo.
+            Corregí la cantidad en el paso 1 o subí el documento del lote completo.
           </p>
         </Aviso>
       ) : null}
-
-      <Aviso>
-        Que las cifras cierren no prueba que el documento sea auténtico: eso se verifica
-        después, contra el organismo emisor.
-      </Aviso>
     </div>
   );
 }
 
-/**
- * El presupuesto por rubro, en el alta.
- *
- * Es una lista de filas y no un texto libre porque después cada factura se
- * imputa contra un rubro: escrito en prosa no se puede comparar contra nada. La
- * suma se controla contra el monto pedido y lo dice cuando no cierra, que es el
- * error más frecuente al cargar.
- */
-export interface FilaPresupuesto {
-  rubro: string;
-  concepto: string;
-  monto: string;
-}
-
-const RUBROS = [
-  "Hacienda",
-  "Alimentación",
-  "Sanidad",
-  "Corral",
-  "Flete",
-  "Mano de obra",
-  "Otro",
-];
-
-function PresupuestoEditor({
-  filas,
-  onCambio,
-  objetivo,
-}: {
-  filas: FilaPresupuesto[];
-  onCambio: (f: FilaPresupuesto[]) => void;
-  objetivo: number;
-}) {
-  const total = filas.reduce((a, f) => a + (Number(f.monto) || 0), 0);
-  const diferencia = objetivo - total;
-
-  const actualizar = (i: number, campo: keyof FilaPresupuesto, valor: string) =>
-    onCambio(filas.map((f, j) => (i === j ? { ...f, [campo]: valor } : f)));
-
-  return (
-    <div>
-      <TituloBloque descripcion="En qué se gasta el capital. Cada rubro es contra lo que después se rinde una factura.">
-        Presupuesto por rubro
-      </TituloBloque>
-
-      <ul className="space-y-3">
-        {filas.map((fila, i) => (
-          <li key={i} className="rounded-xl border border-borde p-4">
-            <div className="grid gap-4 sm:grid-cols-[10rem_minmax(0,1fr)_9rem_auto] sm:items-end">
-              <Seleccion
-                etiqueta="Rubro"
-                opciones={RUBROS}
-                value={fila.rubro}
-                onChange={(e) => actualizar(i, "rubro", e.target.value)}
-              />
-              <Campo
-                etiqueta="Concepto"
-                value={fila.concepto}
-                onChange={(e) => actualizar(i, "concepto", e.target.value)}
-              />
-              <Campo
-                etiqueta="Monto, en pesos"
-                inputMode="numeric"
-                className="tabular"
-                value={fila.monto}
-                onChange={(e) => actualizar(i, "monto", e.target.value)}
-              />
-              <Boton
-                variante="sutil"
-                onClick={() => onCambio(filas.filter((_, j) => j !== i))}
-                aria-label={`Quitar el rubro ${fila.rubro}`}
-              >
-                Quitar
-              </Boton>
-            </div>
-          </li>
-        ))}
-      </ul>
-
-      <div className="mt-4 flex flex-wrap items-center justify-between gap-3">
-        <Boton
-          variante="secundario"
-          onClick={() =>
-            onCambio([...filas, { rubro: "Alimentación", concepto: "", monto: "" }])
-          }
-        >
-          Agregar rubro
-        </Boton>
-        <p className="tabular text-sm">
-          Suma {formatArs(total)} de {formatArs(objetivo)}
-        </p>
-      </div>
-
-      {objetivo > 0 && diferencia !== 0 && filas.length > 0 ? (
-        <div className="mt-3">
-          <Aviso tono="alerta">
-            {diferencia > 0
-              ? `Faltan ${formatArs(diferencia)} por asignar a un rubro.`
-              : `El presupuesto se pasa ${formatArs(-diferencia)} del monto que pedís.`}
-          </Aviso>
-        </div>
-      ) : null}
-    </div>
-  );
-}

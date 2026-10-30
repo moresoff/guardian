@@ -23,11 +23,10 @@ export default async function NuevoProyectoPage() {
         ← Volver a mis proyectos
       </Link>
 
-      <div className="mt-3 mb-6">
-        <h1 className="text-2xl font-semibold tracking-tight">Publicar un proyecto</h1>
-        <p className="mt-1.5 max-w-2xl text-sm text-tinta-suave">
-          Describí el ciclo de engorde y el capital que necesitás. Guardian valida la
-          documentación antes de que el proyecto quede visible para los colaboradores.
+      <div className="mx-auto mt-3 mb-6 max-w-2xl">
+        <h1 className="text-3xl font-semibold tracking-tight">Publicar un proyecto</h1>
+        <p className="mt-1.5 text-tinta-suave">
+          Tres pasos cortos. Antes de que se vea, Guardian revisa tus papeles.
         </p>
       </div>
 
