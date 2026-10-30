@@ -2,4 +2,4 @@
 
 # Vocabulario de la interfaz
 
-En todo texto que ve una persona (pantallas, metadatos, avisos, recorrido) se habla de **colaborar y participar**, nunca de financiar ni de financiamiento. No se nombra el fideicomiso ordinario, la serie ni el fiduciario fuera de la ficha de cada proyecto: es un instrumento privado y la interfaz no compromete a Guardian con él. El detalle y la lista de palabras están en `.claude/skills/diseno-guardian/SKILL.md`.
+Restricción legal: Guardian no hace oferta pública. En todo texto abierto (portada, registro, metadatos, avisos, recorrido) se habla de **colaborar y participar**. Nunca: invertir/inversión/inversor, rentabilidad/rendimiento/retorno/tasa/interés, garantizado/sin riesgo, títulos/cuotapartes/valores, financiar/financiamiento. Tampoco montos mínimos, plazos ni retornos proyectados, ni nombrar el fideicomiso ordinario, la serie o el fiduciario fuera de la ficha de cada proyecto. Sí se puede describir el proyecto, dar un canal de contacto genérico y decir "consultá por modalidades de participación". La lista completa está en `.claude/skills/diseno-guardian/SKILL.md`.

@@ -8,15 +8,31 @@ user-invocable: true
 
 Guardian financia ciclos de engorde: un productor publica el capital que necesita para el proceso productivo de engorde y un grupo de inversores lo pone. Las dos puntas miran las mismas cifras y las dos tienen dinero de por medio.
 
-## Vocabulario: participar, no financiar
+## Vocabulario: participar, no financiar ni invertir
 
-Guardian conecta personas que colaboran con productores. Nada de lo que se escribe en la interfaz, en los metadatos ni en los avisos puede sonar a que Guardian presta, financia o administra un patrimonio, ni comprometer a Guardian con una estructura legal. El fideicomiso ordinario es un instrumento privado entre las partes: no es parte del mensaje de producto.
+Guardian conecta personas que colaboran con productores. El fideicomiso ordinario es un instrumento privado entre las partes: la comunicación abierta (portada, registro, metadatos, avisos, recorrido, cualquier pantalla que se vea sin cuenta) no puede sonar a oferta pública de valores ni a promesa de retorno. Es una restricción legal, no de estilo.
 
-- **Se usa:** colaborar, colaboración, participar, participación, aporte, aportar, proyecto, ciclo, resultado, reparto, tipo de ciclo.
-- **No se usa:** financiar, financiamiento, financiero, capital de trabajo, préstamo, crédito (salvo "sin carpeta de crédito" para decir que no se pide), inversión garantizada, rendimiento asegurado.
-- **No se nombra** el fideicomiso ordinario, la serie, el fiduciario ni el patrimonio separado en portada, registro, recorrido, avisos ni metadatos. Si un dato del contrato tiene que mostrarse, vive en la ficha del proyecto y se dice como lo dice el contrato, sin prometer nada por encima de él.
-- Para el destino del dinero: "la cuenta del proyecto", no "la cuenta del fideicomiso".
-- Nadie garantiza el resultado: lo fija el romaneo y puede ser menor al proyectado.
+**Palabras que no se usan en comunicación abierta**
+
+- *Inversión y rendimiento:* invertir, inversión, inversor, "sumate como inversor", rentabilidad, rendimiento, retorno, ganancia asegurada, renta fija, interés, tasa, TNA, TEA, "% mensual/anual", garantizado, sin riesgo, seguro (como promesa).
+- *Valores:* títulos, certificados de participación, valores fiduciarios, cuotapartes, acciones, bonos, cotiza, mercado, liquidez.
+- *Financiar:* financiar, financiamiento, capital de trabajo, préstamo, crédito.
+- *Marco legal:* decir "fideicomiso autorizado" o "regulado" sin que lo esté (puede ser publicidad engañosa). No se nombra el fideicomiso, la serie, el fiduciario ni el patrimonio separado fuera de la ficha del proyecto.
+
+**Planteos que también cuentan como oferta**
+
+- Invitar a "aportar capital" a cualquiera que vea el aviso.
+- Mostrar montos mínimos de ingreso.
+- Dar plazos y retornos proyectados, o porcentajes de reparto.
+
+**Lo que sí se hace en comunicación abierta**
+
+- Describir el proyecto: qué es, dónde, de qué tipo, en qué etapas, con qué documentación.
+- Dar un canal de contacto genérico, sin montos ni condiciones económicas.
+- Decir "consultá por modalidades de participación".
+- Se usa: colaborar, colaboración, participar, participación, aporte (solo dentro de la cuenta), proyecto, ciclo, tipo de ciclo.
+
+Las condiciones económicas de un proyecto (montos, mínimos, plazos, reparto) viven en la ficha, para quien tiene cuenta, y siempre dicen que el resultado depende de la venta y puede ser distinto de lo esperado.
 
 ## Las tres reglas que mandan sobre todo lo demás
 

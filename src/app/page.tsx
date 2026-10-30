@@ -1,11 +1,10 @@
 import Image from "next/image";
 import Link from "next/link";
 import { LineaDeTiempo, type Etapa } from "@/components/linea-tiempo";
-import { ProyectoCard } from "@/components/proyecto-card";
 import { Resenas, type Resena } from "@/components/resenas";
 import { BotonLink, Panel } from "@/components/ui/primitivos";
 import { getProyecto, getProyectosPublicos } from "@/lib/data";
-import { formatNum, formatPct, modalidadLabel } from "@/lib/format";
+import { SISTEMA_LABEL, formatNum, modalidadLabel } from "@/lib/format";
 import { buscarImagen } from "@/lib/imagenes";
 import { CICLOS, SISTEMAS_EN_ORDEN } from "@/lib/ciclos";
 
@@ -32,15 +31,15 @@ const PUERTAS = [
     rotulo: "Productor",
     titulo: "Quiero publicar un ciclo",
     texto:
-      "Publicá el ciclo con la documentación que ya emitís y recibí colaboraciones, sin carpeta de crédito.",
+      "Publicá el ciclo con la documentación que ya emitís y sumá colaboradores, sin armar carpeta.",
     accion: "Entrar como productor",
   },
   {
     href: "/registro?lado=colaborador",
     rotulo: "Colaborador",
-    titulo: "Quiero participar en un ciclo",
+    titulo: "Quiero colaborar con un ciclo",
     texto:
-      "Participá en un lote concreto, con nombre y RENSPA, y seguí el ciclo hasta la faena.",
+      "Conocé un lote concreto, con nombre y RENSPA, y seguí el ciclo hasta la faena.",
     accion: "Entrar como colaborador",
   },
 ];
@@ -55,7 +54,7 @@ const ANTES_DE_PARTICIPAR = [
   {
     titulo: "El resultado sale de la venta",
     texto:
-      "Guardian conecta y verifica la documentación. Nadie garantiza el resultado: lo fija el romaneo del frigorífico y puede ser menor al proyectado.",
+      "Guardian conecta y verifica la documentación. El resultado depende de la venta del lote: lo fija el romaneo del frigorífico y puede ser distinto de lo esperado.",
   },
   {
     titulo: "Cada proyecto va por separado",
@@ -75,7 +74,7 @@ const ETAPAS: Etapa[] = [
     titulo: "Publicación",
     duracion: "Minutos",
     detalle:
-      "El productor declara el ciclo: cuántas cabezas, de qué categoría, con qué peso entran y con cuál salen, cuánto capital necesita y en cuántos días lo devuelve.",
+      "El productor declara el ciclo: cuántas cabezas, de qué categoría, con qué peso entran y con cuál salen, qué tipo de ciclo es y qué necesita para llevarlo adelante.",
   },
   {
     n: "Etapa 02",
@@ -94,16 +93,16 @@ const ETAPAS: Etapa[] = [
   {
     n: "Etapa 04",
     titulo: "Colaboración",
-    duracion: "Hasta completar el monto",
+    duracion: "Mientras el proyecto está abierto",
     detalle:
-      "El proyecto queda visible en el catálogo y los colaboradores participan con su aporte. Cuando se completa el monto, los fondos se liberan según el estado de la hacienda: de una vez si el lote ya existe, por tramos si todavía hay que comprarlo.",
+      "El proyecto queda visible y los colaboradores se suman. Cuando está completo, lo necesario para el ciclo se libera según el estado de la hacienda: de una vez si el lote ya existe, por tramos si todavía hay que comprarlo.",
   },
   {
     n: "Etapa 05",
     titulo: "Ciclo y liquidación",
-    duracion: "131 a 240 días",
+    duracion: "Según el tipo de ciclo",
     detalle:
-      "Corre el engorde. Al cerrar, el romaneo de playa del frigorífico dice cuántas cabezas se faenaron, cuántos kilos vivos entraron y cuántos kilos de carne salieron. El romaneo determina lo que cobra cada uno.",
+      "Corre el engorde. Al cerrar, el romaneo de playa del frigorífico dice cuántas cabezas se faenaron, cuántos kilos vivos entraron y cuántos kilos de carne salieron. El romaneo determina el resultado de cada participante.",
   },
 ];
 
@@ -122,7 +121,7 @@ const RESENAS: Resena[] = [
   },
   {
     texto:
-      "Antes de poner capital en el siguiente miro el romaneo del ciclo anterior. El último me dio 57,8 % de rendimiento y con ese número hice la cuenta.",
+      "Antes de sumarme a un ciclo nuevo miro el romaneo del anterior: ahí está lo que pasó de verdad con el lote, y con ese dato decido.",
     nombre: "Colaboradora de Buenos Aires",
     rol: "Participó en tres ciclos",
   },
@@ -236,43 +235,23 @@ export default async function Home() {
                 Tres tipos de ciclo
               </h2>
               <p className="mt-3 text-tinta-suave">
-                Cada uno tiene su plazo y su reparto del resultado. Elegís en cuál
-                participar mirando cuánto dura el animal y cuánto te toca.
+                Cada proyecto es de uno de estos tres tipos, y cada tipo tiene su propia
+                forma de llevar el animal hasta la faena.
               </p>
             </div>
 
-            <div className="mt-6">
-              <table className="w-full border-collapse text-left text-sm sm:text-base">
-                <caption className="sr-only">
-                  Plazo y reparto del resultado por tipo de ciclo
-                </caption>
-                <thead>
-                  <tr className="border-b border-borde-fuerte text-sm text-tinta-suave">
-                    <th scope="col" className="py-2 pr-3 font-medium">Tipo</th>
-                    <th scope="col" className="py-2 pr-3 font-medium">Plazo</th>
-                    <th scope="col" className="py-2 pr-3 font-medium">Colab.</th>
-                    <th scope="col" className="py-2 font-medium">Productor</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {SISTEMAS_EN_ORDEN.map((k) => (
-                    <tr key={k} className="border-b border-borde">
-                      <th scope="row" className="py-3 pr-3 font-semibold">
-                        {CICLOS[k].nombre}
-                        <span className="hidden text-sm font-normal text-tinta-suave sm:block">
-                          {CICLOS[k].descripcion}
-                        </span>
-                      </th>
-                      <td className="tabular whitespace-nowrap py-3 pr-3">{CICLOS[k].plazoDias} días</td>
-                      <td className="tabular whitespace-nowrap py-3 pr-3 font-medium">
-                        {formatPct(CICLOS[k].colaboradoresPct)}
-                      </td>
-                      <td className="tabular whitespace-nowrap py-3">{formatPct(CICLOS[k].productorPct)}</td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
+            <dl className="mt-6 grid gap-x-10 gap-y-5 sm:grid-cols-3">
+              {SISTEMAS_EN_ORDEN.map((k) => (
+                <div key={k} className="border-t border-borde-fuerte pt-3">
+                  <dt className="text-lg font-semibold tracking-tight">{CICLOS[k].nombre}</dt>
+                  <dd className="mt-1 text-sm text-tinta-suave">{CICLOS[k].descripcion}</dd>
+                </div>
+              ))}
+            </dl>
+            <p className="mt-5 text-sm text-tinta-suave">
+              Consultá por modalidades de participación: cada proyecto detalla sus
+              condiciones para quienes tienen una cuenta.
+            </p>
 
             <div className="mt-14">
               <h3 className="text-2xl font-semibold tracking-tight">
@@ -311,8 +290,8 @@ export default async function Home() {
                   Proyectos y casos cerrados
                 </h2>
                 <p className="mt-3 text-tinta-suave">
-                  Lo que está abierto hoy y un ciclo ya liquidado, con las cifras que
-                  salieron del romaneo del frigorífico.
+                  Lo que está abierto hoy y un ciclo ya cerrado, con lo que dijo el
+                  romaneo del frigorífico.
                 </p>
               </div>
               <BotonLink href="/proyectos" variante="secundario">
@@ -321,16 +300,40 @@ export default async function Home() {
             </div>
 
             <ul className="mt-9 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
-              {destacados.map((p, i) => (
-                <li key={p.id}>
-                  {/* La misma tarjeta que el catálogo: un proyecto no cambia de
-                      forma según la pantalla donde aparece. */}
-                  <ProyectoCard
-                    proyecto={p}
-                    foto={buscarImagen("fotos", `proyecto-${i + 1}`)}
-                  />
-                </li>
-              ))}
+              {destacados.map((p, i) => {
+                const foto = buscarImagen("fotos", `proyecto-${i + 1}`);
+                return (
+                  <li key={p.id}>
+                    <Panel className="flex h-full flex-col overflow-hidden">
+                      <div className="relative aspect-[16/10] bg-marca-suave">
+                        {foto ? (
+                          <Image
+                            src={foto}
+                            alt=""
+                            fill
+                            sizes="(max-width: 40rem) 100vw, 22rem"
+                            className="object-cover"
+                          />
+                        ) : null}
+                      </div>
+                      <div className="flex flex-1 flex-col p-5">
+                        <p className="text-sm text-tinta-tenue">
+                          {p.provincia} · {SISTEMA_LABEL[p.sistemaProductivo]}
+                        </p>
+                        <h3 className="mt-1.5 font-semibold">
+                          <Link href={`/proyectos/${p.id}`} className="hover:text-marca">
+                            {p.titulo}
+                          </Link>
+                        </h3>
+                        <p className="mt-2 text-sm text-tinta-suave">
+                          {formatNum(p.cabezas)} cabezas de {p.categoria.toLowerCase()}.{" "}
+                          {p.destinoDetalle}
+                        </p>
+                      </div>
+                    </Panel>
+                  </li>
+                );
+              })}
 
               {cerrado?.resultado ? (
                 <li>
@@ -374,12 +377,6 @@ export default async function Home() {
                           <dt className="text-tinta-suave">Kilos de carne</dt>
                           <dd className="codigo font-medium">
                             {formatNum(cerrado.resultado.kgCarne)} kg
-                          </dd>
-                        </div>
-                        <div className="flex items-baseline justify-between gap-3">
-                          <dt className="text-tinta-suave">Rendimiento</dt>
-                          <dd className="codigo font-semibold text-marca">
-                            {formatPct(cerrado.resultado.rendimientoPct)}
                           </dd>
                         </div>
                       </dl>
@@ -429,7 +426,7 @@ export default async function Home() {
             <p className="text-sm text-tinta-suave">
               Es el prototipo de la plataforma, con datos de prueba. La publicación de
               proyectos, la carga de documentación y su validación se pueden recorrer de
-              punta a punta; la suscripción de capital todavía no.
+              punta a punta; la participación en proyectos todavía no.
             </p>
             <Link
               href="/admin"

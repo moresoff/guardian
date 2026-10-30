@@ -193,7 +193,7 @@ const proyectosDeclarados: ProyectoDeclarado[] = [
     },
     montoMinimoInicioArs: 52_050_000,
     destinoDetalle:
-      "Ración balanceada de los 131 días, plan sanitario y mano de obra del corral. La hacienda ya es del establecimiento.",
+      "Ración balanceada del ciclo, plan sanitario y mano de obra del corral. La hacienda ya es del establecimiento.",
     tipoPosesion: "existencia_comprobada",
     sistemaProductivo: "corral",
     cabezas: 180,
@@ -664,7 +664,7 @@ const proyectosDeclarados: ProyectoDeclarado[] = [
     },
     montoMinimoInicioArs: 38_700_000,
     destinoDetalle:
-      "Ración, sanidad y mano de obra de los 131 días de encierre.",
+      "Ración, sanidad y mano de obra del ciclo de encierre.",
     tipoPosesion: "existencia_comprobada",
     sistemaProductivo: "corral",
     cabezas: 120,
@@ -934,7 +934,7 @@ const proyectosDeclarados: ProyectoDeclarado[] = [
     },
     montoMinimoInicioArs: 37_350_000,
     destinoDetalle:
-      "Solo insumos: ración balanceada de los 131 días, plan sanitario completo, sales minerales y la mano de obra del corral. Los 210 novillitos ya son del establecimiento y están encerrados; el capital no compra un solo animal.",
+      "Solo insumos: ración balanceada del ciclo, plan sanitario completo, sales minerales y la mano de obra del corral. Los 210 novillitos ya son del establecimiento y están encerrados; el capital no compra un solo animal.",
     tipoPosesion: "existencia_comprobada",
     sistemaProductivo: "corral",
     cabezas: 210,
