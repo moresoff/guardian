@@ -2,8 +2,9 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
+import { cerrarSesion } from "@/app/sesion/acciones";
 
 /**
  * La navegación es distinta según de qué lado de la plataforma estés.
@@ -54,7 +55,7 @@ const VISTAS = [
   {
     href: "/productor",
     titulo: "Productor",
-    texto: "Publicar un ciclo y conseguir el capital",
+    texto: "Publicar un ciclo y sumar colaboradores",
   },
   {
     href: "/proyectos",
@@ -136,9 +137,11 @@ function CambiarVista({ area }: { area: Area }) {
   );
 }
 
-export function Nav() {
+export function Nav({ conSesion }: { conSesion: boolean }) {
   const pathname = usePathname();
-  const area = areaDe(pathname);
+  const router = useRouter();
+  // Sin cuenta no hay menú de ningún lado: el catálogo se ve, pero desde afuera.
+  const area = conSesion ? areaDe(pathname) : null;
   const menu = area ? MENUS[area] : null;
 
   return (
@@ -183,12 +186,25 @@ export function Nav() {
         {/*
           Dos encabezados según de qué lado del ingreso estés. Afuera: entrar y
           registrarse. Adentro: cambiar de vista, que se hace con la misma cuenta
-          —un productor también puede invertir—. El selector no tiene sentido
+          —un productor también puede participar en ciclos ajenos—. El selector no tiene sentido
           antes de entrar: la sesión ya sabe a qué lado va cada uno.
         */}
         <div className="ml-auto flex flex-wrap items-center gap-2">
           {area ? (
-            <CambiarVista area={area} />
+            <>
+              <CambiarVista area={area} />
+              <button
+                type="button"
+                onClick={async () => {
+                  await cerrarSesion();
+                  router.push("/");
+                  router.refresh();
+                }}
+                className="flex min-h-11 items-center rounded-lg px-3 py-2 text-sm font-medium text-tinta-suave transition-colors hover:bg-superficie-2 hover:text-tinta"
+              >
+                Salir
+              </button>
+            </>
           ) : (
             <>
               <Link

@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import { CICLOS } from "@/lib/ciclos";
 import { notFound } from "next/navigation";
 import { DocumentoCard } from "@/components/documento-card";
 import { EstadoProyectoBadge } from "@/components/estados";
@@ -100,8 +101,11 @@ export default async function ValidacionProyecto({
               <Dato etiqueta="Posesión">{POSESION_LABEL[proyecto.tipoPosesion]}</Dato>
               <Dato etiqueta="Monto">{formatArs(proyecto.montoObjetivoArs)}</Dato>
               <Dato etiqueta="Plazo">{proyecto.plazoDias} días</Dato>
-              <Dato etiqueta="Rendimiento esperado">
-                {formatPct(proyecto.rendimientoEsperadoPct)}
+              <Dato
+                etiqueta="Rentabilidad anual estimada"
+                ayuda="Estimación del modelo para este tipo de ciclo, para el productor. No es un compromiso."
+              >
+                {formatPct(CICLOS[proyecto.sistemaProductivo].rentabilidadAnualProductorPct)}
               </Dato>
               <DatoGarantia garantia={garantia} />
               <Dato etiqueta="Seguro">

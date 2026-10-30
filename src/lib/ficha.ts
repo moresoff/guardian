@@ -23,7 +23,6 @@ export type ClaveFicha =
   | "montoObjetivoArs"
   | "plazoDias"
   | "plazoCobroDias"
-  | "rendimientoEsperadoPct"
   | "garantiaId";
 
 export interface CampoFicha {
@@ -121,14 +120,6 @@ export const CAMPOS_FICHA: CampoFicha[] = [
     tipo: "numero",
     sufijo: "días",
     ayuda: "Desde la venta hasta que el dinero entra. No es el plazo del ciclo.",
-  },
-  {
-    clave: "rendimientoEsperadoPct",
-    etiqueta: "Rendimiento esperado",
-    grupo: "Condiciones",
-    tipo: "porcentaje",
-    sufijo: "%",
-    ayuda: "Lo que esperás devolverle al colaborador sobre el capital puesto.",
   },
   {
     clave: "garantiaId",

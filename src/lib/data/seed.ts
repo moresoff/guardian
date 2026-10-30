@@ -100,7 +100,7 @@ export const garantias: Garantia[] = [
     tipo: "hipoteca",
     identificacion: "Matrícula 12.847 — Partido de Rojas",
     descripcion:
-      "Primera hipoteca sobre 180 hectáreas del establecimiento, constituida a favor del fideicomiso marco.",
+      "Primera hipoteca sobre 180 hectáreas del establecimiento, constituida a favor del proyecto.",
     valuacionArs: 630_000_000,
     cupoProyectos: 2,
     vigenciaHasta: "2028-03-31",
@@ -159,7 +159,7 @@ export const garantias: Garantia[] = [
     tipo: "cesion_derechos",
     identificacion: "Cesión 2025/14 — Frigorífico Gorina",
     descripcion:
-      "Lo que el frigorífico paga por el lote se cobra directo en el fideicomiso, antes de pasar por el productor.",
+      "Lo que el frigorífico paga por el lote se cobra directo en la cuenta del proyecto, antes de pasar por el productor.",
     valuacionArs: 117_000_000,
     cupoProyectos: 1,
     vigenciaHasta: "2026-08-31",
@@ -206,7 +206,7 @@ const proyectosDeclarados: ProyectoDeclarado[] = [
     montoLiberadoArs: 20_700_000,
     montoRetiradoArs: 20_700_000,
     plazoDias: 131,
-    rendimientoEsperadoPct: 34,
+    rendimientoEsperadoPct: 6.59,
     garantiaId: "gar-1",
     tieneSeguro: true,
     estado: "abierto",
@@ -221,11 +221,11 @@ const proyectosDeclarados: ProyectoDeclarado[] = [
       bienesFideicomitidos:
         "180 novillitos identificados con caravana RFID bajo el RENSPA 01.036.0.01532/04, y el capital suscripto por los colaboradores",
       objeto:
-        "Engordar el lote durante el ciclo, venderlo a faena y repartir el producido entre los fideicomisarios",
+        "Engordar el lote durante el ciclo, venderlo a faena y repartir el producido entre los participantes",
       repartoResultado:
         "El resultado de la venta se reparte 67,99 % para los colaboradores y 32,01 % para el productor, sobre los kilos ganados en el ciclo",
       mortandad:
-        "Hasta el 2 % de mortandad la absorbe el fideicomiso; por encima de ese piso responde el productor, salvo caso fortuito acreditado",
+        "Hasta el 2 % de mortandad la absorbe el proyecto; por encima de ese piso responde el productor, salvo caso fortuito acreditado",
       inicioAt: "2026-08-21",
       extincionAt: "2027-02-17",
       rendicionCuentas: "Trimestral, y en todos los casos al cierre del ciclo",
@@ -278,7 +278,7 @@ const proyectosDeclarados: ProyectoDeclarado[] = [
     montoLiberadoArs: 0,
     montoRetiradoArs: 0,
     plazoDias: 180,
-    rendimientoEsperadoPct: 41,
+    rendimientoEsperadoPct: 7.46,
     garantiaId: "gar-4",
     tieneSeguro: true,
     estado: "abierto",
@@ -293,11 +293,11 @@ const proyectosDeclarados: ProyectoDeclarado[] = [
       bienesFideicomitidos:
         "220 terneros identificados con caravana RFID bajo el RENSPA 02.017.0.00841/11, y el capital suscripto por los colaboradores",
       objeto:
-        "Engordar el lote durante el ciclo, venderlo a faena y repartir el producido entre los fideicomisarios",
+        "Engordar el lote durante el ciclo, venderlo a faena y repartir el producido entre los participantes",
       repartoResultado:
         "El resultado de la venta se reparte 69,45 % para los colaboradores y 30,55 % para el productor, sobre los kilos ganados en el ciclo",
       mortandad:
-        "Hasta el 2 % de mortandad la absorbe el fideicomiso; por encima de ese piso responde el productor, salvo caso fortuito acreditado",
+        "Hasta el 2 % de mortandad la absorbe el proyecto; por encima de ese piso responde el productor, salvo caso fortuito acreditado",
       inicioAt: "2026-09-09",
       extincionAt: "2027-05-07",
       rendicionCuentas: "Trimestral, y en todos los casos al cierre del ciclo",
@@ -350,7 +350,7 @@ const proyectosDeclarados: ProyectoDeclarado[] = [
     montoLiberadoArs: 0,
     montoRetiradoArs: 0,
     plazoDias: 240,
-    rendimientoEsperadoPct: 29,
+    rendimientoEsperadoPct: 41.35,
     garantiaId: "gar-5",
     tieneSeguro: false,
     estado: "fondeado",
@@ -365,11 +365,11 @@ const proyectosDeclarados: ProyectoDeclarado[] = [
       bienesFideicomitidos:
         "140 vaquillonas identificados con caravana RFID bajo el RENSPA 03.084.0.02219/07, y el capital suscripto por los colaboradores",
       objeto:
-        "Engordar el lote durante el ciclo, venderlo a faena y repartir el producido entre los fideicomisarios",
+        "Engordar el lote durante el ciclo, venderlo a faena y repartir el producido entre los participantes",
       repartoResultado:
         "El resultado de la venta se reparte 73,67 % para los colaboradores y 26,33 % para el productor, sobre los kilos ganados en el ciclo",
       mortandad:
-        "Hasta el 2 % de mortandad la absorbe el fideicomiso; por encima de ese piso responde el productor, salvo caso fortuito acreditado",
+        "Hasta el 2 % de mortandad la absorbe el proyecto; por encima de ese piso responde el productor, salvo caso fortuito acreditado",
       inicioAt: "2026-08-04",
       extincionAt: "2027-03-02",
       rendicionCuentas: "Trimestral, y en todos los casos al cierre del ciclo",
@@ -411,7 +411,7 @@ const proyectosDeclarados: ProyectoDeclarado[] = [
     montoLiberadoArs: 0,
     montoRetiradoArs: 0,
     plazoDias: 131,
-    rendimientoEsperadoPct: 33,
+    rendimientoEsperadoPct: 6.59,
     garantiaId: "gar-2",
     tieneSeguro: true,
     estado: "en_validacion",
@@ -449,7 +449,7 @@ const proyectosDeclarados: ProyectoDeclarado[] = [
     montoLiberadoArs: 0,
     montoRetiradoArs: 0,
     plazoDias: 131,
-    rendimientoEsperadoPct: 26,
+    rendimientoEsperadoPct: 6.59,
     garantiaId: "gar-4",
     tieneSeguro: true,
     estado: "en_validacion",
@@ -487,7 +487,7 @@ const proyectosDeclarados: ProyectoDeclarado[] = [
     montoLiberadoArs: 13_500_000,
     montoRetiradoArs: 9_300_000,
     plazoDias: 131,
-    rendimientoEsperadoPct: 31,
+    rendimientoEsperadoPct: 6.59,
     garantiaId: "gar-3",
     tieneSeguro: true,
     estado: "cerrado",
@@ -502,11 +502,11 @@ const proyectosDeclarados: ProyectoDeclarado[] = [
       bienesFideicomitidos:
         "28 vaquillona / novillitos identificados con caravana RFID bajo el RENSPA 01.036.0.01532/04, y el capital suscripto por los colaboradores",
       objeto:
-        "Engordar el lote durante el ciclo, venderlo a faena y repartir el producido entre los fideicomisarios",
+        "Engordar el lote durante el ciclo, venderlo a faena y repartir el producido entre los participantes",
       repartoResultado:
         "El resultado de la venta se reparte 67,99 % para los colaboradores y 32,01 % para el productor, sobre los kilos ganados en el ciclo",
       mortandad:
-        "Hasta el 2 % de mortandad la absorbe el fideicomiso; por encima de ese piso responde el productor, salvo caso fortuito acreditado",
+        "Hasta el 2 % de mortandad la absorbe el proyecto; por encima de ese piso responde el productor, salvo caso fortuito acreditado",
       inicioAt: "2026-06-04",
       extincionAt: "2026-11-21",
       rendicionCuentas: "Trimestral, y en todos los casos al cierre del ciclo",
@@ -557,7 +557,7 @@ const proyectosDeclarados: ProyectoDeclarado[] = [
     montoLiberadoArs: 0,
     montoRetiradoArs: 0,
     plazoDias: 240,
-    rendimientoEsperadoPct: 38,
+    rendimientoEsperadoPct: 41.35,
     garantiaId: "",
     tieneSeguro: false,
     estado: "borrador",
@@ -597,7 +597,7 @@ const proyectosDeclarados: ProyectoDeclarado[] = [
     montoLiberadoArs: 0,
     montoRetiradoArs: 0,
     plazoDias: 131,
-    rendimientoEsperadoPct: 0,
+    rendimientoEsperadoPct: 6.59,
     garantiaId: "",
     tieneSeguro: false,
     estado: "borrador",
@@ -637,7 +637,7 @@ const proyectosDeclarados: ProyectoDeclarado[] = [
     montoLiberadoArs: 0,
     montoRetiradoArs: 0,
     plazoDias: 131,
-    rendimientoEsperadoPct: 0,
+    rendimientoEsperadoPct: 6.59,
     garantiaId: "",
     tieneSeguro: false,
     estado: "borrador",
@@ -677,7 +677,7 @@ const proyectosDeclarados: ProyectoDeclarado[] = [
     montoLiberadoArs: 43_050_000,
     montoRetiradoArs: 32_100_000,
     plazoDias: 131,
-    rendimientoEsperadoPct: 28,
+    rendimientoEsperadoPct: 6.59,
     garantiaId: "gar-2",
     tieneSeguro: true,
     estado: "en_curso",
@@ -692,11 +692,11 @@ const proyectosDeclarados: ProyectoDeclarado[] = [
       bienesFideicomitidos:
         "120 novillos identificados con caravana RFID bajo el RENSPA 01.036.0.01532/04, y el capital suscripto por los colaboradores",
       objeto:
-        "Engordar el lote durante el ciclo, venderlo a faena y repartir el producido entre los fideicomisarios",
+        "Engordar el lote durante el ciclo, venderlo a faena y repartir el producido entre los participantes",
       repartoResultado:
         "El resultado de la venta se reparte 67,99 % para los colaboradores y 32,01 % para el productor, sobre los kilos ganados en el ciclo",
       mortandad:
-        "Hasta el 2 % de mortandad la absorbe el fideicomiso; por encima de ese piso responde el productor, salvo caso fortuito acreditado",
+        "Hasta el 2 % de mortandad la absorbe el proyecto; por encima de ese piso responde el productor, salvo caso fortuito acreditado",
       inicioAt: "2026-07-09",
       extincionAt: "2026-12-06",
       rendicionCuentas: "Trimestral, y en todos los casos al cierre del ciclo",
@@ -740,7 +740,7 @@ const proyectosDeclarados: ProyectoDeclarado[] = [
     montoLiberadoArs: 71_400_000,
     montoRetiradoArs: 71_400_000,
     plazoDias: 131,
-    rendimientoEsperadoPct: 32,
+    rendimientoEsperadoPct: 6.59,
     garantiaId: "gar-3",
     tieneSeguro: true,
     estado: "cerrado",
@@ -755,11 +755,11 @@ const proyectosDeclarados: ProyectoDeclarado[] = [
       bienesFideicomitidos:
         "150 novillitos identificados con caravana RFID bajo el RENSPA 01.036.0.01532/04, y el capital suscripto por los colaboradores",
       objeto:
-        "Engordar el lote durante el ciclo, venderlo a faena y repartir el producido entre los fideicomisarios",
+        "Engordar el lote durante el ciclo, venderlo a faena y repartir el producido entre los participantes",
       repartoResultado:
         "El resultado de la venta se reparte 67,99 % para los colaboradores y 32,01 % para el productor, sobre los kilos ganados en el ciclo",
       mortandad:
-        "Hasta el 2 % de mortandad la absorbe el fideicomiso; por encima de ese piso responde el productor, salvo caso fortuito acreditado",
+        "Hasta el 2 % de mortandad la absorbe el proyecto; por encima de ese piso responde el productor, salvo caso fortuito acreditado",
       inicioAt: "2026-01-23",
       extincionAt: "2026-07-17",
       rendicionCuentas: "Trimestral, y en todos los casos al cierre del ciclo",
@@ -809,7 +809,7 @@ const proyectosDeclarados: ProyectoDeclarado[] = [
     montoLiberadoArs: 39_300_000,
     montoRetiradoArs: 39_300_000,
     plazoDias: 131,
-    rendimientoEsperadoPct: 29,
+    rendimientoEsperadoPct: 6.59,
     garantiaId: "gar-1",
     tieneSeguro: true,
     estado: "cerrado",
@@ -824,11 +824,11 @@ const proyectosDeclarados: ProyectoDeclarado[] = [
       bienesFideicomitidos:
         "95 vaquillonas identificados con caravana RFID bajo el RENSPA 01.036.0.01532/04, y el capital suscripto por los colaboradores",
       objeto:
-        "Engordar el lote durante el ciclo, venderlo a faena y repartir el producido entre los fideicomisarios",
+        "Engordar el lote durante el ciclo, venderlo a faena y repartir el producido entre los participantes",
       repartoResultado:
         "El resultado de la venta se reparte 67,99 % para los colaboradores y 32,01 % para el productor, sobre los kilos ganados en el ciclo",
       mortandad:
-        "Hasta el 2 % de mortandad la absorbe el fideicomiso; por encima de ese piso responde el productor, salvo caso fortuito acreditado",
+        "Hasta el 2 % de mortandad la absorbe el proyecto; por encima de ese piso responde el productor, salvo caso fortuito acreditado",
       inicioAt: "2025-07-11",
       extincionAt: "2026-01-17",
       rendicionCuentas: "Trimestral, y en todos los casos al cierre del ciclo",
@@ -878,7 +878,7 @@ const proyectosDeclarados: ProyectoDeclarado[] = [
     montoLiberadoArs: 25_500_000,
     montoRetiradoArs: 25_500_000,
     plazoDias: 131,
-    rendimientoEsperadoPct: 27,
+    rendimientoEsperadoPct: 6.59,
     garantiaId: "gar-2",
     tieneSeguro: true,
     estado: "cerrado",
@@ -893,11 +893,11 @@ const proyectosDeclarados: ProyectoDeclarado[] = [
       bienesFideicomitidos:
         "60 novillitos identificados con caravana RFID bajo el RENSPA 01.036.0.01532/04, y el capital suscripto por los colaboradores",
       objeto:
-        "Engordar el lote durante el ciclo, venderlo a faena y repartir el producido entre los fideicomisarios",
+        "Engordar el lote durante el ciclo, venderlo a faena y repartir el producido entre los participantes",
       repartoResultado:
         "El resultado de la venta se reparte 67,99 % para los colaboradores y 32,01 % para el productor, sobre los kilos ganados en el ciclo",
       mortandad:
-        "Hasta el 2 % de mortandad la absorbe el fideicomiso; por encima de ese piso responde el productor, salvo caso fortuito acreditado",
+        "Hasta el 2 % de mortandad la absorbe el proyecto; por encima de ese piso responde el productor, salvo caso fortuito acreditado",
       inicioAt: "2025-02-18",
       extincionAt: "2025-08-02",
       rendicionCuentas: "Trimestral, y en todos los casos al cierre del ciclo",
@@ -947,7 +947,7 @@ const proyectosDeclarados: ProyectoDeclarado[] = [
     montoLiberadoArs: 0,
     montoRetiradoArs: 0,
     plazoDias: 131,
-    rendimientoEsperadoPct: 29,
+    rendimientoEsperadoPct: 6.59,
     garantiaId: "gar-1",
     tieneSeguro: false,
     estado: "abierto",
@@ -960,13 +960,13 @@ const proyectosDeclarados: ProyectoDeclarado[] = [
       fideicomisarios:
         "Los mismos colaboradores, en proporción a lo suscripto, y el productor por su porción del resultado",
       bienesFideicomitidos:
-        "El capital suscripto por los colaboradores y los 210 novillitos identificados con caravana RFID bajo el RENSPA 01.036.0.01532/04, afectados al fideicomiso como garantía del ciclo",
+        "El capital suscripto por los colaboradores y los 210 novillitos identificados con caravana RFID bajo el RENSPA 01.036.0.01532/04, afectados al proyecto como garantía del ciclo",
       objeto:
-        "Financiar los insumos del encierre, engordar el lote, venderlo a faena y repartir el producido entre los fideicomisarios",
+        "Financiar los insumos del encierre, engordar el lote, venderlo a faena y repartir el producido entre los participantes",
       repartoResultado:
         "El resultado de la venta se reparte 67,99 % para los colaboradores y 32,01 % para el productor, sobre los kilos ganados en el ciclo",
       mortandad:
-        "Hasta el 2 % de mortandad la absorbe el fideicomiso; por encima de ese piso responde el productor, salvo caso fortuito acreditado",
+        "Hasta el 2 % de mortandad la absorbe el proyecto; por encima de ese piso responde el productor, salvo caso fortuito acreditado",
       inicioAt: "2026-09-20",
       extincionAt: "2027-04-03",
       rendicionCuentas: "Trimestral, y en todos los casos al cierre del ciclo",
@@ -1176,7 +1176,7 @@ function comisionesDe(p: ProyectoDeclarado): Comision[] {
       fuente: "demostrativo",
     },
     {
-      concepto: "Honorarios del fiduciario",
+      concepto: "Honorarios de administración",
       base: "Sobre el capital administrado",
       porcentaje: 1.5,
       aCargoDe: "fideicomiso",
@@ -1212,8 +1212,8 @@ function contingenciasDe(p: ProyectoDeclarado): Contingencia[] {
     {
       caso: "mortandad",
       queDice:
-        "Hasta el 2 % del lote lo absorbe el fideicomiso. Por encima de ese piso responde el productor, salvo caso fortuito acreditado.",
-      aCargoDe: "Fideicomiso hasta el piso; después, el productor",
+        "Hasta el 2 % del lote lo absorbe el proyecto. Por encima de ese piso responde el productor, salvo caso fortuito acreditado.",
+      aCargoDe: "El proyecto hasta el piso; después, el productor",
       fuente: "demostrativo",
     },
     {
@@ -1233,7 +1233,7 @@ function contingenciasDe(p: ProyectoDeclarado): Contingencia[] {
     {
       caso: "incumplimiento",
       queDice: constituida
-        ? "Se intima al productor y, si no regulariza, el fiduciario ejecuta la garantía constituida."
+        ? "Se intima al productor y, si no regulariza, se ejecuta la garantía constituida."
         : "No hay garantía constituida en este proyecto: el reclamo es contra el productor y no hay un bien afectado para ejecutar.",
       aCargoDe: constituida ? "El productor, con su garantía afectada" : "El productor",
       fuente: "demostrativo",
@@ -1671,7 +1671,7 @@ function pesadasDeProyecto(
         n % 3 === 0 ? "Ración, sanidad y mano de obra" : "Ración y mano de obra",
       nota:
         baja > 0
-          ? "Una baja en el lote. Se dio aviso y queda dentro del margen que absorbe el fideicomiso."
+          ? "Una baja en el lote. Se dio aviso y queda dentro del margen que absorbe el proyecto."
           : undefined,
     });
   }

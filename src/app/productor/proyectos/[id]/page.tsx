@@ -1,9 +1,10 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import { CICLOS } from "@/lib/ciclos";
 import { notFound } from "next/navigation";
 import { DocumentoCard } from "@/components/documento-card";
 import { EstadoProyectoBadge } from "@/components/estados";
-import { FideicomisoPanel } from "@/components/fideicomiso-panel";
+import { CondicionesPanel } from "@/components/condiciones-panel";
 import { BloqueGarantia, DatoGarantia } from "@/components/garantia";
 import { Seguimiento } from "@/components/seguimiento";
 import { FichaTecnica } from "./ficha-tecnica";
@@ -168,8 +169,11 @@ export default async function DetalleProyectoProductor({
               <Dato etiqueta="Peso objetivo">{proyecto.pesoSalidaObjetivoKg} kg</Dato>
               <Dato etiqueta="Monto objetivo">{formatArs(proyecto.montoObjetivoArs)}</Dato>
               <Dato etiqueta="Plazo">{proyecto.plazoDias} días</Dato>
-              <Dato etiqueta="Rendimiento esperado">
-                {formatPct(proyecto.rendimientoEsperadoPct)}
+              <Dato
+                etiqueta="Rentabilidad anual estimada"
+                ayuda="Estimación del modelo para este tipo de ciclo, para el productor. No es un compromiso."
+              >
+                {formatPct(CICLOS[proyecto.sistemaProductivo].rentabilidadAnualProductorPct)}
               </Dato>
               <DatoGarantia garantia={garantia} />
               <Dato etiqueta="Seguro">
@@ -207,7 +211,7 @@ export default async function DetalleProyectoProductor({
           <BloqueGarantia garantia={garantia} />
 
           {proyecto.fideicomiso ? (
-            <FideicomisoPanel fideicomiso={proyecto.fideicomiso} />
+            <CondicionesPanel fideicomiso={proyecto.fideicomiso} />
           ) : null}
 
           <div>

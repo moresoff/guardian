@@ -2,6 +2,9 @@ import { ProyectoCard } from "@/components/proyecto-card";
 import { Vacio } from "@/components/ui/primitivos";
 import { getProyectosPublicos } from "@/lib/data";
 import { listarImagenes } from "@/lib/imagenes";
+import { ConsultaModalidades } from "@/components/consulta-modalidades";
+import { haySesion } from "@/lib/sesion";
+import { BotonLink } from "@/components/ui/primitivos";
 import { FiltrosCatalogo } from "./filtros";
 
 export const metadata = {
@@ -14,6 +17,7 @@ export default async function CatalogoPage({
   searchParams: Promise<{ provincia?: string }>;
 }) {
   const { provincia } = await searchParams;
+  const conSesion = await haySesion();
   const proyectos = await getProyectosPublicos({
     provincia,
   });
@@ -26,6 +30,16 @@ export default async function CatalogoPage({
     <div>
       <div className="mb-6">
         <h1 className="text-2xl font-semibold tracking-tight">Proyectos abiertos</h1>
+        {conSesion ? null : (
+          <div className="mt-3 flex flex-wrap items-center gap-x-5 gap-y-2">
+            <p className="max-w-xl text-sm text-tinta-suave">
+              Acá ves de qué va cada proyecto. Las condiciones de cada uno se ven con una
+              cuenta.
+            </p>
+            <BotonLink href="/registro?lado=colaborador">Crear mi cuenta</BotonLink>
+            <ConsultaModalidades />
+          </div>
+        )}
       </div>
 
       <FiltrosCatalogo
@@ -54,6 +68,7 @@ export default async function CatalogoPage({
                 key={p.id}
                 proyecto={p}
                 foto={fotos.length > 0 ? fotos[i % fotos.length] : null}
+                resumida={!conSesion}
               />
             ))}
           </div>

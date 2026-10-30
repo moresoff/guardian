@@ -383,6 +383,11 @@ export interface Proyecto {
   cronograma: HitoDesembolso[];
   /** Los controles que Guardian hizo sobre este proyecto, con su fecha y alcance. */
   controles: ControlRealizado[];
+  /**
+   * Rentabilidad anual estimada del modelo para el productor, según el tipo de
+   * ciclo (`CICLOS`). Es una estimación, no un compromiso, y solo se muestra del
+   * lado del productor.
+   */
   rendimientoEsperadoPct: number;
   /**
    * La garantía del productor que respalda este proyecto. Es una referencia y no

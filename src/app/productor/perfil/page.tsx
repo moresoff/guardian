@@ -73,7 +73,7 @@ export default async function PerfilPage() {
     { etiqueta: "Capital movilizado", valor: formatArsCompacto(capitalMovilizado) },
     { etiqueta: "Carne producida", valor: `${formatNum(kgFaenados)} kg`, codigo: true },
     {
-      etiqueta: "Rendimiento promedio",
+      etiqueta: "Rendimiento de faena promedio",
       valor: cerrados.length > 0 ? formatPct(rendimientoPromedio) : "—",
       codigo: true,
     },
@@ -108,7 +108,7 @@ export default async function PerfilPage() {
           <Dato etiqueta="Proyectos con capital activo">{activos.length}</Dato>
           <Dato etiqueta="Ciclos cerrados">{cerrados.length}</Dato>
           <Dato
-            etiqueta="Rendimiento promedio"
+            etiqueta="Rendimiento de faena promedio"
             codigo
             ayuda={
               cerrados.length > 0
@@ -156,7 +156,7 @@ export default async function PerfilPage() {
                     <Dato etiqueta="Kilos carne" codigo>
                       {formatNum(p.resultado!.kgCarne)} kg
                     </Dato>
-                    <Dato etiqueta="Rendimiento" codigo>
+                    <Dato etiqueta="Rendimiento de faena" codigo>
                       {formatPct(p.resultado!.rendimientoPct)}
                     </Dato>
                   </dl>

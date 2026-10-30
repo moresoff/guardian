@@ -54,6 +54,23 @@ conservan como historia de cómo se llegó hasta acá.
   guiado (`src/components/recorrido-guiado.tsx`): una guía flotante que sigue a
   la persona por las pantallas reales y le dice qué cargar en cada una. Se puede
   salir en cualquier momento y volver a abrir desde el pie de página.
+- **Con cuenta y sin cuenta (2026-10-30).** Sin cuenta se ve la portada, un catálogo
+  resumido (de qué va cada proyecto, sin montos, plazos ni reparto) y una ficha
+  pública con el lote y el respaldo documental. Con cuenta se ve todo lo demás: las
+  áreas de productor, colaborador y validación exigen sesión, y la ficha completa
+  muestra las condiciones. La sesión es una cookie del prototipo
+  (`src/lib/sesion.ts`): separa lo que se ve con y sin cuenta, pero no es seguridad,
+  porque todavía no hay usuarios ni contraseñas.
+- **Condiciones del proyecto.** El panel que mostraba el fideicomiso pasó a
+  `src/components/condiciones-panel.tsx`: un resumen de cómo se participa (quiénes,
+  qué se aporta, para qué, reparto, mortandad, duración, rendición de cuentas), sin
+  serie, inscripción ni seguro. El detalle completo queda en el contrato.
+- **Rentabilidad estimada del modelo.** El campo "Rendimiento esperado" que cargaba
+  el productor se sacó del alta: la rentabilidad anual estimada sale del tipo de
+  ciclo (`src/lib/ciclos.ts`) y se muestra solo al productor y a validación.
+  "Rendimiento" a secas queda para el rendimiento de faena del romaneo.
+- **Contacto.** El correo de consulta sale de `NEXT_PUBLIC_CORREO_CONTACTO`
+  (`.env.example`); sin valor no se muestra ningún enlace.
 - **Vocabulario.** La interfaz habla de colaborar y participar, no de financiar, y
   no nombra el fideicomiso ordinario fuera de la ficha de cada proyecto. La regla
   está en `.claude/skills/diseno-guardian/SKILL.md` y en `CLAUDE.md`.

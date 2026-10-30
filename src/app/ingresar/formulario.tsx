@@ -1,8 +1,10 @@
 "use client";
 
+import { useRouter } from "next/navigation";
 import { useState } from "react";
+import { abrirSesion } from "@/app/sesion/acciones";
 import { Campo } from "@/components/ui/campos";
-import { Aviso, Boton, BotonLink } from "@/components/ui/primitivos";
+import { Aviso, Boton } from "@/components/ui/primitivos";
 
 const CORREO = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
@@ -13,6 +15,11 @@ const CORREO = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
  * simular una sesión que no existe.
  */
 export function FormularioIngreso() {
+  const router = useRouter();
+  const entrar = async (lado: "productor" | "colaborador") => {
+    await abrirSesion(lado);
+    router.push(lado === "productor" ? "/productor" : "/proyectos");
+  };
   const [correo, setCorreo] = useState("");
   const [clave, setClave] = useState("");
   const [verClave, setVerClave] = useState(false);
@@ -78,12 +85,12 @@ export function FormularioIngreso() {
           próxima etapa. Mientras tanto podés recorrer la plataforma entera desde
           cualquiera de los dos lados.
           <span className="mt-4 flex flex-wrap gap-3">
-            <BotonLink href="/productor" variante="secundario">
+            <Boton type="button" variante="secundario" onClick={() => entrar("productor")}>
               Entrar como productor
-            </BotonLink>
-            <BotonLink href="/proyectos" variante="secundario">
+            </Boton>
+            <Boton type="button" variante="secundario" onClick={() => entrar("colaborador")}>
               Entrar como colaborador
-            </BotonLink>
+            </Boton>
           </span>
         </Aviso>
       ) : null}

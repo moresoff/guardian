@@ -6,6 +6,7 @@ import { BotonLink, Panel } from "@/components/ui/primitivos";
 import { getProyecto, getProyectosPublicos } from "@/lib/data";
 import { SISTEMA_LABEL, formatNum, modalidadLabel } from "@/lib/format";
 import { buscarImagen } from "@/lib/imagenes";
+import { ConsultaModalidades } from "@/components/consulta-modalidades";
 import { CICLOS, SISTEMAS_EN_ORDEN } from "@/lib/ciclos";
 
 export const metadata = {
@@ -249,9 +250,9 @@ export default async function Home() {
               ))}
             </dl>
             <p className="mt-5 text-sm text-tinta-suave">
-              Consultá por modalidades de participación: cada proyecto detalla sus
-              condiciones para quienes tienen una cuenta.
+              Cada proyecto detalla sus condiciones para quienes tienen una cuenta.
             </p>
+            <ConsultaModalidades className="mt-1" />
 
             <div className="mt-14">
               <h3 className="text-2xl font-semibold tracking-tight">

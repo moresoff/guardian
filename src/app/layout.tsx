@@ -1,6 +1,7 @@
 import type { Metadata, Viewport } from "next";
 import { JetBrains_Mono, Poppins } from "next/font/google";
 import { Nav } from "@/components/nav";
+import { haySesion } from "@/lib/sesion";
 import { BotonRecorrido, RecorridoGuiado } from "@/components/recorrido-guiado";
 import "./globals.css";
 
@@ -29,7 +30,8 @@ export const viewport: Viewport = {
   colorScheme: "only light",
 };
 
-export default function RootLayout({ children }: LayoutProps<"/">) {
+export default async function RootLayout({ children }: LayoutProps<"/">) {
+  const conSesion = await haySesion();
   return (
     <html
       lang="es-AR"
@@ -47,7 +49,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
         >
           Saltar al contenido
         </a>
-        <Nav />
+        <Nav conSesion={conSesion} />
         <main id="contenido" className="mx-auto w-full max-w-6xl flex-1 px-4 py-6">
           {children}
         </main>
@@ -56,7 +58,9 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
             <span className="font-medium">Guardian</span> — prototipo de la
             plataforma. Los datos son de prueba y nada de lo que se muestra acá
             constituye oferta pública.{" "}
-            <BotonRecorrido className="font-medium text-marca underline underline-offset-2" />
+            {conSesion ? (
+              <BotonRecorrido className="font-medium text-marca underline underline-offset-2" />
+            ) : null}
           </p>
         </footer>
         <RecorridoGuiado />

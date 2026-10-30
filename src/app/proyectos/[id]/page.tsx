@@ -6,7 +6,9 @@ import {
   ConsistenciaBadge,
   EstadoProyectoBadge,
 } from "@/components/estados";
-import { FideicomisoPanel } from "@/components/fideicomiso-panel";
+import { CondicionesPanel } from "@/components/condiciones-panel";
+import { FichaPublica } from "@/components/ficha-publica";
+import { haySesion } from "@/lib/sesion";
 import { BloqueGarantia, DatoGarantia } from "@/components/garantia";
 import { Seguimiento } from "@/components/seguimiento";
 import {
@@ -62,9 +64,9 @@ export async function generateMetadata({
   if (!proyecto) return { title: "Proyecto no encontrado — Guardian" };
   return {
     title: `${proyecto.titulo} — Guardian`,
-    description: `${formatNum(proyecto.cabezas)} cabezas en ${proyecto.provincia}, a ${
-      proyecto.plazoDias
-    } días. ${modalidadLabel(proyecto.modalidad)}.`,
+    description: `${formatNum(proyecto.cabezas)} cabezas de ${proyecto.categoria.toLowerCase()} en ${
+      proyecto.provincia
+    }.`,
   };
 }
 
@@ -87,6 +89,13 @@ export default async function FichaProyecto({
     proyecto.productorId,
   );
   const registros = await getSeguimientoDeProyecto(proyecto.id);
+
+  // Sin cuenta se ve de qué va el proyecto y nada de lo económico.
+  if (!(await haySesion())) {
+    return (
+      <FichaPublica proyecto={proyecto} productor={productor?.nombre} documentos={documentos} />
+    );
+  }
 
   /**
    * El fondeo sale de los aportes acreditados y no del monto declarado en el
@@ -443,7 +452,7 @@ export default async function FichaProyecto({
           <BloqueGarantia garantia={garantia} />
 
           {proyecto.fideicomiso ? (
-            <FideicomisoPanel fideicomiso={proyecto.fideicomiso} paraColaborador />
+            <CondicionesPanel fideicomiso={proyecto.fideicomiso} paraColaborador />
           ) : null}
 
           {proyecto.resultado ? (
@@ -472,7 +481,7 @@ export default async function FichaProyecto({
                 <Dato etiqueta="Kg de carne">
                   {formatNum(proyecto.resultado.kgCarne)} kg
                 </Dato>
-                <Dato etiqueta="Rendimiento">
+                <Dato etiqueta="Rendimiento de faena">
                   {formatPct(proyecto.resultado.rendimientoPct)}
                 </Dato>
                 <Dato etiqueta="DT-e de salida" codigo>{proyecto.resultado.dteSalida}</Dato>

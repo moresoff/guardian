@@ -122,7 +122,7 @@ export default async function ResumenProductor() {
       avisos.push({
         id: `cierre-${p.id}`,
         titulo: "Ciclo cerrado y liquidado",
-        texto: `${p.titulo} rindió ${formatPct(p.resultado.rendimientoPct)} sobre ${formatNum(
+        texto: `${p.titulo} cerró con un rendimiento de faena de ${formatPct(p.resultado.rendimientoPct)} sobre ${formatNum(
           p.resultado.kilosVivos,
         )} kg vivos, según el romaneo.`,
         href: `/productor/proyectos/${p.id}`,

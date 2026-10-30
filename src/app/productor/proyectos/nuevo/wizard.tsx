@@ -100,7 +100,6 @@ const INICIAL: Borrador = {
   montoObjetivoArs: "",
   plazoDias: String(CICLOS.corral.plazoDias),
   plazoCobroDias: "30",
-  rendimientoEsperadoPct: "",
   garantiaId: "",
   tieneSeguro: false,
 };

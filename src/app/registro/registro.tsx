@@ -5,6 +5,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { Campo, GrupoOpciones, Seleccion } from "@/components/ui/campos";
 import { Boton, BotonLink, Progreso } from "@/components/ui/primitivos";
+import { abrirSesion } from "@/app/sesion/acciones";
 import { PROVINCIAS } from "@/lib/provincias";
 import type { Rol } from "@/lib/types";
 
@@ -134,9 +135,10 @@ export function Registro({ ladoInicial }: { ladoInicial?: Lado }) {
         <form
           className="mt-5"
           noValidate
-          onSubmit={(e) => {
+          onSubmit={async (e) => {
             e.preventDefault();
-            if (!validar()) return;
+            if (!validar() || !lado) return;
+            await abrirSesion(lado);
             // La cuenta se abre y se entra directo a la aplicación: el recorrido
             // explica cada pantalla ahí, donde se ve lo que hay que cargar.
             router.push(

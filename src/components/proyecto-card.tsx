@@ -9,6 +9,7 @@ import {
   porcentajeRecaudado,
 } from "@/lib/format";
 import { retornoCompacto } from "@/lib/proyecto";
+import { CICLOS } from "@/lib/ciclos";
 import type { Proyecto } from "@/lib/types";
 
 /**
@@ -22,9 +23,15 @@ import type { Proyecto } from "@/lib/types";
 export function ProyectoCard({
   proyecto,
   foto,
+  resumida = false,
 }: {
   proyecto: Proyecto;
   foto: string | null;
+  /**
+   * Para quien no tiene cuenta: de qué va el proyecto y nada más. Sin montos,
+   * plazos ni reparto, que son condiciones económicas y se ven con sesión.
+   */
+  resumida?: boolean;
 }) {
   const pct = porcentajeRecaudado(proyecto.montoRecaudadoArs, proyecto.montoObjetivoArs);
   const retorno = retornoCompacto(proyecto);
@@ -48,7 +55,8 @@ export function ProyectoCard({
 
       <div className="flex flex-1 flex-col p-5">
         <p className="text-sm text-tinta-tenue">
-          {proyecto.provincia} · {modalidadLabel(proyecto.modalidad)}
+          {proyecto.provincia} ·{" "}
+          {resumida ? CICLOS[proyecto.sistemaProductivo].nombre : modalidadLabel(proyecto.modalidad)}
         </p>
         <h3 className="mt-1.5 text-lg font-semibold leading-snug tracking-tight">
           <Link href={`/proyectos/${proyecto.id}`} className="hover:text-marca">
@@ -59,6 +67,20 @@ export function ProyectoCard({
 
         <p className="mt-2 text-sm text-tinta-suave">{proyecto.destinoDetalle}</p>
 
+        {resumida ? (
+          <dl className="tabular mt-4 grid grid-cols-2 gap-3 border-t border-borde pt-3">
+            <div>
+              <dt className="text-sm text-tinta-tenue">Cabezas</dt>
+              <dd className="text-sm font-medium">{formatNum(proyecto.cabezas)}</dd>
+            </div>
+            <div>
+              <dt className="text-sm text-tinta-tenue">Categoría</dt>
+              <dd className="text-sm font-medium">{proyecto.categoria}</dd>
+            </div>
+          </dl>
+        ) : null}
+
+        {resumida ? null : (
         <dl className="tabular mt-4 grid grid-cols-3 gap-3 border-y border-borde py-3">
           <div>
             <dt className="text-sm text-tinta-tenue">Cabezas</dt>
@@ -74,6 +96,9 @@ export function ProyectoCard({
           </div>
         </dl>
 
+        )}
+
+        {resumida ? null : (
         <div className="tabular mt-auto pt-4">
           <div className="flex items-baseline justify-between text-sm">
             <span className="font-semibold">
@@ -90,6 +115,7 @@ export function ProyectoCard({
             <span className="text-sm font-medium">{pct} %</span>
           </div>
         </div>
+        )}
       </div>
     </Panel>
   );
