@@ -1,17 +1,8 @@
-"use client";
-
-import { useId, useRef, useState } from "react";
-
 /**
- * Las etapas de un ciclo, en orden. El detalle aparece al pasar por encima, al
- * tabular o al tocar: en el teléfono no hay hover, así que la etapa también se
- * selecciona con el dedo y el texto se muestra abajo, nunca flotando encima.
- *
- * Es un tablist y no una fila de botones de alternar. Las cinco etapas gobiernan
- * el mismo panel, así que un lector de pantalla tiene que oír "seleccionada, 2
- * de 5" y saber qué cambió abajo; con `aria-pressed` oía "presionado" cinco
- * veces y nada del texto que aparecía. La selección sigue al foco, que es lo
- * que ya hacía con el mouse.
+ * Las etapas de un ciclo, en orden y todas a la vista. Antes el detalle aparecía
+ * al pasar el mouse; en el teléfono no hay hover y quien recién llega no sabe
+ * que tiene que tocar, así que se lee de corrido, de arriba hacia abajo. El
+ * número sí lleva información: la secuencia es el contenido.
  */
 export interface Etapa {
   n: string;
@@ -21,113 +12,30 @@ export interface Etapa {
 }
 
 export function LineaDeTiempo({ etapas }: { etapas: Etapa[] }) {
-  const [activa, setActiva] = useState(0);
-  const etapa = etapas[activa];
-  const base = useId();
-  const botones = useRef<(HTMLButtonElement | null)[]>([]);
-
-  const idEtapa = (i: number) => `${base}-etapa-${i}`;
-  const idPanel = `${base}-detalle`;
-
-  const conTeclado = (e: React.KeyboardEvent, i: number) => {
-    const salto: Record<string, number> = {
-      ArrowRight: 1,
-      ArrowDown: 1,
-      ArrowLeft: -1,
-      ArrowUp: -1,
-    };
-    if (e.key in salto) {
-      e.preventDefault();
-      botones.current[(i + salto[e.key] + etapas.length) % etapas.length]?.focus();
-      return;
-    }
-    if (e.key === "Home" || e.key === "End") {
-      e.preventDefault();
-      botones.current[e.key === "Home" ? 0 : etapas.length - 1]?.focus();
-    }
-  };
-
   return (
-    <div>
-      <ol
-        role="tablist"
-        aria-label="Etapas del ciclo"
-        className="relative grid gap-y-2 sm:grid-cols-2 lg:grid-cols-5"
-      >
-        <span
-          className="absolute left-0 right-0 top-[0.4375rem] hidden h-px bg-borde lg:block"
-          aria-hidden
-        />
-        {etapas.map((e, i) => {
-          const seleccionada = i === activa;
-          return (
-            // La lista ordenada se queda porque el orden es parte del contenido,
-            // pero las etapas tienen que colgar del tablist sin un `li` en el medio.
-            <li key={e.n} role="presentation" className="relative">
-              <button
-                ref={(el) => {
-                  botones.current[i] = el;
-                }}
-                type="button"
-                role="tab"
-                id={idEtapa(i)}
-                aria-selected={seleccionada}
-                aria-controls={idPanel}
-                // Foco itinerante: las cinco etapas son una sola parada de Tab y
-                // adentro se recorren con las flechas.
-                tabIndex={seleccionada ? 0 : -1}
-                onMouseEnter={() => setActiva(i)}
-                onFocus={() => setActiva(i)}
-                onClick={() => setActiva(i)}
-                onKeyDown={(ev) => conTeclado(ev, i)}
-                className="group flex w-full items-center gap-3 rounded-lg px-2 py-2 text-left transition-colors hover:bg-superficie lg:block lg:px-2 lg:pt-0 lg:text-center"
-              >
-                <span
-                  className={`block size-3.5 shrink-0 rounded-full border-2 bg-papel transition-colors lg:mx-auto lg:mb-3 ${
-                    seleccionada
-                      ? "border-marca bg-marca"
-                      : "border-borde-fuerte group-hover:border-marca-viva"
-                  }`}
-                  aria-hidden
-                />
-                <span>
-                  <span
-                    className={`rotulo block transition-colors ${
-                      seleccionada ? "text-marca" : "text-tinta-tenue"
-                    }`}
-                  >
-                    {e.n}
-                  </span>
-                  <span
-                    className={`mt-0.5 block font-medium transition-colors ${
-                      seleccionada ? "text-tinta" : "text-tinta-suave"
-                    }`}
-                  >
-                    {e.titulo}
-                  </span>
-                </span>
-              </button>
-            </li>
-          );
-        })}
-      </ol>
-
-      <div
-        role="tabpanel"
-        id={idPanel}
-        aria-labelledby={idEtapa(activa)}
-        tabIndex={0}
-        className="mt-6 rounded-xl border border-borde bg-superficie p-6 shadow-[var(--sombra-baja)] sm:min-h-[9rem]"
-      >
-        <div className="flex flex-wrap items-center gap-x-3 gap-y-2">
-          <span className="rotulo text-marca">{etapa.n}</span>
-          <span className="rounded-full bg-marca-suave px-3 py-1 text-sm font-medium text-marca">
-            {etapa.duracion}
+    <ol className="relative">
+      {etapas.map((e, i) => (
+        <li key={e.n} className="relative grid grid-cols-[2.5rem_1fr] gap-x-4 pb-8 last:pb-0 md:grid-cols-[2.5rem_14rem_1fr] md:gap-x-6">
+          {i < etapas.length - 1 ? (
+            <span
+              className="absolute left-5 top-10 bottom-0 w-px -translate-x-1/2 bg-borde-fuerte"
+              aria-hidden
+            />
+          ) : null}
+          <span className="relative z-10 flex size-10 items-center justify-center rounded-full bg-marca font-semibold text-marca-contraste">
+            {e.n}
           </span>
-        </div>
-        <h3 className="mt-3 text-xl font-semibold tracking-tight">{etapa.titulo}</h3>
-        <p className="mt-2 max-w-2xl text-tinta-suave">{etapa.detalle}</p>
-      </div>
-    </div>
+          <div className="pt-1.5">
+            <h3 className="text-lg font-semibold tracking-tight">{e.titulo}</h3>
+            <p className="mt-1 inline-block rounded-full bg-marca-suave px-3 py-0.5 text-sm font-medium text-marca">
+              {e.duracion}
+            </p>
+          </div>
+          <p className="col-start-2 mt-2 max-w-prose text-tinta-suave md:col-start-3 md:mt-1.5 md:pt-1.5">
+            {e.detalle}
+          </p>
+        </li>
+      ))}
+    </ol>
   );
 }

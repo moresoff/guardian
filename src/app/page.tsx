@@ -6,7 +6,7 @@ import { getProyecto, getProyectosPublicos } from "@/lib/data";
 import { formatNum, modalidadLabel } from "@/lib/format";
 import { buscarImagen } from "@/lib/imagenes";
 import { ProyectoCard } from "@/components/proyecto-card";
-import { ConsultaModalidades } from "@/components/consulta-modalidades";
+import { CORREO_CONTACTO, TELEFONO_CONTACTO } from "@/lib/contacto";
 import { CICLOS, SISTEMAS_EN_ORDEN } from "@/lib/ciclos";
 
 export const metadata = {
@@ -89,35 +89,35 @@ const QUE_HACEMOS = [
 
 const ETAPAS: Etapa[] = [
   {
-    n: "Etapa 01",
+    n: "1",
     titulo: "Publicación",
     duracion: "Minutos",
     detalle:
       "El productor declara el ciclo: cuántas cabezas, de qué categoría, con qué peso entran y con cuál salen, qué tipo de ciclo es y qué necesita para llevarlo adelante.",
   },
   {
-    n: "Etapa 02",
+    n: "2",
     titulo: "Documentación",
     duracion: "El mismo día",
     detalle:
       "Sube los papeles que ya tiene —RENSPA, DT-e, listado de caravanas, boleto de compra-venta—. Guardian los lee y cruza cada dato contra lo declarado. Si el DT-e ampara 34 animales y el proyecto dice 200, aparece antes de publicarse.",
   },
   {
-    n: "Etapa 03",
+    n: "3",
     titulo: "Validación",
     duracion: "24 a 72 horas",
     detalle:
       "Guardian revisa las discrepancias y verifica la autenticidad de los comprobantes por el canal oficial. Que los datos cierren entre sí no prueba que el papel sea auténtico. Son dos controles distintos y los dos tienen que pasar.",
   },
   {
-    n: "Etapa 04",
+    n: "4",
     titulo: "Colaboración",
     duracion: "Mientras el proyecto está abierto",
     detalle:
       "El proyecto queda visible y los colaboradores se suman. Cuando está completo, lo necesario para el ciclo se libera según el estado de la hacienda: de una vez si el lote ya existe, por tramos si todavía hay que comprarlo.",
   },
   {
-    n: "Etapa 05",
+    n: "5",
     titulo: "Ciclo y liquidación",
     duracion: "Según el tipo de ciclo",
     detalle:
@@ -217,123 +217,139 @@ export default async function Home() {
         </div>
       </section>
 
-      {/* Debajo de la foto, la página vuelve al ancho del contenedor. */}
-      <div>
-        <div className="space-y-16 py-14">
-          {/* 1. Quién es Guardian */}
-          <section>
-            <h2 className="text-3xl font-semibold tracking-tight">Quién es Guardian</h2>
-            <div className="mt-5 grid gap-x-10 gap-y-4 lg:grid-cols-2">
-              <p className="text-tinta-suave">
-                Guardian es una plataforma que pone en contacto a productores ganaderos con
-                personas que quieren colaborar en un ciclo de engorde. No es una
-                fiduciaria ni administra el dinero de nadie: conecta, verifica la
-                documentación y deja todo a la vista.
-              </p>
-              <p className="text-tinta-suave">
-                Nació de un problema concreto: al productor que engorda se le termina el
-                dinero antes que el ciclo y sale a vender hacienda liviana, la peor venta
-                posible. Del otro lado hay gente que quiere participar en un ciclo
-                ganadero y no encuentra por dónde entrar sin comprar un campo.
-              </p>
-            </div>
-          </section>
+      {/* 1. Quién es Guardian */}
+      <Banda>
+        <h2 className="text-3xl font-semibold tracking-tight">Quién es Guardian</h2>
+        <div className="mt-5 grid gap-x-10 gap-y-4 lg:grid-cols-2">
+          <p className="text-tinta-suave">
+            Guardian es una plataforma que pone en contacto a productores ganaderos con
+            personas que quieren colaborar en un ciclo de engorde. No es una fiduciaria ni
+            administra el dinero de nadie: conecta, verifica la documentación y deja todo a
+            la vista.
+          </p>
+          <p className="text-tinta-suave">
+            Nació de un problema concreto: al productor que engorda se le termina el dinero
+            antes que el ciclo y sale a vender hacienda liviana, la peor venta posible. Del
+            otro lado hay gente que quiere participar en un ciclo ganadero y no encuentra
+            por dónde entrar sin comprar un campo.
+          </p>
+        </div>
+      </Banda>
 
-          {/* 2. Qué hacemos */}
-          <section className="border-t border-borde pt-14">
-            <h2 className="text-3xl font-semibold tracking-tight">Qué hacemos</h2>
-            <dl className="mt-6 grid gap-x-10 gap-y-5 sm:grid-cols-3">
-              {QUE_HACEMOS.map((c) => (
-                <div key={c.titulo} className="border-t border-borde-fuerte pt-3">
-                  <dt className="text-lg font-semibold tracking-tight">{c.titulo}</dt>
-                  <dd className="mt-1 text-sm text-tinta-suave">{c.texto}</dd>
-                </div>
-              ))}
-            </dl>
-            <div className="mt-8">
-              <BotonLink href="/registro">Crear mi cuenta</BotonLink>
-            </div>
-          </section>
+      {/* 2. Qué hacemos: tres cosas distintas, tres tarjetas distintas */}
+      <Banda tono="bg-marca-suave">
+        <h2 className="text-3xl font-semibold tracking-tight">Qué hacemos</h2>
+        <div className="mt-7 grid gap-4 lg:grid-cols-5">
+          <article className="rounded-2xl bg-superficie p-7 shadow-[var(--sombra-baja)] lg:col-span-3 lg:p-9">
+            <h3 className="text-2xl font-semibold tracking-tight">{QUE_HACEMOS[0].titulo}</h3>
+            <p className="mt-3 max-w-prose text-tinta-suave">{QUE_HACEMOS[0].texto}</p>
+          </article>
+          <article className="rounded-2xl bg-marca-fuerte p-7 text-white lg:col-span-2 lg:p-9">
+            <h3 className="text-2xl font-semibold tracking-tight">{QUE_HACEMOS[1].titulo}</h3>
+            <p className="mt-3 text-white/85">{QUE_HACEMOS[1].texto}</p>
+          </article>
+          <article className="rounded-2xl border border-marca/25 bg-papel p-7 lg:col-span-5 lg:flex lg:items-baseline lg:justify-between lg:gap-10 lg:px-9">
+            <h3 className="text-xl font-semibold tracking-tight lg:shrink-0">
+              {QUE_HACEMOS[2].titulo}
+            </h3>
+            <p className="mt-2 max-w-prose text-tinta-suave lg:mt-0">{QUE_HACEMOS[2].texto}</p>
+          </article>
+        </div>
+      </Banda>
 
-          {/* 3. Tres tipos de ciclo */}
-          <section className="border-t border-borde pt-14">
-            <div className="max-w-2xl">
-              <h2 className="text-3xl font-semibold tracking-tight">
-                Tres tipos de ciclo
-              </h2>
-              <p className="mt-3 text-tinta-suave">
-                Cada proyecto es de uno de estos tres tipos, y cada tipo tiene su propia
-                forma de llevar el animal hasta la faena.
-              </p>
-            </div>
+      {/* 3. Tres tipos de ciclo, como un recorrido del corral a la pastura */}
+      <Banda tono="bg-superficie">
+        <div className="max-w-2xl">
+          <h2 className="text-3xl font-semibold tracking-tight">Tres tipos de ciclo</h2>
+          <p className="mt-3 text-tinta-suave">
+            Cada proyecto es de uno de estos tres tipos. Van de menos a más pastura: del
+            corral de punta a punta, a todo el ciclo sobre el campo.
+          </p>
+        </div>
 
-            <dl className="mt-6 grid gap-x-10 gap-y-5 sm:grid-cols-3">
-              {SISTEMAS_EN_ORDEN.map((k) => (
-                <div key={k} className="border-t border-borde-fuerte pt-3">
-                  <dt className="text-lg font-semibold tracking-tight">{CICLOS[k].nombre}</dt>
-                  <dd className="mt-1 text-sm text-tinta-suave">{CICLOS[k].descripcion}</dd>
-                </div>
-              ))}
-            </dl>
-            <p className="mt-5 text-sm text-tinta-suave">
-              Cada proyecto detalla sus condiciones para quienes tienen una cuenta.
-            </p>
-            <ConsultaModalidades className="mt-1" />
-          </section>
-
-          {/* 4. Cómo corre un ciclo */}
-          <section className="border-t border-borde pt-14">
-            <div className="max-w-2xl">
-              <h2 className="text-3xl font-semibold tracking-tight">Cómo corre un ciclo</h2>
-              <p className="mt-3 text-tinta-suave">
-                Pasá por encima de cada etapa (o tocala) para ver qué pasa en cada una.
-              </p>
-            </div>
-            <div className="mt-8">
-              <LineaDeTiempo etapas={ETAPAS} />
-            </div>
-          </section>
-
-          {/* 5. Antes de participar */}
-          <section className="border-t border-borde pt-14">
-            <h2 className="text-3xl font-semibold tracking-tight">Antes de participar</h2>
-            <dl className="mt-6 grid gap-x-10 gap-y-5 sm:grid-cols-2">
-              {ANTES_DE_PARTICIPAR.map((c) => (
-                <div key={c.titulo} className="border-t border-borde pt-3">
-                  <dt className="font-semibold tracking-tight">{c.titulo}</dt>
-                  <dd className="mt-1 text-sm text-tinta-suave">{c.texto}</dd>
-                </div>
-              ))}
-            </dl>
-          </section>
-
-          {/* 6. Proyectos y casos */}
-          <section className="border-t border-borde pt-14">
-            <div className="flex flex-wrap items-end justify-between gap-4">
-              <div className="max-w-2xl">
-                <h2 className="text-3xl font-semibold tracking-tight">
-                  Proyectos y casos cerrados
-                </h2>
-                <p className="mt-3 text-tinta-suave">
-                  Lo que está abierto hoy y un ciclo ya cerrado, con lo que dijo el
-                  romaneo del frigorífico.
-                </p>
+        <ol className="mt-10 grid gap-8 md:grid-cols-3 md:gap-0">
+          {SISTEMAS_EN_ORDEN.map((k, i) => (
+            <li key={k} className="relative md:pr-8">
+              {/* El camino: un punto por tipo y una línea que sigue hacia el próximo. */}
+              <div className="flex items-center" aria-hidden>
+                <span className="size-4 shrink-0 rounded-full bg-marca ring-4 ring-marca-suave" />
+                {i < SISTEMAS_EN_ORDEN.length - 1 ? (
+                  <span className="relative ml-1 hidden h-px flex-1 bg-marca/40 md:block">
+                    <svg
+                      viewBox="0 0 8 12"
+                      className="absolute -right-0.5 top-1/2 h-3 w-2 -translate-y-1/2 text-marca/60"
+                      fill="none"
+                      stroke="currentColor"
+                      strokeWidth="1.5"
+                    >
+                      <path d="M1 1l5 5-5 5" />
+                    </svg>
+                  </span>
+                ) : null}
               </div>
-              <BotonLink href="/proyectos" variante="secundario">
-                Ver el catálogo
-              </BotonLink>
-            </div>
+              <h3 className="mt-4 text-xl font-semibold tracking-tight">{CICLOS[k].nombre}</h3>
+              <p className="mt-1.5 text-tinta-suave">{CICLOS[k].descripcion}</p>
+            </li>
+          ))}
+        </ol>
+        <p className="mt-8 text-sm text-tinta-suave">
+          Cada proyecto detalla sus condiciones para quienes tienen una cuenta.
+        </p>
+      </Banda>
 
-            <ul className="mt-9 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
-              {destacados.map((p, i) => (
-                <li key={p.id}>
-                  <ProyectoCard
-                    proyecto={p}
-                    foto={buscarImagen("fotos", `proyecto-${i + 1}`)}
-                    resumida
-                  />
-                </li>
-              ))}
+      {/* 4. Cómo corre un ciclo */}
+      <Banda>
+        <div className="max-w-2xl">
+          <h2 className="text-3xl font-semibold tracking-tight">Cómo corre un ciclo</h2>
+          <p className="mt-3 text-tinta-suave">
+            Cinco etapas, de que el productor publica hasta que cierra el romaneo.
+          </p>
+        </div>
+        <div className="mt-9">
+          <LineaDeTiempo etapas={ETAPAS} />
+        </div>
+      </Banda>
+
+      {/* 5. Antes de participar */}
+      <Banda tono="bg-superficie-2">
+        <h2 className="text-3xl font-semibold tracking-tight">Antes de participar</h2>
+        <dl className="mt-7 grid gap-x-10 gap-y-6 sm:grid-cols-2">
+          {ANTES_DE_PARTICIPAR.map((c) => (
+            <div key={c.titulo} className="border-t border-borde-fuerte pt-3">
+              <dt className="font-semibold tracking-tight">{c.titulo}</dt>
+              <dd className="mt-1 text-tinta-suave">{c.texto}</dd>
+            </div>
+          ))}
+        </dl>
+      </Banda>
+
+      {/* 6. Proyectos y casos */}
+      <Banda>
+        <div className="flex flex-wrap items-end justify-between gap-4">
+          <div className="max-w-2xl">
+            <h2 className="text-3xl font-semibold tracking-tight">
+              Proyectos y casos cerrados
+            </h2>
+            <p className="mt-3 text-tinta-suave">
+              Lo que está abierto hoy y un ciclo ya cerrado, con lo que dijo el romaneo del
+              frigorífico.
+            </p>
+          </div>
+          <BotonLink href="/proyectos" variante="secundario">
+            Ver el catálogo
+          </BotonLink>
+        </div>
+
+        <ul className="mt-9 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+          {destacados.map((p, i) => (
+            <li key={p.id}>
+              <ProyectoCard
+                proyecto={p}
+                foto={buscarImagen("fotos", `proyecto-${i + 1}`)}
+                resumida
+              />
+            </li>
+          ))}
 
               {cerrado?.resultado ? (
                 <li>
@@ -384,24 +400,90 @@ export default async function Home() {
                   </Panel>
                 </li>
               ) : null}
-            </ul>
-          </section>
+        </ul>
+      </Banda>
 
-          <section className="border-t border-borde pt-8">
-            <p className="text-sm text-tinta-suave">
-              Es el prototipo de la plataforma, con datos de prueba. La publicación de
-              proyectos, la carga de documentación y su validación se pueden recorrer de
-              punta a punta; la participación en proyectos todavía no.
+      {/* 7. Cierre: crear la cuenta y el contacto, juntos y al final */}
+      <section className={`${ANCHO_COMPLETO} bg-marca-fuerte text-white`}>
+        <div className="mx-auto grid max-w-6xl gap-10 px-4 py-14 lg:grid-cols-2 lg:gap-16">
+          <div>
+            <h2 className="text-3xl font-semibold tracking-tight">Empezá con tu cuenta</h2>
+            <p className="mt-3 max-w-md text-white/85">
+              Con una cuenta ves las condiciones de cada proyecto, el respaldo documental
+              completo y seguís el ciclo hasta el cierre.
             </p>
-            <Link
-              href="/admin"
-              className="mt-3 inline-block text-sm text-tinta-tenue underline underline-offset-4 transition-colors hover:text-marca"
-            >
+            <div className="mt-6 flex flex-wrap gap-3">
+              <Link
+                href="/registro"
+                className="flex min-h-11 items-center rounded-lg bg-white px-5 py-2 font-medium text-marca-fuerte transition-colors hover:bg-marca-suave"
+              >
+                Crear mi cuenta
+              </Link>
+              <Link
+                href="/ingresar"
+                className="flex min-h-11 items-center rounded-lg border border-white/40 px-5 py-2 font-medium text-white transition-colors hover:bg-white/10"
+              >
+                Ya tengo cuenta
+              </Link>
+            </div>
+          </div>
+
+          <div>
+            <h2 className="text-3xl font-semibold tracking-tight">Contacto</h2>
+            <p className="mt-3 max-w-md text-white/85">
+              Consultá por modalidades de participación. Te respondemos por el medio que
+              prefieras.
+            </p>
+            <dl className="mt-6 space-y-3">
+              <div>
+                <dt className="text-sm text-white/70">Correo</dt>
+                <dd>
+                  <a
+                    href={`mailto:${CORREO_CONTACTO}`}
+                    className="inline-flex min-h-11 items-center text-xl font-medium underline underline-offset-4 hover:text-marca-suave"
+                  >
+                    {CORREO_CONTACTO}
+                  </a>
+                </dd>
+              </div>
+              <div>
+                <dt className="text-sm text-white/70">Teléfono</dt>
+                <dd>
+                  <a
+                    href={`tel:+54${TELEFONO_CONTACTO.replace(/\D/g, "")}`}
+                    className="tabular inline-flex min-h-11 items-center text-xl font-medium underline underline-offset-4 hover:text-marca-suave"
+                  >
+                    {TELEFONO_CONTACTO}
+                  </a>
+                </dd>
+              </div>
+            </dl>
+          </div>
+        </div>
+
+        <div className="mx-auto max-w-6xl border-t border-white/15 px-4 py-5">
+          <p className="max-w-3xl text-sm text-white/75">
+            Es el prototipo de la plataforma, con datos de prueba. La publicación de
+            proyectos, la carga de documentación y su validación se pueden recorrer de punta
+            a punta; la participación en proyectos todavía no.{" "}
+            <Link href="/admin" className="underline underline-offset-4 hover:text-white">
               Ver la cola de validación de Guardian
             </Link>
-          </section>
+          </p>
         </div>
-      </div>
+      </section>
     </div>
+  );
+}
+
+/**
+ * Cada sección es una franja de ancho completo con su propio tono: sin eso las
+ * seis se leen como un solo bloque de texto.
+ */
+function Banda({ tono = "", children }: { tono?: string; children: React.ReactNode }) {
+  return (
+    <section className={`${ANCHO_COMPLETO} ${tono}`}>
+      <div className="mx-auto max-w-6xl px-4 py-14">{children}</div>
+    </section>
   );
 }
