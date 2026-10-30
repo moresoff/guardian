@@ -332,3 +332,10 @@ por rubro y la suma se controla contra el capital pedido.
 - La cookie `guardian_sesion` es httpOnly y está firmada (HMAC con `SESION_SECRETO`).
 - Lo único real de la sesión es la cuenta: el nombre se muestra en el menú y en el saludo del productor. El resto de las pantallas sigue con datos de demostración.
 - Pendiente: pasar a Supabase Auth (verificación de correo, recuperación de contraseña) cuando estén las credenciales del proyecto.
+
+## Navegación (pantallas fusionadas)
+
+- **Productor:** «Mis proyectos» (`/productor`: tablero y lista en una sola pantalla), «Mi establecimiento» (`/productor/establecimiento`, pestañas Mis datos / Documentos y garantías / Trayectoria) y el botón «Publicar un proyecto» (`/productor/proyectos/nuevo`, una sola pantalla).
+- **Colaborador:** «Catálogo» (`/proyectos`) y «Mi cartera» (`/colaborador/cartera`, pestañas Mis aportes / Mis datos).
+- Las rutas viejas (`/productor/proyectos`, `/productor/perfil`, `/productor/documentacion`, `/colaborador/perfil`) redirigen a las nuevas.
+- La cola de validación (`/admin`) no se enlaza desde la portada.

@@ -41,12 +41,12 @@ const PASOS: Record<Lado, Paso[]> = {
     {
       titulo: "Cargá tu establecimiento",
       texto: "RENSPA, CUIT del titular, provincia y sistema productivo. Se carga una vez y sirve para todos tus ciclos.",
-      href: "/productor/perfil",
+      href: "/productor/establecimiento",
     },
     {
       titulo: "Subí la documentación",
       texto: "RENSPA, DT-e, listado de caravanas y boleto de compra-venta. Guardian los cruza con lo que declarás y te avisa si algo no cierra.",
-      href: "/productor/documentacion",
+      href: "/productor/establecimiento?tab=documentos",
     },
     {
       titulo: "Armá tu proyecto",
@@ -86,7 +86,7 @@ const PASOS: Record<Lado, Paso[]> = {
     {
       titulo: "Completá tu perfil",
       texto: "La cuenta donde querés recibir lo que te corresponda y tus datos de contacto.",
-      href: "/colaborador/perfil",
+      href: "/colaborador/cartera?tab=datos",
     },
   ],
 };
@@ -189,13 +189,20 @@ function Guia() {
   const pasos = estado ? PASOS[estado.lado] : [];
   const indice = estado ? Math.min(estado.paso, pasos.length - 1) : 0;
   const paso: Paso | undefined = pasos[indice];
-  const enSuPantalla = paso ? pathname === paso.href : false;
+  const tab = parametros.get("tab");
+  /** ¿Es esta la pantalla del paso? Las pestañas cuentan: son pantallas distintas. */
+  const coincide = (p: Paso) => {
+    const [ruta, consulta] = p.href.split("?");
+    if (pathname !== ruta) return false;
+    return consulta ? consulta === `tab=${tab}` : !tab || tab === "datos" || tab === "aportes";
+  };
+  const enSuPantalla = paso ? coincide(paso) : false;
 
   const ir = (n: number) => {
     if (!estado) return;
     guardar({ ...estado, paso: n });
     const destino = PASOS[estado.lado][n];
-    if (destino && destino.href !== pathname) router.push(destino.href);
+    if (destino && !coincide(destino)) router.push(destino.href);
   };
 
   // Ubica el resaltado: busca el objetivo, lo trae a la vista y sigue sus cambios

@@ -1,9 +1,9 @@
 import { usuarioActual } from "@/lib/sesion";
-import Link from "next/link";
+import { Suspense } from "react";
 import { notFound } from "next/navigation";
 import { Avisos, type Aviso } from "@/components/avisos";
 import { SaldosCard } from "@/components/saldos-card";
-import { TarjetaProyecto, type ItemProyecto } from "@/components/tarjeta-proyecto";
+import type { ItemProyecto } from "@/components/tarjeta-proyecto";
 import { BotonLink, Vacio } from "@/components/ui/primitivos";
 import {
   PRODUCTOR_DEMO,
@@ -14,7 +14,8 @@ import {
   getSaldosDeProductor,
 } from "@/lib/data";
 import { camposIncompletos } from "@/lib/ficha";
-import { listarImagenes } from "@/lib/imagenes";
+import { fotoDelProyecto } from "@/lib/imagenes";
+import { ListaProyectos } from "./lista";
 import {
   documentosRequeridos,
   formatNum,
@@ -22,12 +23,13 @@ import {
   porcentajeRecaudado,
 } from "@/lib/format";
 
-export const metadata = { title: "Mi cuenta — Guardian" };
+export const metadata = { title: "Mis proyectos — Guardian" };
 
 /**
- * El resumen de la cuenta: lo que está esperando algo suyo y lo que pasó sin él.
- * No es una página de bienvenida: es el tablero de alguien que ya publicó y
- * quiere saber cómo viene.
+ * Mis proyectos: el tablero y la lista en una sola pantalla. Arriba, lo que está
+ * esperando algo del productor; abajo, todos sus proyectos agrupados por quién
+ * tiene la pelota. Antes eran dos pantallas (un resumen y una lista) que se
+ * mandaban de una a la otra.
  */
 export default async function ResumenProductor() {
   const usuario = await usuarioActual();
@@ -142,13 +144,10 @@ export default async function ResumenProductor() {
     { t: "Completados", v: cuenta(["cerrado"]) },
   ];
 
-  // Las mismas tarjetas que en «Mis proyectos», con las fotos que carga el equipo.
-  const fotos = listarImagenes("fotos", "proyecto");
-
-  const ultimos: ItemProyecto[] = proyectos.slice(0, 4).map((p, i) => ({
+  const items: ItemProyecto[] = proyectos.map((p) => ({
     proyecto: p,
     pendiente: pendientes.get(p.id),
-    foto: fotos.length > 0 ? fotos[i % fotos.length] : null,
+    foto: fotoDelProyecto(p.id),
   }));
 
   return (
@@ -162,22 +161,13 @@ export default async function ResumenProductor() {
             {productor.establecimiento} · {productor.localidad}, {productor.provincia}
           </p>
         </div>
-        <BotonLink href="/productor/proyectos/nuevo">Publicar un proyecto</BotonLink>
       </div>
 
       <section className="grid gap-6 lg:grid-cols-2">
         <SaldosCard saldos={saldos} />
 
         <div className="flex flex-col">
-          <div className="flex flex-wrap items-baseline justify-between gap-x-4 gap-y-1">
-            <h2 className="text-lg font-semibold tracking-tight">Tus proyectos</h2>
-            <Link
-              href="/productor/proyectos"
-              className="text-sm font-medium text-marca underline underline-offset-4"
-            >
-              Ver todos
-            </Link>
-          </div>
+          <h2 className="text-lg font-semibold tracking-tight">Tus proyectos</h2>
 
           {/* Las cuatro tarjetas ocupan lo mismo que la tarjeta de saldos: son
               las dos mitades de un mismo bloque, no dos bloques sueltos. */}
@@ -205,28 +195,22 @@ export default async function ResumenProductor() {
       ) : null}
 
       <section className="border-t border-borde pt-8">
-        <h2 className="text-lg font-semibold tracking-tight">Tus últimos proyectos</h2>
-
-        {proyectos.length === 0 ? (
-          <div className="mt-5">
-            <Vacio
-              titulo="Todavía no publicaste ningún proyecto"
-              accion={
-                <BotonLink href="/productor/proyectos/nuevo">Publicar el primero</BotonLink>
-              }
-            >
-              Un proyecto describe un ciclo de engorde y el capital que necesitás para
-              llevarlo adelante.
-            </Vacio>
-          </div>
+        {items.length === 0 ? (
+          <Vacio
+            titulo="Todavía no publicaste ningún proyecto"
+            accion={
+              <BotonLink href="/productor/proyectos/nuevo">Publicar el primero</BotonLink>
+            }
+          >
+            Un proyecto describe un ciclo de engorde y lo que necesitás para llevarlo
+            adelante.
+          </Vacio>
         ) : (
-          <ul className="mt-5 grid gap-5 sm:grid-cols-2">
-            {ultimos.map((i) => (
-              <li key={i.proyecto.id}>
-                <TarjetaProyecto item={i} />
-              </li>
-            ))}
-          </ul>
+          // La lista lee la solapa y el orden de la URL: necesita su propio
+          // límite de Suspense para que la página siga prerenderizándose.
+          <Suspense fallback={null}>
+            <ListaProyectos items={items} />
+          </Suspense>
         )}
       </section>
     </div>

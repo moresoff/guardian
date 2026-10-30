@@ -17,9 +17,10 @@ const MENUS = {
     inicio: "/productor",
     etiqueta: "Productor",
     items: [
-      { href: "/productor/proyectos", label: "Mis proyectos" },
-      { href: "/productor/documentacion", label: "Documentación" },
-      { href: "/productor/perfil", label: "Mi establecimiento" },
+      // Inicio y lista de proyectos son la misma pantalla: «Mis proyectos» está
+      // activa en ella y en la ficha o el alta de un proyecto.
+      { href: "/productor", label: "Mis proyectos", exacta: true, tambien: ["/productor/proyectos"] },
+      { href: "/productor/establecimiento", label: "Mi establecimiento" },
     ],
   },
   colaborador: {
@@ -28,7 +29,6 @@ const MENUS = {
     items: [
       { href: "/proyectos", label: "Catálogo" },
       { href: "/colaborador/cartera", label: "Mi cartera" },
-      { href: "/colaborador/perfil", label: "Mi perfil" },
     ],
   },
   admin: {
@@ -165,7 +165,10 @@ export function Nav({ conSesion, nombre }: { conSesion: boolean; nombre: string 
         {menu ? (
           <nav className="flex flex-wrap items-center gap-1" aria-label="Secciones">
             {menu.items.map((s) => {
-              const activa = pathname.startsWith(s.href);
+              const activa =
+                "exacta" in s
+                  ? pathname === s.href || s.tambien.some((p) => pathname.startsWith(p))
+                  : pathname.startsWith(s.href);
               return (
                 <Link
                   key={s.href}
@@ -193,6 +196,14 @@ export function Nav({ conSesion, nombre }: { conSesion: boolean; nombre: string 
         <div className="ml-auto flex flex-wrap items-center gap-2">
           {area ? (
             <>
+              {area === "productor" && !pathname.startsWith("/productor/proyectos/nuevo") ? (
+                <Link
+                  href="/productor/proyectos/nuevo"
+                  className="flex min-h-11 items-center rounded-full bg-marca px-4 py-2 text-sm font-medium text-marca-contraste transition-colors hover:bg-marca-fuerte"
+                >
+                  Publicar un proyecto
+                </Link>
+              ) : null}
               {nombre ? (
                 <span
                   className="max-w-40 truncate px-1 text-sm font-medium text-tinta sm:max-w-56"

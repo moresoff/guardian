@@ -37,7 +37,7 @@ export function EnviadoAValidacion({
           <Boton variante="secundario" onClick={onCerrar}>
             {etiquetaCerrar}
           </Boton>
-          <BotonLink href="/productor/proyectos">Ver mis proyectos</BotonLink>
+          <BotonLink href="/productor">Ver mis proyectos</BotonLink>
         </>
       }
     >

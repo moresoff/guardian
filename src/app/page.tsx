@@ -478,13 +478,7 @@ export default async function Home() {
         <p className="mx-auto max-w-2xl text-center text-sm text-tinta-suave">
           Es el prototipo de la plataforma, con datos de prueba. La publicación
           de proyectos, la carga de documentación y su validación se pueden
-          recorrer de punta a punta; la participación en proyectos todavía no.{" "}
-          <Link
-            href="/admin"
-            className="underline underline-offset-4 hover:text-marca"
-          >
-            Ver la cola de validación de Guardian
-          </Link>
+          recorrer de punta a punta; la participación en proyectos todavía no.
         </p>
       </Banda>
     </div>

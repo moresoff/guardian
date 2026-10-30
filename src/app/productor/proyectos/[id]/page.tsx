@@ -84,7 +84,7 @@ export default async function DetalleProyectoProductor({
 
   return (
     <div>
-      <Link href="/productor/proyectos" className="inline-flex min-h-11 items-center text-sm text-tinta-suave hover:text-marca">
+      <Link href="/productor" className="inline-flex min-h-11 items-center text-sm text-tinta-suave hover:text-marca">
         ← Volver a mis proyectos
       </Link>
 
