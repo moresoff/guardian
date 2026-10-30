@@ -25,7 +25,7 @@ export const metadata: Metadata = {
 /** La barra del navegador en el teléfono acompaña el fondo de la página. */
 export const viewport: Viewport = {
   themeColor: "#f5f5f3",
-  colorScheme: "light",
+  colorScheme: "only light",
 };
 
 export default function RootLayout({ children }: LayoutProps<"/">) {

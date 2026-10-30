@@ -37,6 +37,20 @@ conservan como historia de cómo se llegó hasta acá.
   fiduciario de las series que nombraban a Guardian. El runner de migraciones corre
   todas las migraciones desde cero (no lleva registro de las aplicadas): sobre una
   base que ya tiene la 0001 hay que correr la 0002 a mano.
+- **Tres tipos de ciclo (2026-10-30).** El sistema productivo define el plazo y el
+  reparto del resultado; la tabla vive en `src/lib/ciclos.ts`:
+
+  | Tipo (`sistemaProductivo`) | Plazo | Productor | Colaboradores | Rentabilidad anual estimada del productor |
+  |---|---|---|---|---|
+  | Feedlot puro (`corral`) | 131 días | 32,01 % | 67,99 % | 6,59 % |
+  | Mixto (`mixto`) | 180 días | 30,55 % | 69,45 % | 7,46 % |
+  | Pastura pura (`pastura`) | 240 días | 26,33 % | 73,67 % | 41,35 % |
+
+  El seed y el alta de proyecto usan esa tabla. La rentabilidad es una estimación
+  del modelo y solo se muestra del lado del productor. Las cifras del feedlot
+  suman 100 con 32,01 / 67,99; el pedido original decía 32,1 / 67,99 (100,09).
+- **Registro.** El paso 3 ya no resume lo cargado: muestra el recorrido de la
+  aplicación, paso a paso, distinto para productor y colaborador.
 - **Interfaz.** El filtro por modalidad del catálogo se sacó (había una sola
   opción), el alta ya no pregunta la modalidad y pide vendedor y establecimiento
   receptor solo si el lote hay que comprarlo, o proveedores si ya existe.

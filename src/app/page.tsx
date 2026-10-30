@@ -104,7 +104,7 @@ const ETAPAS: Etapa[] = [
   {
     n: "Etapa 05",
     titulo: "Ciclo y liquidación",
-    duracion: "90 a 180 días",
+    duracion: "131 a 240 días",
     detalle:
       "Corre el engorde. Al cerrar, el romaneo de playa del frigorífico dice cuántas cabezas se faenaron, cuántos kilos vivos entraron y cuántos kilos de carne salieron. El romaneo determina lo que cobra cada uno.",
   },
@@ -240,7 +240,8 @@ export default async function Home() {
               </h2>
               <p className="mt-3 text-tinta-suave">
                 El proceso productivo de engorde: el capital compra la hacienda y la
-                termina. Los plazos son los del animal: entre 90 y 180 días.
+                termina. Hay tres tipos de ciclo —feedlot puro, mixto y pastura pura— y
+                el plazo va de 131 a 240 días.
               </p>
             </div>
 

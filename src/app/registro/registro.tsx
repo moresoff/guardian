@@ -3,14 +3,10 @@
 import { useState } from "react";
 import Link from "next/link";
 import { Campo, GrupoOpciones, Seleccion } from "@/components/ui/campos";
-import {
-  Aviso,
-  Boton,
-  BotonLink,
-  Dato,
-  Panel,
-  Progreso,
-} from "@/components/ui/primitivos";
+import { Recorrido, type PasoDeRecorrido } from "@/components/recorrido";
+import { Aviso, Boton, BotonLink, Progreso } from "@/components/ui/primitivos";
+import { CICLOS, SISTEMAS_EN_ORDEN } from "@/lib/ciclos";
+import { formatPct } from "@/lib/format";
 import { PROVINCIAS } from "@/lib/provincias";
 import type { Rol } from "@/lib/types";
 
@@ -28,6 +24,120 @@ const LADOS: { rol: Lado; titulo: string; descripcion: string }[] = [
     titulo: "Soy colaborador",
     descripcion:
       "Quiero poner capital en ciclos ganaderos y seguir cómo avanza cada uno hasta el cierre.",
+  },
+];
+
+/** Los tres tipos de ciclo, con lo que le toca a cada parte. */
+function TiposDeCiclo({ paraProductor }: { paraProductor: boolean }) {
+  return (
+    <ul className="grid gap-3">
+      {SISTEMAS_EN_ORDEN.map((k) => {
+        const c = CICLOS[k];
+        return (
+          <li key={k} className="rounded-xl border border-borde bg-superficie-2 p-4">
+            <p className="font-semibold tracking-tight">
+              {c.nombre} <span className="font-normal text-tinta-suave">· {c.plazoDias} días</span>
+            </p>
+            <p className="mt-1 text-sm text-tinta-suave">{c.descripcion}</p>
+            <p className="mt-2 text-sm">
+              {paraProductor ? (
+                <>
+                  Vos te quedás con el{" "}
+                  <strong className="font-semibold">{formatPct(c.productorPct)}</strong> y los
+                  colaboradores con el{" "}
+                  <strong className="font-semibold">{formatPct(c.colaboradoresPct)}</strong>.
+                  Rentabilidad anual estimada para el productor:{" "}
+                  <strong className="font-semibold">
+                    {formatPct(c.rentabilidadAnualProductorPct)}
+                  </strong>
+                  .
+                </>
+              ) : (
+                <>
+                  Los colaboradores se reparten el{" "}
+                  <strong className="font-semibold">{formatPct(c.colaboradoresPct)}</strong> del
+                  resultado y el productor se queda con el{" "}
+                  <strong className="font-semibold">{formatPct(c.productorPct)}</strong>.
+                </>
+              )}
+            </p>
+          </li>
+        );
+      })}
+    </ul>
+  );
+}
+
+const PASOS_PRODUCTOR: PasoDeRecorrido[] = [
+  {
+    titulo: "Cargás tu establecimiento",
+    resumen:
+      "En tu panel cargás el RENSPA del campo una sola vez: queda guardado y sirve para todos tus ciclos.",
+  },
+  {
+    titulo: "Elegís el tipo de ciclo",
+    resumen:
+      "Hay tres. Cada uno tiene su plazo y su reparto del resultado, y eso define qué te toca a vos y qué les toca a los colaboradores.",
+    contenido: <TiposDeCiclo paraProductor />,
+  },
+  {
+    titulo: "Publicás el proyecto",
+    resumen:
+      "Contás cuántas cabezas, de qué categoría, con qué peso entran y con cuál salen, cuánto capital necesitás y qué garantía ofrecés. Si todavía hay que comprar la hacienda, también a quién.",
+  },
+  {
+    titulo: "Subís la documentación",
+    resumen:
+      "RENSPA, DT-e, listado de caravanas y boleto de compra-venta. Guardian cruza cada dato contra lo que declaraste y te avisa si algo no cierra, antes de publicar.",
+  },
+  {
+    titulo: "Guardian valida y sale al catálogo",
+    resumen:
+      "En 24 a 72 horas se revisan las discrepancias y se verifica el DT-e contra SENASA. Si todo cierra, el proyecto queda visible para los colaboradores.",
+  },
+  {
+    titulo: "Fondeo y desembolsos",
+    resumen:
+      "Los colaboradores ponen el capital en la cuenta del fideicomiso. Se libera por tramos contra la documentación de cada etapa, no todo junto.",
+  },
+  {
+    titulo: "Seguimiento y cierre",
+    resumen:
+      "Durante el ciclo cargás las pesadas y los gastos. Al cerrar, el romaneo del frigorífico dice cuántos kilos salieron y con eso se liquida el reparto del resultado.",
+  },
+];
+
+const PASOS_COLABORADOR: PasoDeRecorrido[] = [
+  {
+    titulo: "Mirás el catálogo",
+    resumen:
+      "Cada proyecto es un lote concreto, con su establecimiento, su RENSPA y el estado de validación a la vista.",
+  },
+  {
+    titulo: "Entendés el tipo de ciclo",
+    resumen:
+      "Hay tres tipos de ciclo y cada uno tiene su plazo y su reparto del resultado. Es lo primero que conviene mirar de un proyecto.",
+    contenido: <TiposDeCiclo paraProductor={false} />,
+  },
+  {
+    titulo: "Leés la ficha y el contrato",
+    resumen:
+      "Ahí están el presupuesto, el cronograma de desembolsos, la garantía, quién soporta la mortandad y quién es el fiduciario. El resultado proyectado es una estimación: puede ser menor, o negativo.",
+  },
+  {
+    titulo: "Adherís y transferís",
+    resumen:
+      "Elegís el monto y aceptás el contrato de adhesión. Después transferís a la cuenta del fideicomiso: el capital cuenta recién cuando el banco lo acredita.",
+  },
+  {
+    titulo: "Seguís el ciclo",
+    resumen:
+      "Ves las pesadas, los gastos y el avance del lote hasta el cierre, en tu cartera.",
+  },
+  {
+    titulo: "Cierre y liquidación",
+    resumen:
+      "Cuando el lote se faena, el romaneo de playa fija el resultado. De ahí sale lo que cobrás, en la cuenta que dejaste.",
   },
 ];
 
@@ -232,68 +342,34 @@ export function Registro({ ladoInicial }: { ladoInicial?: Lado }) {
       {paso === 3 ? (
         <section className="mt-8">
           <h2 className="text-2xl font-semibold tracking-tight">
-            Listo, {datos.nombre.trim().split(" ")[0]}
+            Listo, {datos.nombre.trim().split(" ")[0]}. Así funciona Guardian
           </h2>
           <p className="mt-2 text-tinta-suave">
-            Esto es lo que quedó cargado y lo que sigue de tu lado.
+            Este es el recorrido completo, de la primera pantalla al cierre del ciclo.
+            Mirá cada paso o saltá directo al que te interese.
           </p>
 
-          <Panel className="mt-6 p-5">
-            <dl className="grid gap-4 sm:grid-cols-2">
-              <Dato etiqueta="Entrás como">
-                {lado === "productor" ? "Productor" : "Colaborador"}
-              </Dato>
-              <Dato etiqueta="Correo">{datos.correo}</Dato>
-              <Dato etiqueta="CUIT">{datos.cuit}</Dato>
-              {lado === "productor" ? (
-                <Dato etiqueta="Establecimiento">
-                  {datos.establecimiento}, {datos.provincia}
-                </Dato>
-              ) : null}
-            </dl>
-          </Panel>
-
-          <h3 className="mt-7 text-lg font-semibold tracking-tight">Lo que sigue</h3>
-          <ol className="mt-3 space-y-3">
-            {(lado === "productor"
-              ? [
-                  "Cargás el RENSPA del establecimiento: queda guardado y sirve para todos tus ciclos.",
-                  "Publicás el primer proyecto con los datos del lote y los documentos de la hacienda.",
-                  "Guardian revisa que los papeles cierren entre sí y el proyecto sale al catálogo.",
-                ]
-              : [
-                  "Mirás el catálogo de ciclos abiertos, con el estado de validación de cada uno a la vista.",
-                  "Elegís uno y ponés el monto que quieras.",
-                  "Seguís el ciclo hasta el cierre y ves el romaneo de playa cuando termina.",
-                ]
-            ).map((t, i) => (
-              <li key={t} className="flex gap-3">
-                <span
-                  className="grid size-7 shrink-0 place-items-center rounded-full bg-marca-suave text-sm font-semibold text-marca"
-                  aria-hidden
-                >
-                  {i + 1}
-                </span>
-                <span className="text-tinta-suave">{t}</span>
-              </li>
-            ))}
-          </ol>
-
-          <div className="mt-7">
-            <Aviso tono="alerta" titulo="La cuenta todavía no se guarda">
-              Guardian es un prototipo: las cuentas se conectan en la etapa de backend. Lo
-              que cargaste no queda registrado, pero podés entrar igual y recorrer toda la
-              plataforma.
-            </Aviso>
-          </div>
-
-          <div className="mt-6 flex flex-wrap gap-3">
-            <BotonLink href={lado === "productor" ? "/productor" : "/proyectos"}>
-              Entrar a Guardian
-            </BotonLink>
-            <Boton variante="secundario" onClick={() => setPaso(2)}>
-              Corregir mis datos
-            </Boton>
+          <div className="mt-6">
+            <Recorrido
+              pasos={lado === "productor" ? PASOS_PRODUCTOR : PASOS_COLABORADOR}
+              final={
+                <div className="space-y-5">
+                  <Aviso tono="alerta" titulo="La cuenta todavía no se guarda">
+                    Guardian es un prototipo: las cuentas se conectan en la etapa de
+                    backend. Lo que cargaste no queda registrado, pero podés entrar igual
+                    y recorrer toda la plataforma.
+                  </Aviso>
+                  <div className="flex flex-wrap gap-3">
+                    <BotonLink href={lado === "productor" ? "/productor" : "/proyectos"}>
+                      Entrar a Guardian
+                    </BotonLink>
+                    <Boton variante="secundario" onClick={() => setPaso(2)}>
+                      Corregir mis datos
+                    </Boton>
+                  </div>
+                </div>
+              }
+            />
           </div>
         </section>
       ) : null}

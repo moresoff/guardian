@@ -29,11 +29,12 @@ import {
   DOCUMENTO_LABEL,
   POSESION_DESCRIPCION,
   POSESION_LABEL,
-  SISTEMA_LABEL,
   documentosRequeridos,
   formatArs,
   formatNum,
+  formatPct,
 } from "@/lib/format";
+import { CICLOS, SISTEMAS_EN_ORDEN } from "@/lib/ciclos";
 import type {
   Modalidad,
   SistemaProductivo,
@@ -97,7 +98,7 @@ const INICIAL: Borrador = {
   pesoSalidaObjetivoKg: "",
   destinoDetalle: "",
   montoObjetivoArs: "",
-  plazoDias: "120",
+  plazoDias: String(CICLOS.corral.plazoDias),
   plazoCobroDias: "30",
   rendimientoEsperadoPct: "",
   garantiaId: "",
@@ -465,16 +466,24 @@ function Paso2({
 
       <div className="grid gap-5 sm:grid-cols-2">
         <CamposDeFicha grupo="El lote" b={b} set={set} huecos={huecos} />
-        <Seleccion
-          etiqueta="Sistema productivo"
-          opciones={Object.values(SISTEMA_LABEL)}
-          value={SISTEMA_LABEL[b.sistemaProductivo]}
-          onChange={(e) => {
-            const clave = (Object.keys(SISTEMA_LABEL) as SistemaProductivo[]).find(
-              (k) => SISTEMA_LABEL[k] === e.target.value,
-            );
-            if (clave) set("sistemaProductivo", clave);
+      </div>
+
+      <div>
+        <TituloBloque descripcion="Define el plazo y cómo se reparte el resultado entre el productor y los colaboradores.">
+          Tipo de ciclo
+        </TituloBloque>
+        <GrupoOpciones
+          etiqueta="Tipo de ciclo"
+          valor={b.sistemaProductivo}
+          onCambio={(v) => {
+            set("sistemaProductivo", v);
+            set("plazoDias", String(CICLOS[v].plazoDias));
           }}
+          opciones={SISTEMAS_EN_ORDEN.map((k) => ({
+            valor: k,
+            titulo: `${CICLOS[k].nombre} · ${CICLOS[k].plazoDias} días`,
+            descripcion: `${CICLOS[k].descripcion} El productor se queda con el ${formatPct(CICLOS[k].productorPct)} del resultado y los colaboradores con el ${formatPct(CICLOS[k].colaboradoresPct)}. Rentabilidad anual estimada para el productor: ${formatPct(CICLOS[k].rentabilidadAnualProductorPct)}.`,
+          }))}
         />
       </div>
 

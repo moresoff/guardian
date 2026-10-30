@@ -148,8 +148,8 @@ export const POSESION_DESCRIPCION: Record<TipoPosesion, string> = {
 };
 
 export const SISTEMA_LABEL: Record<SistemaProductivo, string> = {
-  corral: "Corral",
-  pastura: "Pastura",
+  corral: "Feedlot puro",
+  pastura: "Pastura pura",
   mixto: "Mixto",
 };
 

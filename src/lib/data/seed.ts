@@ -185,15 +185,15 @@ const proyectosDeclarados: ProyectoDeclarado[] = [
       monedaAporte: "ARS",
       monedaDevolucion: "ARS",
       participacion: {
-        colaboradoresPct: 65,
-        productorPct: 35,
+        colaboradoresPct: 67.99,
+        productorPct: 32.01,
         base: "Sobre el resultado neto de la venta, una vez cubiertos los gastos reconocidos del ciclo",
         fuente: "demostrativo",
       },
     },
     montoMinimoInicioArs: 52_050_000,
     destinoDetalle:
-      "Ración balanceada de los 120 días, plan sanitario y mano de obra del corral. La hacienda ya es del establecimiento.",
+      "Ración balanceada de los 131 días, plan sanitario y mano de obra del corral. La hacienda ya es del establecimiento.",
     tipoPosesion: "existencia_comprobada",
     sistemaProductivo: "corral",
     cabezas: 180,
@@ -205,7 +205,7 @@ const proyectosDeclarados: ProyectoDeclarado[] = [
     montoRecaudadoArs: 52_950_000,
     montoLiberadoArs: 20_700_000,
     montoRetiradoArs: 20_700_000,
-    plazoDias: 120,
+    plazoDias: 131,
     rendimientoEsperadoPct: 34,
     garantiaId: "gar-1",
     tieneSeguro: true,
@@ -223,7 +223,7 @@ const proyectosDeclarados: ProyectoDeclarado[] = [
       objeto:
         "Engordar el lote durante el ciclo, venderlo a faena y repartir el producido entre los fideicomisarios",
       repartoResultado:
-        "El resultado de la venta se reparte 65 % para los colaboradores y 35 % para el productor, sobre los kilos ganados en el ciclo",
+        "El resultado de la venta se reparte 67,99 % para los colaboradores y 32,01 % para el productor, sobre los kilos ganados en el ciclo",
       mortandad:
         "Hasta el 2 % de mortandad la absorbe el fideicomiso; por encima de ese piso responde el productor, salvo caso fortuito acreditado",
       inicioAt: "2026-08-21",
@@ -246,8 +246,8 @@ const proyectosDeclarados: ProyectoDeclarado[] = [
       monedaAporte: "ARS",
       monedaDevolucion: "ARS",
       participacion: {
-        colaboradoresPct: 65,
-        productorPct: 35,
+        colaboradoresPct: 69.45,
+        productorPct: 30.55,
         base: "Sobre el resultado neto de la venta, una vez cubiertos los gastos reconocidos del ciclo",
         fuente: "demostrativo",
       },
@@ -295,7 +295,7 @@ const proyectosDeclarados: ProyectoDeclarado[] = [
       objeto:
         "Engordar el lote durante el ciclo, venderlo a faena y repartir el producido entre los fideicomisarios",
       repartoResultado:
-        "El resultado de la venta se reparte 65 % para los colaboradores y 35 % para el productor, sobre los kilos ganados en el ciclo",
+        "El resultado de la venta se reparte 69,45 % para los colaboradores y 30,55 % para el productor, sobre los kilos ganados en el ciclo",
       mortandad:
         "Hasta el 2 % de mortandad la absorbe el fideicomiso; por encima de ese piso responde el productor, salvo caso fortuito acreditado",
       inicioAt: "2026-09-09",
@@ -318,8 +318,8 @@ const proyectosDeclarados: ProyectoDeclarado[] = [
       monedaAporte: "ARS",
       monedaDevolucion: "ARS",
       participacion: {
-        colaboradoresPct: 65,
-        productorPct: 35,
+        colaboradoresPct: 73.67,
+        productorPct: 26.33,
         base: "Sobre el resultado neto de la venta, una vez cubiertos los gastos reconocidos del ciclo",
         fuente: "demostrativo",
       },
@@ -349,7 +349,7 @@ const proyectosDeclarados: ProyectoDeclarado[] = [
     montoRecaudadoArs: 65_100_000,
     montoLiberadoArs: 0,
     montoRetiradoArs: 0,
-    plazoDias: 150,
+    plazoDias: 240,
     rendimientoEsperadoPct: 29,
     garantiaId: "gar-5",
     tieneSeguro: false,
@@ -367,7 +367,7 @@ const proyectosDeclarados: ProyectoDeclarado[] = [
       objeto:
         "Engordar el lote durante el ciclo, venderlo a faena y repartir el producido entre los fideicomisarios",
       repartoResultado:
-        "El resultado de la venta se reparte 65 % para los colaboradores y 35 % para el productor, sobre los kilos ganados en el ciclo",
+        "El resultado de la venta se reparte 73,67 % para los colaboradores y 26,33 % para el productor, sobre los kilos ganados en el ciclo",
       mortandad:
         "Hasta el 2 % de mortandad la absorbe el fideicomiso; por encima de ese piso responde el productor, salvo caso fortuito acreditado",
       inicioAt: "2026-08-04",
@@ -390,8 +390,8 @@ const proyectosDeclarados: ProyectoDeclarado[] = [
       monedaAporte: "ARS",
       monedaDevolucion: "ARS",
       participacion: {
-        colaboradoresPct: 65,
-        productorPct: 35,
+        colaboradoresPct: 67.99,
+        productorPct: 32.01,
         base: "Sobre el resultado neto de la venta, una vez cubiertos los gastos reconocidos del ciclo",
         fuente: "demostrativo",
       },
@@ -410,7 +410,7 @@ const proyectosDeclarados: ProyectoDeclarado[] = [
     montoRecaudadoArs: 0,
     montoLiberadoArs: 0,
     montoRetiradoArs: 0,
-    plazoDias: 120,
+    plazoDias: 131,
     rendimientoEsperadoPct: 33,
     garantiaId: "gar-2",
     tieneSeguro: true,
@@ -448,7 +448,7 @@ const proyectosDeclarados: ProyectoDeclarado[] = [
     montoRecaudadoArs: 0,
     montoLiberadoArs: 0,
     montoRetiradoArs: 0,
-    plazoDias: 90,
+    plazoDias: 131,
     rendimientoEsperadoPct: 26,
     garantiaId: "gar-4",
     tieneSeguro: true,
@@ -466,8 +466,8 @@ const proyectosDeclarados: ProyectoDeclarado[] = [
       monedaAporte: "ARS",
       monedaDevolucion: "ARS",
       participacion: {
-        colaboradoresPct: 65,
-        productorPct: 35,
+        colaboradoresPct: 67.99,
+        productorPct: 32.01,
         base: "Sobre el resultado neto de la venta, una vez cubiertos los gastos reconocidos del ciclo",
         fuente: "demostrativo",
       },
@@ -486,7 +486,7 @@ const proyectosDeclarados: ProyectoDeclarado[] = [
     montoRecaudadoArs: 13_500_000,
     montoLiberadoArs: 13_500_000,
     montoRetiradoArs: 9_300_000,
-    plazoDias: 110,
+    plazoDias: 131,
     rendimientoEsperadoPct: 31,
     garantiaId: "gar-3",
     tieneSeguro: true,
@@ -504,7 +504,7 @@ const proyectosDeclarados: ProyectoDeclarado[] = [
       objeto:
         "Engordar el lote durante el ciclo, venderlo a faena y repartir el producido entre los fideicomisarios",
       repartoResultado:
-        "El resultado de la venta se reparte 65 % para los colaboradores y 35 % para el productor, sobre los kilos ganados en el ciclo",
+        "El resultado de la venta se reparte 67,99 % para los colaboradores y 32,01 % para el productor, sobre los kilos ganados en el ciclo",
       mortandad:
         "Hasta el 2 % de mortandad la absorbe el fideicomiso; por encima de ese piso responde el productor, salvo caso fortuito acreditado",
       inicioAt: "2026-06-04",
@@ -556,7 +556,7 @@ const proyectosDeclarados: ProyectoDeclarado[] = [
     montoRecaudadoArs: 0,
     montoLiberadoArs: 0,
     montoRetiradoArs: 0,
-    plazoDias: 180,
+    plazoDias: 240,
     rendimientoEsperadoPct: 38,
     garantiaId: "",
     tieneSeguro: false,
@@ -596,7 +596,7 @@ const proyectosDeclarados: ProyectoDeclarado[] = [
     montoRecaudadoArs: 0,
     montoLiberadoArs: 0,
     montoRetiradoArs: 0,
-    plazoDias: 150,
+    plazoDias: 131,
     rendimientoEsperadoPct: 0,
     garantiaId: "",
     tieneSeguro: false,
@@ -636,7 +636,7 @@ const proyectosDeclarados: ProyectoDeclarado[] = [
     montoRecaudadoArs: 0,
     montoLiberadoArs: 0,
     montoRetiradoArs: 0,
-    plazoDias: 140,
+    plazoDias: 131,
     rendimientoEsperadoPct: 0,
     garantiaId: "",
     tieneSeguro: false,
@@ -656,15 +656,15 @@ const proyectosDeclarados: ProyectoDeclarado[] = [
       monedaAporte: "ARS",
       monedaDevolucion: "ARS",
       participacion: {
-        colaboradoresPct: 65,
-        productorPct: 35,
+        colaboradoresPct: 67.99,
+        productorPct: 32.01,
         base: "Sobre el resultado neto de la venta, una vez cubiertos los gastos reconocidos del ciclo",
         fuente: "demostrativo",
       },
     },
     montoMinimoInicioArs: 38_700_000,
     destinoDetalle:
-      "Ración, sanidad y mano de obra de los 150 días de encierre.",
+      "Ración, sanidad y mano de obra de los 131 días de encierre.",
     tipoPosesion: "existencia_comprobada",
     sistemaProductivo: "corral",
     cabezas: 120,
@@ -676,7 +676,7 @@ const proyectosDeclarados: ProyectoDeclarado[] = [
     montoRecaudadoArs: 64_500_000,
     montoLiberadoArs: 43_050_000,
     montoRetiradoArs: 32_100_000,
-    plazoDias: 90,
+    plazoDias: 131,
     rendimientoEsperadoPct: 28,
     garantiaId: "gar-2",
     tieneSeguro: true,
@@ -694,7 +694,7 @@ const proyectosDeclarados: ProyectoDeclarado[] = [
       objeto:
         "Engordar el lote durante el ciclo, venderlo a faena y repartir el producido entre los fideicomisarios",
       repartoResultado:
-        "El resultado de la venta se reparte 65 % para los colaboradores y 35 % para el productor, sobre los kilos ganados en el ciclo",
+        "El resultado de la venta se reparte 67,99 % para los colaboradores y 32,01 % para el productor, sobre los kilos ganados en el ciclo",
       mortandad:
         "Hasta el 2 % de mortandad la absorbe el fideicomiso; por encima de ese piso responde el productor, salvo caso fortuito acreditado",
       inicioAt: "2026-07-09",
@@ -719,8 +719,8 @@ const proyectosDeclarados: ProyectoDeclarado[] = [
       monedaAporte: "ARS",
       monedaDevolucion: "ARS",
       participacion: {
-        colaboradoresPct: 65,
-        productorPct: 35,
+        colaboradoresPct: 67.99,
+        productorPct: 32.01,
         base: "Sobre el resultado neto de la venta, una vez cubiertos los gastos reconocidos del ciclo",
         fuente: "demostrativo",
       },
@@ -739,7 +739,7 @@ const proyectosDeclarados: ProyectoDeclarado[] = [
     montoRecaudadoArs: 71_400_000,
     montoLiberadoArs: 71_400_000,
     montoRetiradoArs: 71_400_000,
-    plazoDias: 115,
+    plazoDias: 131,
     rendimientoEsperadoPct: 32,
     garantiaId: "gar-3",
     tieneSeguro: true,
@@ -757,7 +757,7 @@ const proyectosDeclarados: ProyectoDeclarado[] = [
       objeto:
         "Engordar el lote durante el ciclo, venderlo a faena y repartir el producido entre los fideicomisarios",
       repartoResultado:
-        "El resultado de la venta se reparte 65 % para los colaboradores y 35 % para el productor, sobre los kilos ganados en el ciclo",
+        "El resultado de la venta se reparte 67,99 % para los colaboradores y 32,01 % para el productor, sobre los kilos ganados en el ciclo",
       mortandad:
         "Hasta el 2 % de mortandad la absorbe el fideicomiso; por encima de ese piso responde el productor, salvo caso fortuito acreditado",
       inicioAt: "2026-01-23",
@@ -788,8 +788,8 @@ const proyectosDeclarados: ProyectoDeclarado[] = [
       monedaAporte: "ARS",
       monedaDevolucion: "ARS",
       participacion: {
-        colaboradoresPct: 65,
-        productorPct: 35,
+        colaboradoresPct: 67.99,
+        productorPct: 32.01,
         base: "Sobre el resultado neto de la venta, una vez cubiertos los gastos reconocidos del ciclo",
         fuente: "demostrativo",
       },
@@ -808,7 +808,7 @@ const proyectosDeclarados: ProyectoDeclarado[] = [
     montoRecaudadoArs: 39_300_000,
     montoLiberadoArs: 39_300_000,
     montoRetiradoArs: 39_300_000,
-    plazoDias: 130,
+    plazoDias: 131,
     rendimientoEsperadoPct: 29,
     garantiaId: "gar-1",
     tieneSeguro: true,
@@ -826,7 +826,7 @@ const proyectosDeclarados: ProyectoDeclarado[] = [
       objeto:
         "Engordar el lote durante el ciclo, venderlo a faena y repartir el producido entre los fideicomisarios",
       repartoResultado:
-        "El resultado de la venta se reparte 65 % para los colaboradores y 35 % para el productor, sobre los kilos ganados en el ciclo",
+        "El resultado de la venta se reparte 67,99 % para los colaboradores y 32,01 % para el productor, sobre los kilos ganados en el ciclo",
       mortandad:
         "Hasta el 2 % de mortandad la absorbe el fideicomiso; por encima de ese piso responde el productor, salvo caso fortuito acreditado",
       inicioAt: "2025-07-11",
@@ -857,8 +857,8 @@ const proyectosDeclarados: ProyectoDeclarado[] = [
       monedaAporte: "ARS",
       monedaDevolucion: "ARS",
       participacion: {
-        colaboradoresPct: 65,
-        productorPct: 35,
+        colaboradoresPct: 67.99,
+        productorPct: 32.01,
         base: "Sobre el resultado neto de la venta, una vez cubiertos los gastos reconocidos del ciclo",
         fuente: "demostrativo",
       },
@@ -877,7 +877,7 @@ const proyectosDeclarados: ProyectoDeclarado[] = [
     montoRecaudadoArs: 25_500_000,
     montoLiberadoArs: 25_500_000,
     montoRetiradoArs: 25_500_000,
-    plazoDias: 105,
+    plazoDias: 131,
     rendimientoEsperadoPct: 27,
     garantiaId: "gar-2",
     tieneSeguro: true,
@@ -895,7 +895,7 @@ const proyectosDeclarados: ProyectoDeclarado[] = [
       objeto:
         "Engordar el lote durante el ciclo, venderlo a faena y repartir el producido entre los fideicomisarios",
       repartoResultado:
-        "El resultado de la venta se reparte 65 % para los colaboradores y 35 % para el productor, sobre los kilos ganados en el ciclo",
+        "El resultado de la venta se reparte 67,99 % para los colaboradores y 32,01 % para el productor, sobre los kilos ganados en el ciclo",
       mortandad:
         "Hasta el 2 % de mortandad la absorbe el fideicomiso; por encima de ese piso responde el productor, salvo caso fortuito acreditado",
       inicioAt: "2025-02-18",
@@ -926,15 +926,15 @@ const proyectosDeclarados: ProyectoDeclarado[] = [
       monedaAporte: "ARS",
       monedaDevolucion: "ARS",
       participacion: {
-        colaboradoresPct: 60,
-        productorPct: 40,
+        colaboradoresPct: 67.99,
+        productorPct: 32.01,
         base: "Sobre el resultado neto de la venta, una vez cubiertos los gastos reconocidos del ciclo",
         fuente: "demostrativo",
       },
     },
     montoMinimoInicioArs: 37_350_000,
     destinoDetalle:
-      "Solo insumos: ración balanceada de los 135 días, plan sanitario completo, sales minerales y la mano de obra del corral. Los 210 novillitos ya son del establecimiento y están encerrados; el capital no compra un solo animal.",
+      "Solo insumos: ración balanceada de los 131 días, plan sanitario completo, sales minerales y la mano de obra del corral. Los 210 novillitos ya son del establecimiento y están encerrados; el capital no compra un solo animal.",
     tipoPosesion: "existencia_comprobada",
     sistemaProductivo: "corral",
     cabezas: 210,
@@ -946,7 +946,7 @@ const proyectosDeclarados: ProyectoDeclarado[] = [
     montoRecaudadoArs: 18_600_000,
     montoLiberadoArs: 0,
     montoRetiradoArs: 0,
-    plazoDias: 135,
+    plazoDias: 131,
     rendimientoEsperadoPct: 29,
     garantiaId: "gar-1",
     tieneSeguro: false,
@@ -964,7 +964,7 @@ const proyectosDeclarados: ProyectoDeclarado[] = [
       objeto:
         "Financiar los insumos del encierre, engordar el lote, venderlo a faena y repartir el producido entre los fideicomisarios",
       repartoResultado:
-        "El resultado de la venta se reparte 60 % para los colaboradores y 40 % para el productor, sobre los kilos ganados en el ciclo",
+        "El resultado de la venta se reparte 67,99 % para los colaboradores y 32,01 % para el productor, sobre los kilos ganados en el ciclo",
       mortandad:
         "Hasta el 2 % de mortandad la absorbe el fideicomiso; por encima de ese piso responde el productor, salvo caso fortuito acreditado",
       inicioAt: "2026-09-20",

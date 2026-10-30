@@ -112,6 +112,7 @@ export const CAMPOS_FICHA: CampoFicha[] = [
     grupo: "Condiciones",
     tipo: "numero",
     sufijo: "días",
+    ayuda: "Lo fija el tipo de ciclo que elegiste en el paso anterior.",
   },
   {
     clave: "plazoCobroDias",
