@@ -40,56 +40,57 @@ export function Recorrido({
 
   return (
     <div>
-      <ol className="flex flex-wrap gap-2" aria-label="Pasos del recorrido">
-        {pasos.map((p, n) => (
-          <li key={p.titulo}>
-            <button
-              type="button"
-              onClick={() => ir(n)}
-              aria-current={n === i ? "step" : undefined}
-              aria-label={`Paso ${n + 1}: ${p.titulo}`}
-              className={`grid size-11 place-items-center rounded-full border text-sm font-semibold transition-colors ${
-                n === i
-                  ? "border-marca bg-marca text-marca-contraste"
-                  : n < i
-                    ? "border-marca/30 bg-marca-suave text-marca"
-                    : "border-borde bg-superficie text-tinta-suave hover:bg-superficie-2"
-              }`}
-            >
-              {n + 1}
-            </button>
-          </li>
-        ))}
-      </ol>
+      <div className="flex flex-wrap items-center justify-between gap-2">
+        <ol className="flex flex-wrap gap-1.5" aria-label="Pasos del recorrido">
+          {pasos.map((p, n) => (
+            <li key={p.titulo}>
+              <button
+                type="button"
+                onClick={() => ir(n)}
+                aria-current={n === i ? "step" : undefined}
+                aria-label={`Paso ${n + 1}: ${p.titulo}`}
+                className={`grid size-11 place-items-center rounded-full border text-sm font-semibold transition-colors ${
+                  n === i
+                    ? "border-marca bg-marca text-marca-contraste"
+                    : n < i
+                      ? "border-marca/30 bg-marca-suave text-marca"
+                      : "border-borde bg-superficie text-tinta-suave hover:bg-superficie-2"
+                }`}
+              >
+                {n + 1}
+              </button>
+            </li>
+          ))}
+        </ol>
+        <div className="flex gap-2">
+          {i > 0 ? (
+            <Boton variante="secundario" onClick={() => ir(i - 1)}>
+              Anterior
+            </Boton>
+          ) : null}
+          {!ultimo ? <Boton onClick={() => ir(i + 1)}>Siguiente</Boton> : null}
+        </div>
+      </div>
 
       <section
-        className="mt-6 rounded-2xl border border-borde bg-superficie p-5 shadow-[var(--sombra-baja)] sm:p-6"
+        className="mt-3 rounded-xl border border-borde bg-superficie p-4 shadow-[var(--sombra-baja)]"
         aria-live="polite"
       >
-        <p className="rotulo text-tinta-tenue">
+        <p className="sr-only">
           Paso {i + 1} de {pasos.length}
         </p>
         <h3
           ref={titulo}
           tabIndex={-1}
-          className="mt-1 text-xl font-semibold tracking-tight outline-none"
+          className="text-lg font-semibold tracking-tight outline-none"
         >
           {paso.titulo}
         </h3>
-        <p className="mt-2 text-tinta-suave">{paso.resumen}</p>
-        {paso.contenido ? <div className="mt-4">{paso.contenido}</div> : null}
+        <p className="mt-1 text-sm text-tinta-suave">{paso.resumen}</p>
+        {paso.contenido ? <div className="mt-3">{paso.contenido}</div> : null}
       </section>
 
-      <div className="mt-5 flex flex-wrap gap-3">
-        {i > 0 ? (
-          <Boton variante="secundario" onClick={() => ir(i - 1)}>
-            Anterior
-          </Boton>
-        ) : null}
-        {!ultimo ? <Boton onClick={() => ir(i + 1)}>Siguiente</Boton> : null}
-      </div>
-
-      {ultimo ? <div className="mt-6">{final}</div> : null}
+      {ultimo ? <div className="mt-3">{final}</div> : null}
     </div>
   );
 }

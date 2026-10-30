@@ -30,37 +30,32 @@ const LADOS: { rol: Lado; titulo: string; descripcion: string }[] = [
 /** Los tres tipos de ciclo, con lo que le toca a cada parte. */
 function TiposDeCiclo({ paraProductor }: { paraProductor: boolean }) {
   return (
-    <ul className="grid gap-3">
+    <ul className="grid gap-2 sm:grid-cols-3">
       {SISTEMAS_EN_ORDEN.map((k) => {
         const c = CICLOS[k];
         return (
-          <li key={k} className="rounded-xl border border-borde bg-superficie-2 p-4">
+          <li key={k} className="rounded-lg border border-borde bg-superficie-2 p-3 text-sm">
             <p className="font-semibold tracking-tight">
               {c.nombre} <span className="font-normal text-tinta-suave">· {c.plazoDias} días</span>
             </p>
-            <p className="mt-1 text-sm text-tinta-suave">{c.descripcion}</p>
-            <p className="mt-2 text-sm">
+            <dl className="mt-1 space-y-0.5 text-tinta-suave">
+              <div className="flex justify-between gap-2">
+                <dt>{paraProductor ? "Vos" : "Productor"}</dt>
+                <dd className="tabular whitespace-nowrap font-medium text-tinta">{formatPct(c.productorPct)}</dd>
+              </div>
+              <div className="flex justify-between gap-2">
+                <dt>Colaboradores</dt>
+                <dd className="tabular whitespace-nowrap font-medium text-tinta">{formatPct(c.colaboradoresPct)}</dd>
+              </div>
               {paraProductor ? (
-                <>
-                  Vos te quedás con el{" "}
-                  <strong className="font-semibold">{formatPct(c.productorPct)}</strong> y los
-                  colaboradores con el{" "}
-                  <strong className="font-semibold">{formatPct(c.colaboradoresPct)}</strong>.
-                  Rentabilidad anual estimada para el productor:{" "}
-                  <strong className="font-semibold">
+                <div className="flex justify-between gap-2">
+                  <dt>Rentab. anual</dt>
+                  <dd className="tabular whitespace-nowrap font-medium text-tinta">
                     {formatPct(c.rentabilidadAnualProductorPct)}
-                  </strong>
-                  .
-                </>
-              ) : (
-                <>
-                  Los colaboradores se reparten el{" "}
-                  <strong className="font-semibold">{formatPct(c.colaboradoresPct)}</strong> del
-                  resultado y el productor se queda con el{" "}
-                  <strong className="font-semibold">{formatPct(c.productorPct)}</strong>.
-                </>
-              )}
-            </p>
+                  </dd>
+                </div>
+              ) : null}
+            </dl>
           </li>
         );
       })}
@@ -202,22 +197,29 @@ export function Registro({ ladoInicial }: { ladoInicial?: Lado }) {
     return Object.keys(e).length === 0;
   };
 
+  // Quien entra por la portada ya eligió el lado: para esa persona son dos pasos
+  // (datos y recorrido), y el contador tiene que decir eso, no "2 de 3".
+  const total = ladoInicial ? 2 : 3;
+  const actual = ladoInicial ? paso - 1 : paso;
+
   return (
     <div>
-      <p className="rotulo text-tinta-tenue">Paso {paso} de 3</p>
-      <div className="mt-2">
-        <Progreso valor={(paso / 3) * 100} label="Avance del registro" />
+      <p className="rotulo text-tinta-tenue">
+        Paso {actual} de {total}
+      </p>
+      <div className="mt-1.5">
+        <Progreso valor={(actual / total) * 100} label="Avance del registro" />
       </div>
 
       {paso === 1 ? (
-        <section className="mt-8">
-          <h2 className="text-2xl font-semibold tracking-tight">¿De qué lado entrás?</h2>
-          <p className="mt-2 text-tinta-suave">
+        <section className="mt-5">
+          <h2 className="text-xl font-semibold tracking-tight">¿De qué lado entrás?</h2>
+          <p className="mt-1 text-sm text-tinta-suave">
             Elegí uno para seguir. Es lo que define qué vas a ver adentro.
           </p>
           <GrupoOpciones
             etiqueta="¿De qué lado entrás?"
-            className="mt-6 space-y-3"
+            className="mt-4 space-y-2"
             valor={lado}
             onCambio={setLado}
             opciones={LADOS.map((l) => ({
@@ -226,7 +228,7 @@ export function Registro({ ladoInicial }: { ladoInicial?: Lado }) {
               descripcion: l.descripcion,
             }))}
           />
-          <div className="mt-7">
+          <div className="mt-5">
             <Boton className="w-full" disabled={lado === null} onClick={() => setPaso(2)}>
               Seguir
             </Boton>
@@ -236,21 +238,21 @@ export function Registro({ ladoInicial }: { ladoInicial?: Lado }) {
 
       {paso === 2 ? (
         <form
-          className="mt-8"
+          className="mt-5"
           noValidate
           onSubmit={(e) => {
             e.preventDefault();
             if (validar()) setPaso(3);
           }}
         >
-          <h2 className="text-2xl font-semibold tracking-tight">Tus datos</h2>
-          <p className="mt-2 text-tinta-suave">
+          <h2 className="text-xl font-semibold tracking-tight">Tus datos</h2>
+          <p className="mt-1 text-sm text-tinta-suave">
             {lado === "productor"
-              ? "Con esto abrimos tu cuenta. La documentación del campo y de la hacienda la cargás cuando publiques el primer ciclo."
-              : "Con esto abrimos tu cuenta. Los datos para transferir se piden recién cuando decidas participar en un proyecto."}
+              ? "La documentación del campo y de la hacienda la cargás al publicar el primer ciclo."
+              : "Los datos para transferir se piden cuando decidas participar en un proyecto."}
           </p>
 
-          <div className="mt-6 space-y-5">
+          <div className="mt-4 grid gap-x-4 gap-y-3 sm:grid-cols-2">
             <Campo
               etiqueta="Nombre y apellido"
               autoComplete="name"
@@ -272,7 +274,7 @@ export function Registro({ ladoInicial }: { ladoInicial?: Lado }) {
               type="tel"
               inputMode="tel"
               autoComplete="tel"
-              ayuda="Con característica, sin el 0 ni el 15."
+              placeholder="Con característica, sin 0 ni 15…"
               className="tabular"
               value={datos.telefono}
               onChange={(e) => set("telefono")(e.target.value)}
@@ -281,10 +283,8 @@ export function Registro({ ladoInicial }: { ladoInicial?: Lado }) {
             <Campo
               etiqueta={lado === "productor" ? "CUIT" : "CUIT o CUIL"}
               inputMode="numeric"
-              ayuda={
-                lado === "productor"
-                  ? "El del titular del RENSPA, para que la documentación cierre con la cuenta."
-                  : "Lo pedimos para emitir los comprobantes de tu participación."
+              placeholder={
+                lado === "productor" ? "Del titular del RENSPA…" : "Para tus comprobantes…"
               }
               className="tabular"
               value={datos.cuit}
@@ -296,7 +296,7 @@ export function Registro({ ladoInicial }: { ladoInicial?: Lado }) {
               <>
                 <Campo
                   etiqueta="Nombre del establecimiento"
-                  ayuda="Como lo conocen en la zona."
+                  placeholder="Como lo conocen en la zona…"
                   value={datos.establecimiento}
                   onChange={(e) => set("establecimiento")(e.target.value)}
                   error={errores.establecimiento}
@@ -314,46 +314,41 @@ export function Registro({ ladoInicial }: { ladoInicial?: Lado }) {
               etiqueta="Contraseña"
               type="password"
               autoComplete="new-password"
-              ayuda="Ocho caracteres o más."
+              placeholder="Ocho caracteres o más…"
               value={datos.clave}
               onChange={(e) => set("clave")(e.target.value)}
               error={errores.clave}
             />
-          </div>
 
-          <div className="mt-7 flex flex-wrap gap-3">
-            <Boton type="submit" className="flex-1">
-              Crear mi cuenta
-            </Boton>
-            <Boton
-              type="button"
-              variante="secundario"
-              onClick={() => {
-                setErrores({});
-                setPaso(1);
-              }}
-            >
-              Volver
-            </Boton>
+            <div className="flex items-end gap-3">
+              <Boton type="submit" className="flex-1">
+                Crear mi cuenta
+              </Boton>
+              <Boton
+                type="button"
+                variante="secundario"
+                onClick={() => {
+                  setErrores({});
+                  setPaso(1);
+                }}
+              >
+                Volver
+              </Boton>
+            </div>
           </div>
         </form>
       ) : null}
 
       {paso === 3 ? (
-        <section className="mt-8">
-          <h2 className="text-2xl font-semibold tracking-tight">
+        <section className="mt-5">
+          <h2 className="text-xl font-semibold tracking-tight">
             Listo, {datos.nombre.trim().split(" ")[0]}. Así funciona Guardian
           </h2>
-          <p className="mt-2 text-tinta-suave">
-            Este es el recorrido completo, de la primera pantalla al cierre del ciclo.
-            Mirá cada paso o saltá directo al que te interese.
-          </p>
-
-          <div className="mt-6">
+          <div className="mt-3">
             <Recorrido
               pasos={lado === "productor" ? PASOS_PRODUCTOR : PASOS_COLABORADOR}
               final={
-                <div className="space-y-5">
+                <div className="space-y-3">
                   <Aviso tono="alerta" titulo="La cuenta todavía no se guarda">
                     Guardian es un prototipo: las cuentas se conectan en la etapa de
                     backend. Lo que cargaste no queda registrado, pero podés entrar igual

@@ -31,7 +31,7 @@ export function Campo({
 
   return (
     <div>
-      <label htmlFor={id} className="block font-medium">
+      <label htmlFor={id} className="block text-sm font-medium">
         {etiqueta}
       </label>
       {ayuda ? (
@@ -43,7 +43,7 @@ export function Campo({
         id={id}
         aria-invalid={error ? true : undefined}
         aria-describedby={describe || undefined}
-        className={`mt-1.5 block min-h-11 w-full rounded-lg border bg-superficie px-3.5 py-2.5 text-base text-tinta placeholder:text-tinta-tenue ${
+        className={`mt-1 block min-h-11 w-full rounded-lg border bg-superficie px-3 py-2 text-base text-tinta placeholder:text-tinta-tenue ${
           error ? "border-error" : "border-borde-fuerte"
         } ${className}`}
         {...props}
@@ -84,7 +84,7 @@ export function CampoLargo({
 
   return (
     <div>
-      <label htmlFor={id} className="block font-medium">
+      <label htmlFor={id} className="block text-sm font-medium">
         {etiqueta}
       </label>
       {ayuda ? (
@@ -231,7 +231,7 @@ export function Seleccion({
 
   return (
     <div>
-      <label htmlFor={id} className="block font-medium">
+      <label htmlFor={id} className="block text-sm font-medium">
         {etiqueta}
       </label>
       {ayuda ? (
@@ -246,7 +246,7 @@ export function Seleccion({
           [ayuda ? ayudaId : null, error ? errorId : null].filter(Boolean).join(" ") ||
           undefined
         }
-        className={`mt-1.5 block min-h-11 w-full rounded-lg border bg-superficie px-3.5 py-2.5 text-base text-tinta ${
+        className={`mt-1 block min-h-11 w-full rounded-lg border bg-superficie px-3 py-2 text-base text-tinta ${
           error ? "border-error" : "border-borde-fuerte"
         } ${className}`}
         {...props}

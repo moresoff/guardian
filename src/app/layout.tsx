@@ -47,7 +47,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
           Saltar al contenido
         </a>
         <Nav />
-        <main id="contenido" className="mx-auto w-full max-w-6xl flex-1 px-4 py-10">
+        <main id="contenido" className="mx-auto w-full max-w-6xl flex-1 px-4 py-6">
           {children}
         </main>
         <footer className="border-t border-borde px-4 py-6">
