@@ -1,7 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
 import { LineaDeTiempo, type Etapa } from "@/components/linea-tiempo";
-import { Resenas, type Resena } from "@/components/resenas";
 import { BotonLink, Panel } from "@/components/ui/primitivos";
 import { getProyecto, getProyectosPublicos } from "@/lib/data";
 import { SISTEMA_LABEL, formatNum, modalidadLabel } from "@/lib/format";
@@ -69,6 +68,24 @@ const ANTES_DE_PARTICIPAR = [
   },
 ];
 
+const QUE_HACEMOS = [
+  {
+    titulo: "Publicamos ciclos con respaldo",
+    texto:
+      "El productor declara el lote y sube la documentación que ya emite. Guardian la lee y cruza cada dato contra lo declarado.",
+  },
+  {
+    titulo: "Verificamos antes de mostrar",
+    texto:
+      "Revisamos las discrepancias y comprobamos la autenticidad de los comprobantes por el canal oficial antes de que el proyecto sea visible.",
+  },
+  {
+    titulo: "Acompañamos hasta el cierre",
+    texto:
+      "Cada proyecto rinde cuentas mientras corre y cierra con el romaneo del frigorífico, que es la cifra que queda.",
+  },
+];
+
 const ETAPAS: Etapa[] = [
   {
     n: "Etapa 01",
@@ -107,33 +124,6 @@ const ETAPAS: Etapa[] = [
   },
 ];
 
-const RESENAS: Resena[] = [
-  {
-    texto:
-      "Lo que más me sirvió fue no tener que armar carpeta. Subí el RENSPA y los DT-e que ya emito todos los meses y con eso alcanzó.",
-    nombre: "Productor de Exaltación de la Cruz",
-    rol: "Corral de 1.200 cabezas",
-  },
-  {
-    texto:
-      "Antes terminaba vendiendo liviano en marzo porque se me acababa el dinero. Este año el corral llegó completo a la terminación.",
-    nombre: "Productor de Marcos Juárez",
-    rol: "Mixto, 800 cabezas",
-  },
-  {
-    texto:
-      "Antes de sumarme a un ciclo nuevo miro el romaneo del anterior: ahí está lo que pasó de verdad con el lote, y con ese dato decido.",
-    nombre: "Colaboradora de Buenos Aires",
-    rol: "Participó en tres ciclos",
-  },
-  {
-    texto:
-      "Me mostró una discrepancia entre lo que había cargado y el DT-e antes de publicar. Era un error mío de tipeo y me lo marcó solo.",
-    nombre: "Productor de Venado Tuerto",
-    rol: "Pastura, 600 cabezas",
-  },
-];
-
 export default async function Home() {
   const fondo = buscarImagen("marca", "fondo");
   const abiertos = (await getProyectosPublicos()).filter((p) => p.estado === "abierto");
@@ -150,7 +140,7 @@ export default async function Home() {
         contenido no entra, la sección crece en vez de recortarse.
       */}
       <section
-        className={`${ANCHO_COMPLETO} flex min-h-[calc(100svh-6.9rem)] sm:min-h-[calc(100svh-4.31rem)] items-center overflow-hidden bg-marca-fuerte`}
+        className={`${ANCHO_COMPLETO} flex items-center overflow-hidden bg-marca-fuerte`}
       >
         {fondo ? (
           <>
@@ -166,7 +156,7 @@ export default async function Home() {
           </>
         ) : null}
 
-        <div className="relative mx-auto grid w-full max-w-6xl items-center gap-8 px-4 py-8 sm:py-12 lg:grid-cols-[1fr_1.1fr] lg:gap-14">
+        <div className="relative mx-auto grid w-full max-w-6xl items-center gap-6 px-4 py-8 sm:py-10 lg:grid-cols-[1fr_1.1fr] lg:gap-12">
           <div>
             <Image
               src="/imagenes/marca/logo-guardian-blanco.png"
@@ -174,22 +164,22 @@ export default async function Home() {
               width={847}
               height={796}
               priority
-              className="h-10 w-auto sm:h-14"
+              className="h-9 w-auto sm:h-11"
             />
-            <h1 className="mt-3 text-4xl font-semibold tracking-tight text-white sm:mt-4 sm:text-6xl">
+            <h1 className="mt-3 text-3xl font-semibold tracking-tight text-white sm:mt-3 sm:text-5xl">
               Guardian
             </h1>
-            <p className="mt-2 text-xl italic text-white/90 sm:text-3xl">
+            <p className="mt-2 text-lg italic text-white/90 sm:text-2xl">
               Crecé, ayudando a crecer
             </p>
-            <p className="mt-5 hidden max-w-md text-white/85 sm:block">
+            <p className="mt-4 hidden max-w-md text-white/85 sm:block">
               Participá en el engorde de un lote concreto, con el activo real a la
               vista: un establecimiento con nombre y RENSPA.
             </p>
           </div>
 
           <div>
-            <h2 className="text-2xl font-semibold tracking-tight text-white sm:text-3xl">
+            <h2 className="text-xl font-semibold tracking-tight text-white sm:text-2xl">
               Elegí de qué lado entrás
             </h2>
             {/* /85 y no /80: sobre un cielo quemado, /80 da 4.38:1 y no llega. */}
@@ -197,16 +187,16 @@ export default async function Home() {
               Son dos problemas distintos. Elegí el tuyo y creás la cuenta ahí mismo.
             </p>
 
-            <div className="mt-6 grid gap-4">
+            <div className="mt-5 grid gap-3">
               {PUERTAS.map((p) => (
                 <Link
                   key={p.href}
                   href={p.href}
-                  className="group flex items-center gap-4 rounded-2xl bg-superficie p-5 shadow-[var(--sombra-alta)] transition-transform hover:-translate-y-0.5 sm:p-6"
+                  className="group flex items-center gap-4 rounded-2xl bg-superficie p-4 shadow-[var(--sombra-alta)] transition-transform hover:-translate-y-0.5 sm:p-5"
                 >
                   <span className="flex-1">
                     <span className="rotulo block text-marca">{p.rotulo}</span>
-                    <span className="mt-1.5 block text-xl font-semibold tracking-tight sm:text-2xl">
+                    <span className="mt-1 block text-lg font-semibold tracking-tight sm:text-xl">
                       {p.titulo}
                     </span>
                     <span className="mt-1.5 block text-sm text-tinta-suave">
@@ -229,8 +219,43 @@ export default async function Home() {
       {/* Debajo de la foto, la página vuelve al ancho del contenedor. */}
       <div>
         <div className="space-y-16 py-14">
-          {/* 2. Tipos de ciclo, qué hay que saber y cómo corre un ciclo */}
+          {/* 1. Quién es Guardian */}
           <section>
+            <h2 className="text-3xl font-semibold tracking-tight">Quién es Guardian</h2>
+            <div className="mt-5 grid gap-x-10 gap-y-4 lg:grid-cols-2">
+              <p className="text-tinta-suave">
+                Guardian es una plataforma que pone en contacto a productores ganaderos con
+                personas que quieren colaborar en un ciclo de engorde. No es una
+                fiduciaria ni administra el dinero de nadie: conecta, verifica la
+                documentación y deja todo a la vista.
+              </p>
+              <p className="text-tinta-suave">
+                Nació de un problema concreto: al productor que engorda se le termina el
+                dinero antes que el ciclo y sale a vender hacienda liviana, la peor venta
+                posible. Del otro lado hay gente que quiere participar en un ciclo
+                ganadero y no encuentra por dónde entrar sin comprar un campo.
+              </p>
+            </div>
+          </section>
+
+          {/* 2. Qué hacemos */}
+          <section className="border-t border-borde pt-14">
+            <h2 className="text-3xl font-semibold tracking-tight">Qué hacemos</h2>
+            <dl className="mt-6 grid gap-x-10 gap-y-5 sm:grid-cols-3">
+              {QUE_HACEMOS.map((c) => (
+                <div key={c.titulo} className="border-t border-borde-fuerte pt-3">
+                  <dt className="text-lg font-semibold tracking-tight">{c.titulo}</dt>
+                  <dd className="mt-1 text-sm text-tinta-suave">{c.texto}</dd>
+                </div>
+              ))}
+            </dl>
+            <div className="mt-8">
+              <BotonLink href="/registro">Crear mi cuenta</BotonLink>
+            </div>
+          </section>
+
+          {/* 3. Tres tipos de ciclo */}
+          <section className="border-t border-borde pt-14">
             <div className="max-w-2xl">
               <h2 className="text-3xl font-semibold tracking-tight">
                 Tres tipos de ciclo
@@ -253,37 +278,35 @@ export default async function Home() {
               Cada proyecto detalla sus condiciones para quienes tienen una cuenta.
             </p>
             <ConsultaModalidades className="mt-1" />
+          </section>
 
-            <div className="mt-14">
-              <h3 className="text-2xl font-semibold tracking-tight">
-                Antes de participar
-              </h3>
-              <dl className="mt-4 grid gap-x-10 gap-y-5 sm:grid-cols-2">
-                {ANTES_DE_PARTICIPAR.map((c) => (
-                  <div key={c.titulo} className="border-t border-borde pt-3">
-                    <dt className="font-semibold tracking-tight">{c.titulo}</dt>
-                    <dd className="mt-1 text-sm text-tinta-suave">{c.texto}</dd>
-                  </div>
-                ))}
-              </dl>
+          {/* 4. Cómo corre un ciclo */}
+          <section className="border-t border-borde pt-14">
+            <div className="max-w-2xl">
+              <h2 className="text-3xl font-semibold tracking-tight">Cómo corre un ciclo</h2>
+              <p className="mt-3 text-tinta-suave">
+                Pasá por encima de cada etapa (o tocala) para ver qué pasa en cada una.
+              </p>
             </div>
-
-            <div className="mt-16">
-              <div className="max-w-2xl">
-                <h3 className="text-3xl font-semibold tracking-tight">
-                  Cómo corre un ciclo
-                </h3>
-                <p className="mt-3 text-tinta-suave">
-                  Pasá por encima de cada etapa (o tocala) para ver qué pasa en cada una.
-                </p>
-              </div>
-              <div className="mt-8">
-                <LineaDeTiempo etapas={ETAPAS} />
-              </div>
+            <div className="mt-8">
+              <LineaDeTiempo etapas={ETAPAS} />
             </div>
           </section>
 
-          {/* 3. Proyectos y casos */}
+          {/* 5. Antes de participar */}
+          <section className="border-t border-borde pt-14">
+            <h2 className="text-3xl font-semibold tracking-tight">Antes de participar</h2>
+            <dl className="mt-6 grid gap-x-10 gap-y-5 sm:grid-cols-2">
+              {ANTES_DE_PARTICIPAR.map((c) => (
+                <div key={c.titulo} className="border-t border-borde pt-3">
+                  <dt className="font-semibold tracking-tight">{c.titulo}</dt>
+                  <dd className="mt-1 text-sm text-tinta-suave">{c.texto}</dd>
+                </div>
+              ))}
+            </dl>
+          </section>
+
+          {/* 6. Proyectos y casos */}
           <section className="border-t border-borde pt-14">
             <div className="flex flex-wrap items-end justify-between gap-4">
               <div className="max-w-2xl">
@@ -386,41 +409,6 @@ export default async function Home() {
                 </li>
               ) : null}
             </ul>
-          </section>
-
-          {/* 4. Quiénes somos */}
-          <section className="border-t border-borde pt-14">
-            <h2 className="text-3xl font-semibold tracking-tight">Quiénes somos</h2>
-            <div className="mt-6 grid gap-x-10 gap-y-4 lg:grid-cols-2">
-              <p className="text-tinta-suave">
-                Al productor que engorda se le termina el capital antes que el ciclo.
-                Sale a vender hacienda liviana, que es la peor venta posible: el animal
-                todavía estaba sumando los kilos más baratos del engorde.
-              </p>
-              <p className="text-tinta-suave">
-                Del otro lado hay gente que quiere participar en un ciclo ganadero y no encuentra por
-                dónde entrar sin comprar un campo. Guardian pone las dos puntas en contacto
-                sobre un activo que existe y se puede señalar, con la documentación
-                sanitaria a la vista y el romaneo del frigorífico como cifra de cierre.
-              </p>
-            </div>
-            <div className="mt-9 flex justify-center">
-              <BotonLink href="/registro">Crear mi cuenta</BotonLink>
-            </div>
-          </section>
-
-          {/* 5. Reseñas */}
-          <section className="border-t border-borde pt-14">
-            <h2 className="text-3xl font-semibold tracking-tight">
-              Lo que dicen del otro lado
-            </h2>
-            <p className="mt-2 text-sm text-tinta-tenue">
-              Testimonios de ejemplo: Guardian está en etapa de prototipo y todavía no
-              tiene ciclos con productores reales.
-            </p>
-            <div className="mt-7">
-              <Resenas resenas={RESENAS} />
-            </div>
           </section>
 
           <section className="border-t border-borde pt-8">
