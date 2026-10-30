@@ -132,12 +132,15 @@ export function GrupoOpciones<T extends string>({
   valor,
   onCambio,
   className = "space-y-3",
+  compacto = false,
 }: {
   etiqueta: string;
   opciones: OpcionUnica<T>[];
   valor: T | null;
   onCambio: (valor: T) => void;
   className?: string;
+  /** Opciones más bajas, para pantallas donde todo tiene que entrar junto. */
+  compacto?: boolean;
 }) {
   const botones = useRef<(HTMLButtonElement | null)[]>([]);
 
@@ -184,17 +187,25 @@ export function GrupoOpciones<T extends string>({
             tabIndex={activa || (valor === null && i === 0) ? 0 : -1}
             onClick={() => onCambio(o.valor)}
             onKeyDown={(e) => conTeclado(e, i)}
-            className={`w-full rounded-2xl border p-5 text-left transition-colors ${
+            className={`w-full rounded-2xl border text-left transition-colors ${
+              compacto ? "p-3" : "p-5"
+            } ${
               activa
                 ? "border-marca bg-marca-suave"
                 : "border-borde bg-superficie hover:border-marca hover:bg-marca-suave"
             }`}
           >
-            <span className={`block text-lg font-semibold ${activa ? "text-marca" : ""}`}>
+            <span
+              className={`block font-semibold ${compacto ? "text-base" : "text-lg"} ${activa ? "text-marca" : ""}`}
+            >
               {o.titulo}
             </span>
             {o.descripcion ? (
-              <span className="mt-1 block text-sm text-tinta-suave">{o.descripcion}</span>
+              <span
+                className={`block text-sm text-tinta-suave ${compacto ? "mt-0.5" : "mt-1"}`}
+              >
+                {o.descripcion}
+              </span>
             ) : null}
           </button>
         );
@@ -208,7 +219,9 @@ export function GrupoOpciones<T extends string>({
  * suelto, cuando lo que se guarda es lo que se lee, o un objeto cuando no: la
  * garantía se guarda por id y se muestra por nombre.
  */
-export type OpcionSeleccion = string | { valor: string; label: string; disabled?: boolean };
+export type OpcionSeleccion =
+  | string
+  | { valor: string; label: string; disabled?: boolean };
 
 export function Seleccion({
   etiqueta,
@@ -243,8 +256,9 @@ export function Seleccion({
         id={id}
         aria-invalid={error ? true : undefined}
         aria-describedby={
-          [ayuda ? ayudaId : null, error ? errorId : null].filter(Boolean).join(" ") ||
-          undefined
+          [ayuda ? ayudaId : null, error ? errorId : null]
+            .filter(Boolean)
+            .join(" ") || undefined
         }
         className={`mt-1 block min-h-11 w-full rounded-xl border bg-superficie px-3 py-2 text-base text-tinta ${
           error ? "border-error" : "border-borde-fuerte"
@@ -302,7 +316,9 @@ export function Interruptor({
     >
       <span
         className={`flex h-7 w-12 items-center rounded-full border transition-colors ${
-          activo ? "border-marca bg-marca" : "border-borde-fuerte bg-superficie-2"
+          activo
+            ? "border-marca bg-marca"
+            : "border-borde-fuerte bg-superficie-2"
         }`}
       >
         <span

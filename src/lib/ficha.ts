@@ -83,7 +83,7 @@ export const CAMPOS_FICHA: CampoFicha[] = [
   },
   {
     clave: "destinoDetalle",
-    etiqueta: "En qué se gasta el capital",
+    etiqueta: "En qué se usa lo que se junta",
     grupo: "Condiciones",
     tipo: "parrafo",
     ayuda:
@@ -91,7 +91,7 @@ export const CAMPOS_FICHA: CampoFicha[] = [
   },
   {
     clave: "montoObjetivoArs",
-    etiqueta: "Capital que necesitás",
+    etiqueta: "Monto que necesitás",
     grupo: "Condiciones",
     tipo: "moneda",
     sufijo: "en pesos",

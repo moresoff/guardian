@@ -18,16 +18,15 @@ export default async function NuevoProyectoPage() {
   }));
 
   return (
-    <div>
-      <Link href="/productor/proyectos" className="inline-flex min-h-11 items-center text-sm text-tinta-suave hover:text-marca">
-        ← Volver a mis proyectos
-      </Link>
-
-      <div className="mx-auto mt-3 mb-6 max-w-2xl">
-        <h1 className="text-3xl font-semibold tracking-tight">Publicar un proyecto</h1>
-        <p className="mt-1.5 text-tinta-suave">
-          Tres pasos cortos. Antes de que se vea, Guardian revisa tus papeles.
-        </p>
+    <div className="mx-auto max-w-6xl">
+      <div className="mb-4 flex flex-wrap items-baseline justify-between gap-x-6 gap-y-1">
+        <h1 className="text-2xl font-semibold tracking-tight">Publicar un proyecto</h1>
+        <Link
+          href="/productor/proyectos"
+          className="inline-flex min-h-11 items-center text-sm text-tinta-suave hover:text-marca"
+        >
+          ← Volver a mis proyectos
+        </Link>
       </div>
 
       <WizardPublicacion garantias={garantias} />
