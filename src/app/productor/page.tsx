@@ -135,7 +135,7 @@ export default async function ResumenProductor() {
     proyectos.filter((p) => estados.includes(p.estado)).length;
 
   const recuento = [
-    { t: "Con capital activo", v: cuenta(["abierto", "fondeado", "en_curso"]) },
+    { t: "Con aportes activos", v: cuenta(["abierto", "fondeado", "en_curso"]) },
     { t: "En revisión", v: cuenta(["en_validacion"]) },
     { t: "Borradores", v: cuenta(["borrador"]) },
     { t: "Completados", v: cuenta(["cerrado"]) },

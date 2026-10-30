@@ -79,8 +79,8 @@ export const MODALIDAD_LABEL: Record<Modalidad, string> = {
 };
 
 /**
- * Qué financia Guardian: el proceso productivo de engorde. Si el lote todavía hay
- * que comprarlo, el capital incluye la compra; si ya es del productor, financia
+ * Qué cubre lo que se aporta: el proceso productivo de engorde. Si el lote todavía
+ * hay que comprarlo, incluye la compra; si ya es del productor, cubre
  * el resto del proceso. Esa diferencia la dice la posesión del lote.
  *
  * Lo que un gasto tenga de fijo o de variable depende del contrato y del rubro,
@@ -88,7 +88,7 @@ export const MODALIDAD_LABEL: Record<Modalidad, string> = {
  */
 export const MODALIDAD_DESCRIPCION: Record<Modalidad, string> = {
   compra_engorde:
-    "El capital financia el proceso productivo de engorde: compra la hacienda si todavía hay que comprarla y paga los gastos del ciclo. Los fondos salen contra la documentación de cada etapa.",
+    "Lo aportado cubre el proceso productivo de engorde: la compra de la hacienda si todavía hay que comprarla y los gastos del ciclo. Los fondos salen contra la documentación de cada etapa.",
 };
 
 /** Qué recibe el colaborador. */
@@ -115,13 +115,13 @@ export const GARANTIA_LABEL: Record<TipoGarantia, string> = {
 
 export const GARANTIA_DESCRIPCION: Record<TipoGarantia, string> = {
   hipoteca:
-    "Un inmueble del productor queda gravado a favor del fideicomiso. Es la garantía más fuerte y la que más tarda en ejecutarse.",
+    "Un inmueble del productor queda afectado a favor del proyecto. Es la garantía más fuerte y la que más tarda en ejecutarse.",
   prenda_rodeo:
     "Se prendan cabezas identificadas por caravana. Sigue al animal, así que se pierde con el animal.",
   aval_establecimiento:
     "Otra sociedad del grupo responde con su patrimonio si el productor no cumple.",
   cesion_derechos:
-    "Lo que el frigorífico le va a pagar por el lote se cobra directo en el fideicomiso, antes de pasar por el productor.",
+    "Lo que el frigorífico le va a pagar por el lote se cobra directo en la cuenta del proyecto, antes de pasar por el productor.",
   fianza_personal:
     "Una persona responde con sus bienes. Vale lo que valga el patrimonio de esa persona.",
 };
@@ -193,5 +193,5 @@ export const CONTINGENCIA_LABEL: Record<CasoContingencia, string> = {
 export const A_CARGO_LABEL: Record<Comision["aCargoDe"], string> = {
   colaborador: "La paga el colaborador",
   productor: "La paga el productor",
-  fideicomiso: "Sale del fideicomiso",
+  fideicomiso: "Sale de la cuenta del proyecto",
 };

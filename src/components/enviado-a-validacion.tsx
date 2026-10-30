@@ -59,8 +59,8 @@ export function EnviadoAValidacion({
           el DT-e contra SENASA por el CUVE.
         </li>
         <li>
-          <span className="font-medium text-tinta">Garantía y fideicomiso.</span> Se
-          revisa cupo y vigencia, y se constituye la serie.
+          <span className="font-medium text-tinta">Garantía.</span> Se
+          revisa cupo y vigencia.
         </li>
         <li>
           <span className="font-medium text-tinta">Publicación.</span> Recién ahí sale al

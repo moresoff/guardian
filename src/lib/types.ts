@@ -4,8 +4,8 @@
 export type Rol = "productor" | "colaborador" | "admin";
 
 /**
- * Clasificación vieja del destino de los fondos, anterior a que Guardian
- * financiara solamente el proceso productivo de engorde. Se guarda solo para
+ * Clasificación vieja del destino de los fondos, anterior a que hubiera una sola
+ * modalidad, la del proceso productivo de engorde. Se guarda solo para
  * rastrear cómo estaba cargado un proyecto: no decide nada.
  *
  * `ciclo_engorde` es el capital que va sobre el animal y lo que lo hace engordar;
@@ -14,16 +14,15 @@ export type Rol = "productor" | "colaborador" | "admin";
 export type DestinoFondos = "ciclo_engorde" | "mixto";
 
 /**
- * La modalidad con la que Guardian financia un ciclo: el proceso productivo de
- * engorde. Si el lote todavía hay que comprarlo, el capital incluye la compra; si
- * ya es del productor, financia el resto del proceso (ración, sanidad, corral,
+ * La modalidad de participación en un ciclo: el proceso productivo de engorde. Si
+ * el lote todavía hay que comprarlo, lo aportado incluye la compra; si ya es del
+ * productor, cubre el resto del proceso (ración, sanidad, corral,
  * flete). Esa diferencia la dice `TipoPosesion`, no la modalidad.
  *
- * El colaborador participa del resultado efectivo de la venta. Guardian no
- * financia capital de trabajo suelto ni paga una tasa fija: hay una sola
- * modalidad y por eso nunca queda "sin determinar".
+ * El colaborador participa del resultado efectivo de la venta. No hay capital de
+ * trabajo suelto ni tasa fija: hay una sola modalidad y por eso nunca queda "sin determinar".
  *
- * Que un gasto sea fijo o variable depende del objeto financiado y del contrato:
+ * Que un gasto sea fijo o variable depende del objeto del gasto y del contrato:
  * esa clasificación no se deduce acá.
  */
 export type Modalidad = "compra_engorde";

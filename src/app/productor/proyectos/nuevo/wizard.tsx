@@ -398,8 +398,8 @@ function Paso1({
   return (
     <div className="space-y-8">
       <div>
-        <TituloBloque descripcion="Guardian financia el proceso productivo de engorde: el capital compra la hacienda y la termina.">
-          Qué financia el proyecto
+        <TituloBloque descripcion="Los aportes cubren el proceso productivo de engorde: la hacienda, si todavía hay que comprarla, y los gastos del ciclo.">
+          Qué cubre el proyecto
         </TituloBloque>
         <div className="rounded-lg border border-borde bg-superficie p-4">
           <p className="text-sm font-medium">{MODALIDAD_LABEL.compra_engorde}</p>

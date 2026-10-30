@@ -1,7 +1,7 @@
 import type { SistemaProductivo } from "@/lib/types";
 
 /**
- * Los tres tipos de ciclo que financia Guardian. Cada uno tiene su plazo y su
+ * Los tres tipos de ciclo en los que se participa. Cada uno tiene su plazo y su
  * reparto del resultado: el modelo es el mismo y los números cambian según cuánto
  * dura el animal en el sistema y cuánto aporta cada parte.
  *

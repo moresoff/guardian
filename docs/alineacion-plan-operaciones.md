@@ -49,8 +49,14 @@ conservan como historia de cómo se llegó hasta acá.
   El seed y el alta de proyecto usan esa tabla. La rentabilidad es una estimación
   del modelo y solo se muestra del lado del productor. Las cifras del feedlot
   suman 100 con 32,01 / 67,99; el pedido original decía 32,1 / 67,99 (100,09).
-- **Registro.** El paso 3 ya no resume lo cargado: muestra el recorrido de la
-  aplicación, paso a paso, distinto para productor y colaborador.
+- **Registro y recorrido.** El registro es solo crear la cuenta. Al terminar se
+  entra a la aplicación (`/productor` o `/proyectos`) y ahí aparece el recorrido
+  guiado (`src/components/recorrido-guiado.tsx`): una guía flotante que sigue a
+  la persona por las pantallas reales y le dice qué cargar en cada una. Se puede
+  salir en cualquier momento y volver a abrir desde el pie de página.
+- **Vocabulario.** La interfaz habla de colaborar y participar, no de financiar, y
+  no nombra el fideicomiso ordinario fuera de la ficha de cada proyecto. La regla
+  está en `.claude/skills/diseno-guardian/SKILL.md` y en `CLAUDE.md`.
 - **Interfaz.** El filtro por modalidad del catálogo se sacó (había una sola
   opción), el alta ya no pregunta la modalidad y pide vendedor y establecimiento
   receptor solo si el lote hay que comprarlo, o proveedores si ya existe.

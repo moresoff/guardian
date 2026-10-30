@@ -7,11 +7,12 @@ import { BotonLink, Panel } from "@/components/ui/primitivos";
 import { getProyecto, getProyectosPublicos } from "@/lib/data";
 import { formatNum, formatPct, modalidadLabel } from "@/lib/format";
 import { buscarImagen } from "@/lib/imagenes";
+import { CICLOS, SISTEMAS_EN_ORDEN } from "@/lib/ciclos";
 
 export const metadata = {
   title: "Guardian — Crecé, ayudando a crecer",
   description:
-    "Guardian conecta colaboradores con productores ganaderos y financia el proceso productivo de engorde, con la documentación del lote a la vista.",
+    "Guardian conecta colaboradores con productores ganaderos para participar en ciclos de engorde, con la documentación del lote a la vista.",
 };
 
 /**
@@ -29,9 +30,9 @@ const PUERTAS = [
   {
     href: "/registro?lado=productor",
     rotulo: "Productor",
-    titulo: "Necesito capital para un ciclo",
+    titulo: "Quiero publicar un ciclo",
     texto:
-      "Publicá el ciclo con la documentación que ya emitís y conseguí el capital, sin carpeta de crédito.",
+      "Publicá el ciclo con la documentación que ya emitís y recibí colaboraciones, sin carpeta de crédito.",
     accion: "Entrar como productor",
   },
   {
@@ -39,36 +40,32 @@ const PUERTAS = [
     rotulo: "Colaborador",
     titulo: "Quiero participar en un ciclo",
     texto:
-      "Financiá un lote concreto, con nombre y RENSPA, y seguí el ciclo hasta la faena.",
+      "Participá en un lote concreto, con nombre y RENSPA, y seguí el ciclo hasta la faena.",
     accion: "Entrar como colaborador",
   },
 ];
 
-/** Lo que el contrato asegura, en cuatro titulares. El detalle está en la ficha. */
-const CONTRATO = [
+/** Lo que conviene saber antes de participar, sin ceremonia. El detalle está en la ficha. */
+const ANTES_DE_PARTICIPAR = [
   {
-    n: "01",
-    titulo: "Patrimonio separado",
-    texto:
-      "La hacienda y el capital de la serie no son del productor ni de Guardian. Un ciclo que sale mal no alcanza a los otros.",
-  },
-  {
-    n: "02",
-    titulo: "Un fiduciario independiente",
-    texto:
-      "La serie la administra un tercero, no Guardian. Guardian conecta y verifica la documentación, y nadie garantiza el resultado: sale de la venta.",
-  },
-  {
-    n: "03",
     titulo: "El destino está escrito",
     texto:
-      "El contrato dice qué compra el capital, en qué plazo y cómo se reparte. Salir de ahí es incumplimiento.",
+      "Cada proyecto dice en qué se usa lo aportado, en qué plazo y cómo se reparte. Salir de ahí es incumplimiento.",
   },
   {
-    n: "04",
+    titulo: "El resultado sale de la venta",
+    texto:
+      "Guardian conecta y verifica la documentación. Nadie garantiza el resultado: lo fija el romaneo del frigorífico y puede ser menor al proyectado.",
+  },
+  {
+    titulo: "Cada proyecto va por separado",
+    texto:
+      "Tiene sus propias condiciones, su propia cuenta y su propia rendición. Lo que pasa en un ciclo no se mezcla con otro.",
+  },
+  {
     titulo: "Rendición de cuentas",
     texto:
-      "El fiduciario rinde cuentas y no puede renunciar a esa obligación. El resultado sale del romaneo.",
+      "Cada proyecto rinde cuentas de gastos y pesadas mientras corre, y al cierre con el romaneo.",
   },
 ];
 
@@ -96,10 +93,10 @@ const ETAPAS: Etapa[] = [
   },
   {
     n: "Etapa 04",
-    titulo: "Fondeo",
+    titulo: "Colaboración",
     duracion: "Hasta completar el monto",
     detalle:
-      "El proyecto queda visible en el catálogo y los colaboradores comprometen capital. Cuando se completa el monto, los fondos se liberan según el estado de la hacienda: de una vez si el lote ya existe, por tramos si todavía hay que comprarlo.",
+      "El proyecto queda visible en el catálogo y los colaboradores participan con su aporte. Cuando se completa el monto, los fondos se liberan según el estado de la hacienda: de una vez si el lote ya existe, por tramos si todavía hay que comprarlo.",
   },
   {
     n: "Etapa 05",
@@ -127,7 +124,7 @@ const RESENAS: Resena[] = [
     texto:
       "Antes de poner capital en el siguiente miro el romaneo del ciclo anterior. El último me dio 57,8 % de rendimiento y con ese número hice la cuenta.",
     nombre: "Colaboradora de Buenos Aires",
-    rol: "Tres ciclos financiados",
+    rol: "Participó en tres ciclos",
   },
   {
     texto:
@@ -186,8 +183,8 @@ export default async function Home() {
               Crecé, ayudando a crecer
             </p>
             <p className="mt-5 hidden max-w-md text-white/85 sm:block">
-              Financiamos el proceso productivo de engorde, con el activo real a la vista:
-              un lote concreto, en un establecimiento con nombre y RENSPA.
+              Participá en el engorde de un lote concreto, con el activo real a la
+              vista: un establecimiento con nombre y RENSPA.
             </p>
           </div>
 
@@ -232,81 +229,63 @@ export default async function Home() {
       {/* Debajo de la foto, la página vuelve al ancho del contenedor. */}
       <div>
         <div className="space-y-16 py-14">
-          {/* 2. Qué se financia y cómo corre un ciclo */}
+          {/* 2. Tipos de ciclo, qué hay que saber y cómo corre un ciclo */}
           <section>
             <div className="max-w-2xl">
               <h2 className="text-3xl font-semibold tracking-tight">
-                Qué financia Guardian
+                Tres tipos de ciclo
               </h2>
               <p className="mt-3 text-tinta-suave">
-                El proceso productivo de engorde: el capital compra la hacienda y la
-                termina. Hay tres tipos de ciclo —feedlot puro, mixto y pastura pura— y
-                el plazo va de 131 a 240 días.
+                Cada uno tiene su plazo y su reparto del resultado. Elegís en cuál
+                participar mirando cuánto dura el animal y cuánto te toca.
               </p>
             </div>
 
-            <dl className="mt-9 grid gap-5">
-              {[
-                {
-                  t: "Compra y engorde",
-                  costo: "Participación en el resultado",
-                  d: "El capital compra la hacienda y la termina, y puede pagar los gastos de ese ciclo. El colaborador participa del resultado de la venta.",
-                  verifica: "Se verifica: la compra, la recepción y las caravanas",
-                },
-              ].map((x) => (
-                <div
-                  key={x.t}
-                  className="flex flex-col rounded-xl border border-borde bg-superficie p-6 shadow-[var(--sombra-baja)]"
-                >
-                  <dt className="text-lg font-semibold tracking-tight">{x.t}</dt>
-                  <dd className="rotulo mt-1 text-tinta-tenue">{x.costo}</dd>
-                  <dd className="mt-3 flex-1 text-sm text-tinta-suave">{x.d}</dd>
-                  <dd className="mt-5 border-t border-borde pt-3 text-sm font-medium text-marca">
-                    {x.verifica}
-                  </dd>
-                </div>
-              ))}
-            </dl>
+            <div className="mt-6">
+              <table className="w-full border-collapse text-left text-sm sm:text-base">
+                <caption className="sr-only">
+                  Plazo y reparto del resultado por tipo de ciclo
+                </caption>
+                <thead>
+                  <tr className="border-b border-borde-fuerte text-sm text-tinta-suave">
+                    <th scope="col" className="py-2 pr-3 font-medium">Tipo</th>
+                    <th scope="col" className="py-2 pr-3 font-medium">Plazo</th>
+                    <th scope="col" className="py-2 pr-3 font-medium">Colab.</th>
+                    <th scope="col" className="py-2 font-medium">Productor</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {SISTEMAS_EN_ORDEN.map((k) => (
+                    <tr key={k} className="border-b border-borde">
+                      <th scope="row" className="py-3 pr-3 font-semibold">
+                        {CICLOS[k].nombre}
+                        <span className="hidden text-sm font-normal text-tinta-suave sm:block">
+                          {CICLOS[k].descripcion}
+                        </span>
+                      </th>
+                      <td className="tabular whitespace-nowrap py-3 pr-3">{CICLOS[k].plazoDias} días</td>
+                      <td className="tabular whitespace-nowrap py-3 pr-3 font-medium">
+                        {formatPct(CICLOS[k].colaboradoresPct)}
+                      </td>
+                      <td className="tabular whitespace-nowrap py-3">{formatPct(CICLOS[k].productorPct)}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
 
-            {/*
-              El contrato va en la portada y no solo en la ficha: el colaborador decide
-              si entra antes de abrir un proyecto, y lo que compra es una
-              participación en un fideicomiso, no un préstamo al productor.
-
-              Cuatro tarjetas y una línea cada una. Antes eran cuatro párrafos y
-              nadie los leía: lo que el colaborador necesita de esta sección es el
-              titular, y el detalle lo tiene la ficha de cada proyecto.
-            */}
             <div className="mt-14">
               <h3 className="text-2xl font-semibold tracking-tight">
-                Bajo qué contrato entra el dinero
+                Antes de participar
               </h3>
-              <p className="mt-2 max-w-2xl text-tinta-suave">
-                Cada proyecto es una serie de un fideicomiso ordinario.
-              </p>
-
-              <ul className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-                {CONTRATO.map((c, i) => (
-                  <li
-                    key={c.titulo}
-                    className="aparece"
-                    style={{ animationDelay: `${i * 90}ms` }}
-                  >
-                    <div className="group h-full rounded-xl border border-borde bg-superficie p-5 shadow-[var(--sombra-baja)] transition-[transform,box-shadow,border-color] hover:-translate-y-1 hover:border-marca/30 hover:shadow-[var(--sombra-alta)]">
-                      <span className="codigo text-sm text-marca">{c.n}</span>
-                      <p className="mt-3 font-semibold tracking-tight transition-colors group-hover:text-marca">
-                        {c.titulo}
-                      </p>
-                      <p className="mt-2 text-sm text-tinta-suave">{c.texto}</p>
-                    </div>
-                  </li>
+              <dl className="mt-4 grid gap-x-10 gap-y-5 sm:grid-cols-2">
+                {ANTES_DE_PARTICIPAR.map((c) => (
+                  <div key={c.titulo} className="border-t border-borde pt-3">
+                    <dt className="font-semibold tracking-tight">{c.titulo}</dt>
+                    <dd className="mt-1 text-sm text-tinta-suave">{c.texto}</dd>
+                  </div>
                 ))}
-              </ul>
-
-              <p className="mt-6 text-sm text-tinta-suave">
-                Cada proyecto publicado muestra su serie: fiduciario, plazos, reparto y
-                quién soporta la mortandad.
-              </p>
+              </dl>
             </div>
 
             <div className="mt-16">

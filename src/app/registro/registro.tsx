@@ -2,11 +2,9 @@
 
 import { useState } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { Campo, GrupoOpciones, Seleccion } from "@/components/ui/campos";
-import { Recorrido, type PasoDeRecorrido } from "@/components/recorrido";
-import { Aviso, Boton, BotonLink, Progreso } from "@/components/ui/primitivos";
-import { CICLOS, SISTEMAS_EN_ORDEN } from "@/lib/ciclos";
-import { formatPct } from "@/lib/format";
+import { Boton, BotonLink, Progreso } from "@/components/ui/primitivos";
 import { PROVINCIAS } from "@/lib/provincias";
 import type { Rol } from "@/lib/types";
 
@@ -17,122 +15,13 @@ const LADOS: { rol: Lado; titulo: string; descripcion: string }[] = [
     rol: "productor",
     titulo: "Soy productor",
     descripcion:
-      "Tengo hacienda y necesito capital para el ciclo de engorde. Publico el proyecto con la documentación del lote.",
+      "Tengo hacienda y quiero publicar un ciclo de engorde para que otras personas participen, con la documentación del lote.",
   },
   {
     rol: "colaborador",
     titulo: "Soy colaborador",
     descripcion:
-      "Quiero poner capital en ciclos ganaderos y seguir cómo avanza cada uno hasta el cierre.",
-  },
-];
-
-/** Los tres tipos de ciclo, con lo que le toca a cada parte. */
-function TiposDeCiclo({ paraProductor }: { paraProductor: boolean }) {
-  return (
-    <ul className="grid gap-2 sm:grid-cols-3">
-      {SISTEMAS_EN_ORDEN.map((k) => {
-        const c = CICLOS[k];
-        return (
-          <li key={k} className="rounded-lg border border-borde bg-superficie-2 p-3 text-sm">
-            <p className="font-semibold tracking-tight">
-              {c.nombre} <span className="font-normal text-tinta-suave">· {c.plazoDias} días</span>
-            </p>
-            <dl className="mt-1 space-y-0.5 text-tinta-suave">
-              <div className="flex justify-between gap-2">
-                <dt>{paraProductor ? "Vos" : "Productor"}</dt>
-                <dd className="tabular whitespace-nowrap font-medium text-tinta">{formatPct(c.productorPct)}</dd>
-              </div>
-              <div className="flex justify-between gap-2">
-                <dt>Colaboradores</dt>
-                <dd className="tabular whitespace-nowrap font-medium text-tinta">{formatPct(c.colaboradoresPct)}</dd>
-              </div>
-              {paraProductor ? (
-                <div className="flex justify-between gap-2">
-                  <dt>Rentab. anual</dt>
-                  <dd className="tabular whitespace-nowrap font-medium text-tinta">
-                    {formatPct(c.rentabilidadAnualProductorPct)}
-                  </dd>
-                </div>
-              ) : null}
-            </dl>
-          </li>
-        );
-      })}
-    </ul>
-  );
-}
-
-const PASOS_PRODUCTOR: PasoDeRecorrido[] = [
-  {
-    titulo: "Cargás tu establecimiento",
-    resumen:
-      "En tu panel cargás el RENSPA del campo una sola vez: queda guardado y sirve para todos tus ciclos.",
-  },
-  {
-    titulo: "Elegís el tipo de ciclo",
-    resumen:
-      "Hay tres. Cada uno tiene su plazo y su reparto del resultado, y eso define qué te toca a vos y qué les toca a los colaboradores.",
-    contenido: <TiposDeCiclo paraProductor />,
-  },
-  {
-    titulo: "Publicás el proyecto",
-    resumen:
-      "Contás cuántas cabezas, de qué categoría, con qué peso entran y con cuál salen, cuánto capital necesitás y qué garantía ofrecés. Si todavía hay que comprar la hacienda, también a quién.",
-  },
-  {
-    titulo: "Subís la documentación",
-    resumen:
-      "RENSPA, DT-e, listado de caravanas y boleto de compra-venta. Guardian cruza cada dato contra lo que declaraste y te avisa si algo no cierra, antes de publicar.",
-  },
-  {
-    titulo: "Guardian valida y sale al catálogo",
-    resumen:
-      "En 24 a 72 horas se revisan las discrepancias y se verifica el DT-e contra SENASA. Si todo cierra, el proyecto queda visible para los colaboradores.",
-  },
-  {
-    titulo: "Fondeo y desembolsos",
-    resumen:
-      "Los colaboradores ponen el capital en la cuenta del fideicomiso. Se libera por tramos contra la documentación de cada etapa, no todo junto.",
-  },
-  {
-    titulo: "Seguimiento y cierre",
-    resumen:
-      "Durante el ciclo cargás las pesadas y los gastos. Al cerrar, el romaneo del frigorífico dice cuántos kilos salieron y con eso se liquida el reparto del resultado.",
-  },
-];
-
-const PASOS_COLABORADOR: PasoDeRecorrido[] = [
-  {
-    titulo: "Mirás el catálogo",
-    resumen:
-      "Cada proyecto es un lote concreto, con su establecimiento, su RENSPA y el estado de validación a la vista.",
-  },
-  {
-    titulo: "Entendés el tipo de ciclo",
-    resumen:
-      "Hay tres tipos de ciclo y cada uno tiene su plazo y su reparto del resultado. Es lo primero que conviene mirar de un proyecto.",
-    contenido: <TiposDeCiclo paraProductor={false} />,
-  },
-  {
-    titulo: "Leés la ficha y el contrato",
-    resumen:
-      "Ahí están el presupuesto, el cronograma de desembolsos, la garantía, quién soporta la mortandad y quién es el fiduciario. El resultado proyectado es una estimación: puede ser menor, o negativo.",
-  },
-  {
-    titulo: "Adherís y transferís",
-    resumen:
-      "Elegís el monto y aceptás el contrato de adhesión. Después transferís a la cuenta del fideicomiso: el capital cuenta recién cuando el banco lo acredita.",
-  },
-  {
-    titulo: "Seguís el ciclo",
-    resumen:
-      "Ves las pesadas, los gastos y el avance del lote hasta el cierre, en tu cartera.",
-  },
-  {
-    titulo: "Cierre y liquidación",
-    resumen:
-      "Cuando el lote se faena, el romaneo de playa fija el resultado. De ahí sale lo que cobrás, en la cuenta que dejaste.",
+      "Quiero participar en ciclos ganaderos y seguir cómo avanza cada uno hasta el cierre.",
   },
 ];
 
@@ -171,6 +60,7 @@ type Errores = Partial<Record<keyof Datos, string>>;
  * entra, así que se arranca en el paso 2 y no se le vuelve a preguntar.
  */
 export function Registro({ ladoInicial }: { ladoInicial?: Lado }) {
+  const router = useRouter();
   const [paso, setPaso] = useState(ladoInicial ? 2 : 1);
   const [lado, setLado] = useState<Lado | null>(ladoInicial ?? null);
   const [datos, setDatos] = useState<Datos>(INICIAL);
@@ -197,19 +87,23 @@ export function Registro({ ladoInicial }: { ladoInicial?: Lado }) {
     return Object.keys(e).length === 0;
   };
 
-  // Quien entra por la portada ya eligió el lado: para esa persona son dos pasos
-  // (datos y recorrido), y el contador tiene que decir eso, no "2 de 3".
-  const total = ladoInicial ? 2 : 3;
-  const actual = ladoInicial ? paso - 1 : paso;
+  // Quien entra por la portada ya eligió el lado y completa un solo paso: no hay
+  // contador que mostrar. Desde el menú son dos: lado y datos.
+  const total = ladoInicial ? 1 : 2;
+  const actual = ladoInicial ? 1 : paso;
 
   return (
     <div>
-      <p className="rotulo text-tinta-tenue">
-        Paso {actual} de {total}
-      </p>
-      <div className="mt-1.5">
-        <Progreso valor={(actual / total) * 100} label="Avance del registro" />
-      </div>
+      {total > 1 ? (
+        <>
+          <p className="rotulo text-tinta-tenue">
+            Paso {actual} de {total}
+          </p>
+          <div className="mt-1.5">
+            <Progreso valor={(actual / total) * 100} label="Avance del registro" />
+          </div>
+        </>
+      ) : null}
 
       {paso === 1 ? (
         <section className="mt-5">
@@ -242,7 +136,12 @@ export function Registro({ ladoInicial }: { ladoInicial?: Lado }) {
           noValidate
           onSubmit={(e) => {
             e.preventDefault();
-            if (validar()) setPaso(3);
+            if (!validar()) return;
+            // La cuenta se abre y se entra directo a la aplicación: el recorrido
+            // explica cada pantalla ahí, donde se ve lo que hay que cargar.
+            router.push(
+              lado === "productor" ? "/productor?recorrido=productor" : "/proyectos?recorrido=colaborador",
+            );
           }}
         >
           <h2 className="text-xl font-semibold tracking-tight">Tus datos</h2>
@@ -324,49 +223,25 @@ export function Registro({ ladoInicial }: { ladoInicial?: Lado }) {
               <Boton type="submit" className="flex-1">
                 Crear mi cuenta
               </Boton>
-              <Boton
-                type="button"
-                variante="secundario"
-                onClick={() => {
-                  setErrores({});
-                  setPaso(1);
-                }}
-              >
-                Volver
-              </Boton>
+              {ladoInicial ? (
+                <BotonLink href="/" variante="secundario">
+                  Volver
+                </BotonLink>
+              ) : (
+                <Boton
+                  type="button"
+                  variante="secundario"
+                  onClick={() => {
+                    setErrores({});
+                    setPaso(1);
+                  }}
+                >
+                  Volver
+                </Boton>
+              )}
             </div>
           </div>
         </form>
-      ) : null}
-
-      {paso === 3 ? (
-        <section className="mt-5">
-          <h2 className="text-xl font-semibold tracking-tight">
-            Listo, {datos.nombre.trim().split(" ")[0]}. Así funciona Guardian
-          </h2>
-          <div className="mt-3">
-            <Recorrido
-              pasos={lado === "productor" ? PASOS_PRODUCTOR : PASOS_COLABORADOR}
-              final={
-                <div className="space-y-3">
-                  <Aviso tono="alerta" titulo="La cuenta todavía no se guarda">
-                    Guardian es un prototipo: las cuentas se conectan en la etapa de
-                    backend. Lo que cargaste no queda registrado, pero podés entrar igual
-                    y recorrer toda la plataforma.
-                  </Aviso>
-                  <div className="flex flex-wrap gap-3">
-                    <BotonLink href={lado === "productor" ? "/productor" : "/proyectos"}>
-                      Entrar a Guardian
-                    </BotonLink>
-                    <Boton variante="secundario" onClick={() => setPaso(2)}>
-                      Corregir mis datos
-                    </Boton>
-                  </div>
-                </div>
-              }
-            />
-          </div>
-        </section>
       ) : null}
 
       {paso === 1 ? (

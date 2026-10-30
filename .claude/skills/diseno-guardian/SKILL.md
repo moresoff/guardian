@@ -8,6 +8,16 @@ user-invocable: true
 
 Guardian financia ciclos de engorde: un productor publica el capital que necesita para el proceso productivo de engorde y un grupo de inversores lo pone. Las dos puntas miran las mismas cifras y las dos tienen dinero de por medio.
 
+## Vocabulario: participar, no financiar
+
+Guardian conecta personas que colaboran con productores. Nada de lo que se escribe en la interfaz, en los metadatos ni en los avisos puede sonar a que Guardian presta, financia o administra un patrimonio, ni comprometer a Guardian con una estructura legal. El fideicomiso ordinario es un instrumento privado entre las partes: no es parte del mensaje de producto.
+
+- **Se usa:** colaborar, colaboración, participar, participación, aporte, aportar, proyecto, ciclo, resultado, reparto, tipo de ciclo.
+- **No se usa:** financiar, financiamiento, financiero, capital de trabajo, préstamo, crédito (salvo "sin carpeta de crédito" para decir que no se pide), inversión garantizada, rendimiento asegurado.
+- **No se nombra** el fideicomiso ordinario, la serie, el fiduciario ni el patrimonio separado en portada, registro, recorrido, avisos ni metadatos. Si un dato del contrato tiene que mostrarse, vive en la ficha del proyecto y se dice como lo dice el contrato, sin prometer nada por encima de él.
+- Para el destino del dinero: "la cuenta del proyecto", no "la cuenta del fideicomiso".
+- Nadie garantiza el resultado: lo fija el romaneo y puede ser menor al proyectado.
+
 ## Las tres reglas que mandan sobre todo lo demás
 
 **1. Lo van a usar personas mayores, en el teléfono, con sol.** Un productor de sesenta y pico carga un DT-e parado en el corral. Texto de 18px para arriba, contraste alto siempre, botones que se puedan tocar con el dedo grueso. Si una decisión estética pelea con la legibilidad, gana la legibilidad y no hay discusión.

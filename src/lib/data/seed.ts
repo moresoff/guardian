@@ -994,7 +994,7 @@ function presupuestoDe(p: ProyectoDeclarado): RubroPresupuesto[] {
   const periodo = `Los ${p.plazoDias} días del ciclo`;
 
   // Si el lote todavía hay que comprarlo, la compra es el primer rubro; si ya es
-  // del productor, el capital financia solo el proceso de engorde.
+  // del productor, lo aportado cubre solo el proceso de engorde.
   if (p.tipoPosesion !== "existencia_comprobada") {
     return [
       {

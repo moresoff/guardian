@@ -1,6 +1,7 @@
 import type { Metadata, Viewport } from "next";
 import { JetBrains_Mono, Poppins } from "next/font/google";
 import { Nav } from "@/components/nav";
+import { BotonRecorrido, RecorridoGuiado } from "@/components/recorrido-guiado";
 import "./globals.css";
 
 const poppins = Poppins({
@@ -17,9 +18,9 @@ const jetbrains = JetBrains_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Guardian — Financiamiento de ciclos ganaderos",
+  title: "Guardian — Participá en ciclos ganaderos",
   description:
-    "Plataforma que conecta colaboradores con productores ganaderos y financia el proceso productivo de engorde.",
+    "Plataforma que conecta colaboradores con productores ganaderos para participar en ciclos de engorde, con la documentación del lote a la vista.",
 };
 
 /** La barra del navegador en el teléfono acompaña el fondo de la página. */
@@ -53,11 +54,12 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
         <footer className="border-t border-borde px-4 py-6">
           <p className="mx-auto max-w-6xl text-sm text-tinta-suave">
             <span className="font-medium">Guardian</span> — prototipo de la
-            plataforma. Los datos son de prueba. Cada proyecto es una serie de un
-            fideicomiso ordinario y se suma por contrato de adhesión: nada de lo que
-            se muestra acá constituye oferta pública.
+            plataforma. Los datos son de prueba y nada de lo que se muestra acá
+            constituye oferta pública.{" "}
+            <BotonRecorrido className="font-medium text-marca underline underline-offset-2" />
           </p>
         </footer>
+        <RecorridoGuiado />
       </body>
     </html>
   );

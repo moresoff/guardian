@@ -100,7 +100,7 @@ export function Adherir({
               <p className="rotulo text-tinta-tenue">Número de orden</p>
               <p className="codigo mt-1 text-lg font-medium">{orden}</p>
               <dl className="mt-4 space-y-2 text-sm">
-                <Fila etiqueta="Titular" valor="Fideicomiso del proyecto (cuenta de demostración)" />
+                <Fila etiqueta="Titular" valor="Cuenta del proyecto (cuenta de demostración)" />
                 <Fila etiqueta="CBU" valor="0000000000000000000000" codigo />
                 <Fila etiqueta="Importe" valor={formatArs(montoNum)} />
                 <Fila etiqueta="Referencia" valor={orden} codigo />
@@ -146,7 +146,7 @@ export function Adherir({
                   onChange={(e) => setAcepta(e.target.checked)}
                 />
                 <span className="text-sm">
-                  Leí y acepto el contrato de adhesión al fideicomiso.
+                  Leí y acepto las condiciones de participación.
                   <span className="mt-0.5 block text-tinta-suave">
                     {contratoVersion}. Queda registrada la versión y la fecha.
                   </span>

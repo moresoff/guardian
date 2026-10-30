@@ -152,7 +152,7 @@ export default async function DetalleProyectoProductor({
               </Dato>
               <Dato
                 etiqueta="A liquidar"
-                ayuda="Recaudado menos liquidado: está en el fideicomiso y todavía no salió."
+                ayuda="Recaudado menos liquidado: está en la cuenta del proyecto y todavía no salió."
               >
                 {formatArs(proyecto.montoRecaudadoArs - proyecto.montoLiberadoArs)}
               </Dato>

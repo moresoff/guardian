@@ -21,11 +21,11 @@ export function SaldosCard({ saldos }: { saldos: Saldos }) {
         "Desembolsos ya aprobados a tu favor que todavía no se pagaron. No es un saldo que puedas mover: se paga según el contrato.",
     },
     {
-      titulo: "En el fideicomiso",
+      titulo: "En la cuenta del proyecto",
       valor: saldos.aLiquidar,
       total: saldos.recaudadoHistorico,
       ayuda:
-        "Capital acreditado en la cuenta del fideicomiso de tus proyectos, sin desembolso aprobado. Sale contra la documentación del hito que corresponda.",
+        "Aportes acreditados en la cuenta de tus proyectos, sin desembolso aprobado. Sale contra la documentación del hito que corresponda.",
     },
     {
       titulo: "Recaudado histórico",
@@ -38,7 +38,7 @@ export function SaldosCard({ saldos }: { saldos: Saldos }) {
 
   return (
     <div className="rounded-2xl bg-marca-fuerte p-5 text-marca-contraste sm:p-6">
-      <h2 className="text-lg font-semibold tracking-tight">Tu dinero en Guardian</h2>
+      <h2 className="text-lg font-semibold tracking-tight">Tus aportes por etapa</h2>
 
       <ul className="mt-5 space-y-3">
         {filas.map((f) => {
