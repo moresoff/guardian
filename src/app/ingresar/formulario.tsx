@@ -2,31 +2,24 @@
 
 import { useRouter } from "next/navigation";
 import { useState } from "react";
-import { abrirSesion } from "@/app/sesion/acciones";
+import Link from "next/link";
+import { ingresar } from "@/app/sesion/acciones";
 import { Campo } from "@/components/ui/campos";
-import { Aviso, Boton } from "@/components/ui/primitivos";
+import { Boton } from "@/components/ui/primitivos";
 
 const CORREO = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
-/**
- * El ingreso todavía no tiene contra qué validar: las cuentas se conectan en la
- * etapa de backend. Hasta entonces el formulario revisa lo que puede revisar
- * —que los datos estén completos— y lo dice con todas las letras en vez de
- * simular una sesión que no existe.
- */
+/** El ingreso: correo y contraseña contra las cuentas guardadas. */
 export function FormularioIngreso() {
   const router = useRouter();
-  const entrar = async (lado: "productor" | "colaborador") => {
-    await abrirSesion(lado);
-    router.push(lado === "productor" ? "/productor" : "/proyectos");
-  };
   const [correo, setCorreo] = useState("");
   const [clave, setClave] = useState("");
   const [verClave, setVerClave] = useState(false);
   const [errores, setErrores] = useState<{ correo?: string; clave?: string }>({});
-  const [enviado, setEnviado] = useState(false);
+  const [errorGeneral, setErrorGeneral] = useState<string | null>(null);
+  const [enviando, setEnviando] = useState(false);
 
-  const enviar = (e: React.FormEvent) => {
+  const enviar = async (e: React.FormEvent) => {
     e.preventDefault();
     const nuevos: { correo?: string; clave?: string } = {};
     if (!correo.trim()) nuevos.correo = "Escribí tu correo para poder entrar.";
@@ -34,7 +27,18 @@ export function FormularioIngreso() {
       nuevos.correo = "Falta algo en el correo: fijate que tenga arroba y el punto final.";
     if (!clave) nuevos.clave = "Escribí tu contraseña.";
     setErrores(nuevos);
-    setEnviado(Object.keys(nuevos).length === 0);
+    setErrorGeneral(null);
+    if (Object.keys(nuevos).length > 0) return;
+
+    setEnviando(true);
+    const r = await ingresar(correo, clave);
+    if (!r.ok) {
+      setEnviando(false);
+      setErrorGeneral(r.error);
+      return;
+    }
+    router.push(r.lado === "productor" ? "/productor" : "/proyectos");
+    router.refresh();
   };
 
   return (
@@ -45,10 +49,7 @@ export function FormularioIngreso() {
         autoComplete="email"
         inputMode="email"
         value={correo}
-        onChange={(e) => {
-          setCorreo(e.target.value);
-          setEnviado(false);
-        }}
+        onChange={(e) => setCorreo(e.target.value)}
         error={errores.correo}
       />
 
@@ -58,10 +59,7 @@ export function FormularioIngreso() {
           type={verClave ? "text" : "password"}
           autoComplete="current-password"
           value={clave}
-          onChange={(e) => {
-            setClave(e.target.value);
-            setEnviado(false);
-          }}
+          onChange={(e) => setClave(e.target.value)}
           error={errores.clave}
         />
         <label className="mt-2 flex min-h-11 items-center gap-2.5 text-sm text-tinta-suave">
@@ -75,25 +73,19 @@ export function FormularioIngreso() {
         </label>
       </div>
 
-      <Boton type="submit" className="w-full">
-        Entrar
-      </Boton>
-
-      {enviado ? (
-        <Aviso tono="alerta" titulo="Todavía no hay cuentas de verdad">
-          Guardian es un prototipo: las cuentas y las contraseñas se conectan en la
-          próxima etapa. Mientras tanto podés recorrer la plataforma entera desde
-          cualquiera de los dos lados.
-          <span className="mt-4 flex flex-wrap gap-3">
-            <Boton type="button" variante="secundario" onClick={() => entrar("productor")}>
-              Entrar como productor
-            </Boton>
-            <Boton type="button" variante="secundario" onClick={() => entrar("colaborador")}>
-              Entrar como colaborador
-            </Boton>
-          </span>
-        </Aviso>
+      {errorGeneral ? (
+        <p role="alert" className="text-sm font-medium text-error">
+          {errorGeneral}{" "}
+          <Link href="/registro" className="underline">
+            Crear una cuenta
+          </Link>
+          .
+        </p>
       ) : null}
+
+      <Boton type="submit" className="w-full" disabled={enviando}>
+        {enviando ? "Entrando…" : "Entrar"}
+      </Boton>
     </form>
   );
 }

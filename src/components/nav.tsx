@@ -137,7 +137,7 @@ function CambiarVista({ area }: { area: Area }) {
   );
 }
 
-export function Nav({ conSesion }: { conSesion: boolean }) {
+export function Nav({ conSesion, nombre }: { conSesion: boolean; nombre: string | null }) {
   const pathname = usePathname();
   const router = useRouter();
   // Sin cuenta no hay menú de ningún lado: el catálogo se ve, pero desde afuera.
@@ -192,6 +192,14 @@ export function Nav({ conSesion }: { conSesion: boolean }) {
         <div className="ml-auto flex flex-wrap items-center gap-2">
           {area ? (
             <>
+              {nombre ? (
+                <span
+                  className="max-w-40 truncate px-1 text-sm font-medium text-tinta sm:max-w-56"
+                  title={nombre}
+                >
+                  {nombre}
+                </span>
+              ) : null}
               <CambiarVista area={area} />
               <button
                 type="button"

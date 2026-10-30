@@ -1,4 +1,5 @@
 import type { Aporte, Modalidad, Proyecto } from "@/lib/types";
+import { formatPct } from "@/lib/format";
 
 /**
  * Las reglas de un proyecto, en un solo lugar.
@@ -61,7 +62,7 @@ export function retornoDelProyecto(proyecto: Proyecto): {
     etiqueta: "Participación en el resultado",
     valor:
       p?.colaboradoresPct !== null && p?.colaboradoresPct !== undefined
-        ? `${p.colaboradoresPct} % del resultado`
+        ? `${formatPct(p.colaboradoresPct)} del resultado`
         : "Pendiente de definición",
     esProyeccion: true,
   };

@@ -10,6 +10,7 @@ import {
 } from "@/lib/format";
 import { retornoCompacto } from "@/lib/proyecto";
 import { CICLOS } from "@/lib/ciclos";
+import { partesDelTitulo, queCubre, situacionDelLote } from "@/lib/cubre";
 import type { Proyecto } from "@/lib/types";
 
 /**
@@ -35,6 +36,8 @@ export function ProyectoCard({
 }) {
   const pct = porcentajeRecaudado(proyecto.montoRecaudadoArs, proyecto.montoObjetivoArs);
   const retorno = retornoCompacto(proyecto);
+  const partes = partesDelTitulo(proyecto.titulo);
+  const cubre = queCubre(proyecto);
 
   return (
     <Panel className="relative flex h-full flex-col overflow-hidden transition-shadow hover:shadow-md">
@@ -54,67 +57,80 @@ export function ProyectoCard({
       </div>
 
       <div className="flex flex-1 flex-col p-5">
-        <p className="text-sm text-tinta-tenue">
-          {proyecto.provincia} ·{" "}
+        <p className="rotulo text-marca">
           {resumida ? CICLOS[proyecto.sistemaProductivo].nombre : modalidadLabel(proyecto.modalidad)}
+          <span className="text-tinta-tenue"> · {proyecto.provincia}</span>
         </p>
-        <h3 className="mt-1.5 text-lg font-semibold leading-snug tracking-tight">
+        <h3 className="mt-2 text-xl font-semibold leading-snug tracking-tight">
           <Link href={`/proyectos/${proyecto.id}`} className="hover:text-marca">
             <span className="absolute inset-0" aria-hidden />
-            {proyecto.titulo}
+            {partes.principal}
           </Link>
         </h3>
-
-        <p className="mt-2 text-sm text-tinta-suave">{proyecto.destinoDetalle}</p>
-
-        {resumida ? (
-          <dl className="tabular mt-4 grid grid-cols-2 gap-3 border-t border-borde pt-3">
-            <div>
-              <dt className="text-sm text-tinta-tenue">Cabezas</dt>
-              <dd className="text-sm font-medium">{formatNum(proyecto.cabezas)}</dd>
-            </div>
-            <div>
-              <dt className="text-sm text-tinta-tenue">Categoría</dt>
-              <dd className="text-sm font-medium">{proyecto.categoria}</dd>
-            </div>
-          </dl>
+        {partes.lote ? (
+          <p className="mt-0.5 font-medium text-tinta-suave">{partes.lote}</p>
         ) : null}
 
-        {resumida ? null : (
-        <dl className="tabular mt-4 grid grid-cols-3 gap-3 border-y border-borde py-3">
+        <dl className="tabular mt-4 grid grid-cols-2 gap-x-4 gap-y-3 border-t border-borde pt-4">
           <div>
             <dt className="text-sm text-tinta-tenue">Cabezas</dt>
-            <dd className="text-sm font-medium">{formatNum(proyecto.cabezas)}</dd>
+            <dd className="font-semibold">{formatNum(proyecto.cabezas)}</dd>
           </div>
           <div>
-            <dt className="text-sm text-tinta-tenue">Plazo</dt>
-            <dd className="text-sm font-medium">{proyecto.plazoDias} días</dd>
+            <dt className="text-sm text-tinta-tenue">Categoría</dt>
+            <dd className="font-semibold">{proyecto.categoria}</dd>
           </div>
-          <div>
-            <dt className="text-sm text-tinta-tenue">{retorno.etiqueta}</dt>
-            <dd className="text-sm font-medium">{retorno.valor}</dd>
-          </div>
+          {resumida ? null : (
+            <>
+              <div>
+                <dt className="text-sm text-tinta-tenue">Plazo</dt>
+                <dd className="font-semibold">{proyecto.plazoDias} días</dd>
+              </div>
+              <div>
+                <dt className="text-sm text-tinta-tenue">{retorno.etiqueta}</dt>
+                <dd className="font-semibold">{retorno.valor}</dd>
+              </div>
+            </>
+          )}
         </dl>
 
-        )}
+        {cubre.length > 0 ? (
+          <div className="mt-4">
+            <p className="text-sm text-tinta-tenue">Qué cubre</p>
+            <ul className="mt-1.5 flex flex-wrap gap-1.5">
+              {cubre.map((c) => (
+                <li
+                  key={c}
+                  className="rounded-full bg-marca-suave px-2.5 py-1 text-sm font-medium text-marca"
+                >
+                  {c}
+                </li>
+              ))}
+            </ul>
+          </div>
+        ) : null}
+
+        <p className="mt-4 text-sm text-tinta-suave">
+          {situacionDelLote(proyecto.tipoPosesion)}
+        </p>
 
         {resumida ? null : (
-        <div className="tabular mt-auto pt-4">
-          <div className="flex items-baseline justify-between text-sm">
-            <span className="font-semibold">
-              {formatArsCompacto(proyecto.montoRecaudadoArs)}
-            </span>
-            <span className="text-tinta-suave">
-              de {formatArsCompacto(proyecto.montoObjetivoArs)}
-            </span>
+          <div className="tabular mt-auto pt-4">
+            <div className="flex items-baseline justify-between text-sm">
+              <span className="font-semibold">
+                {formatArsCompacto(proyecto.montoRecaudadoArs)}
+              </span>
+              <span className="text-tinta-suave">
+                de {formatArsCompacto(proyecto.montoObjetivoArs)}
+              </span>
+            </div>
+            <div className="mt-2 flex items-center gap-3">
+              <span className="flex-1">
+                <Progreso valor={pct} label={`Recaudado ${pct} %`} />
+              </span>
+              <span className="text-sm font-medium">{pct} %</span>
+            </div>
           </div>
-          <div className="mt-2 flex items-center gap-3">
-            <span className="flex-1">
-              <Progreso valor={pct} label={`Recaudado ${pct} %`} />
-            </span>
-            <span className="text-sm font-medium">{pct} %</span>
-          </div>
-        </div>
         )}
       </div>
     </Panel>

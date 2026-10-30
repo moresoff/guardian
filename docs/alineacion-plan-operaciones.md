@@ -324,3 +324,11 @@ se puede liquidar así.
 El presupuesto y el cronograma del seed se derivan del propio proyecto para que
 nunca contradigan su monto ni su plazo; en el alta el presupuesto se carga rubro
 por rubro y la suma se controla contra el capital pedido.
+
+## Cuentas (nombre real en la sesión)
+
+- El alta guarda la cuenta en `perfiles` (migración `0003_usuarios.sql`: `clave_hash` y `cuit`). La contraseña se guarda con scrypt y sal; nunca en claro.
+- Con `DATABASE_URL` las cuentas van a Supabase; sin ella viven en memoria y se pierden al reiniciar.
+- La cookie `guardian_sesion` es httpOnly y está firmada (HMAC con `SESION_SECRETO`).
+- Lo único real de la sesión es la cuenta: el nombre se muestra en el menú y en el saludo del productor. El resto de las pantallas sigue con datos de demostración.
+- Pendiente: pasar a Supabase Auth (verificación de correo, recuperación de contraseña) cuando estén las credenciales del proyecto.

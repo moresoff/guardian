@@ -1,3 +1,4 @@
+import { usuarioActual } from "@/lib/sesion";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { Avisos, type Aviso } from "@/components/avisos";
@@ -30,6 +31,7 @@ export const metadata = { title: "Mi cuenta — Guardian" };
  * quiere saber cómo viene.
  */
 export default async function ResumenProductor() {
+  const usuario = await usuarioActual();
   const productor = await getProductor(PRODUCTOR_DEMO);
   if (!productor) notFound();
 
@@ -155,7 +157,7 @@ export default async function ResumenProductor() {
       <div className="flex flex-wrap items-end justify-between gap-4">
         <div>
           <h1 className="text-2xl font-semibold tracking-tight">
-            Hola, {productor.responsable.split(" ")[0]}
+            Hola, {(usuario?.nombre ?? productor.responsable).split(" ")[0]}
           </h1>
           <p className="mt-1.5 text-sm text-tinta-suave">
             {productor.establecimiento} · {productor.localidad}, {productor.provincia}

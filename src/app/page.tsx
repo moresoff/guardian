@@ -3,8 +3,9 @@ import Link from "next/link";
 import { LineaDeTiempo, type Etapa } from "@/components/linea-tiempo";
 import { BotonLink, Panel } from "@/components/ui/primitivos";
 import { getProyecto, getProyectosPublicos } from "@/lib/data";
-import { SISTEMA_LABEL, formatNum, modalidadLabel } from "@/lib/format";
+import { formatNum, modalidadLabel } from "@/lib/format";
 import { buscarImagen } from "@/lib/imagenes";
+import { ProyectoCard } from "@/components/proyecto-card";
 import { ConsultaModalidades } from "@/components/consulta-modalidades";
 import { CICLOS, SISTEMAS_EN_ORDEN } from "@/lib/ciclos";
 
@@ -324,40 +325,15 @@ export default async function Home() {
             </div>
 
             <ul className="mt-9 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
-              {destacados.map((p, i) => {
-                const foto = buscarImagen("fotos", `proyecto-${i + 1}`);
-                return (
-                  <li key={p.id}>
-                    <Panel className="flex h-full flex-col overflow-hidden">
-                      <div className="relative aspect-[16/10] bg-marca-suave">
-                        {foto ? (
-                          <Image
-                            src={foto}
-                            alt=""
-                            fill
-                            sizes="(max-width: 40rem) 100vw, 22rem"
-                            className="object-cover"
-                          />
-                        ) : null}
-                      </div>
-                      <div className="flex flex-1 flex-col p-5">
-                        <p className="text-sm text-tinta-tenue">
-                          {p.provincia} · {SISTEMA_LABEL[p.sistemaProductivo]}
-                        </p>
-                        <h3 className="mt-1.5 font-semibold">
-                          <Link href={`/proyectos/${p.id}`} className="hover:text-marca">
-                            {p.titulo}
-                          </Link>
-                        </h3>
-                        <p className="mt-2 text-sm text-tinta-suave">
-                          {formatNum(p.cabezas)} cabezas de {p.categoria.toLowerCase()}.{" "}
-                          {p.destinoDetalle}
-                        </p>
-                      </div>
-                    </Panel>
-                  </li>
-                );
-              })}
+              {destacados.map((p, i) => (
+                <li key={p.id}>
+                  <ProyectoCard
+                    proyecto={p}
+                    foto={buscarImagen("fotos", `proyecto-${i + 1}`)}
+                    resumida
+                  />
+                </li>
+              ))}
 
               {cerrado?.resultado ? (
                 <li>

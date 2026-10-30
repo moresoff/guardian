@@ -1,7 +1,7 @@
 import type { Metadata, Viewport } from "next";
 import { JetBrains_Mono, Poppins } from "next/font/google";
 import { Nav } from "@/components/nav";
-import { haySesion } from "@/lib/sesion";
+import { usuarioActual } from "@/lib/sesion";
 import { BotonRecorrido, RecorridoGuiado } from "@/components/recorrido-guiado";
 import "./globals.css";
 
@@ -31,7 +31,8 @@ export const viewport: Viewport = {
 };
 
 export default async function RootLayout({ children }: LayoutProps<"/">) {
-  const conSesion = await haySesion();
+  const usuario = await usuarioActual();
+  const conSesion = usuario !== null;
   return (
     <html
       lang="es-AR"
@@ -49,7 +50,7 @@ export default async function RootLayout({ children }: LayoutProps<"/">) {
         >
           Saltar al contenido
         </a>
-        <Nav conSesion={conSesion} />
+        <Nav conSesion={conSesion} nombre={usuario?.nombre ?? null} />
         <main id="contenido" className="mx-auto w-full max-w-6xl flex-1 px-4 py-6">
           {children}
         </main>

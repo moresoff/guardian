@@ -5,7 +5,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { Campo, GrupoOpciones, Seleccion } from "@/components/ui/campos";
 import { Boton, BotonLink, Progreso } from "@/components/ui/primitivos";
-import { abrirSesion } from "@/app/sesion/acciones";
+import { registrar } from "@/app/sesion/acciones";
 import { PROVINCIAS } from "@/lib/provincias";
 import type { Rol } from "@/lib/types";
 
@@ -66,6 +66,8 @@ export function Registro({ ladoInicial }: { ladoInicial?: Lado }) {
   const [lado, setLado] = useState<Lado | null>(ladoInicial ?? null);
   const [datos, setDatos] = useState<Datos>(INICIAL);
   const [errores, setErrores] = useState<Errores>({});
+  const [errorGeneral, setErrorGeneral] = useState<string | null>(null);
+  const [enviando, setEnviando] = useState(false);
 
   const set = (campo: keyof Datos) => (v: string) =>
     setDatos((d) => ({ ...d, [campo]: v }));
@@ -138,7 +140,21 @@ export function Registro({ ladoInicial }: { ladoInicial?: Lado }) {
           onSubmit={async (e) => {
             e.preventDefault();
             if (!validar() || !lado) return;
-            await abrirSesion(lado);
+            setErrorGeneral(null);
+            setEnviando(true);
+            const r = await registrar({
+              lado,
+              nombre: datos.nombre,
+              correo: datos.correo,
+              telefono: datos.telefono,
+              cuit: datos.cuit,
+              clave: datos.clave,
+            });
+            if (!r.ok) {
+              setEnviando(false);
+              setErrorGeneral(r.error);
+              return;
+            }
             // La cuenta se abre y se entra directo a la aplicación: el recorrido
             // explica cada pantalla ahí, donde se ve lo que hay que cargar.
             router.push(
@@ -221,9 +237,19 @@ export function Registro({ ladoInicial }: { ladoInicial?: Lado }) {
               error={errores.clave}
             />
 
+            {errorGeneral ? (
+              <p role="alert" className="text-sm font-medium text-error sm:col-span-2">
+                {errorGeneral}{" "}
+                <Link href="/ingresar" className="underline">
+                  Entrá por acá
+                </Link>
+                .
+              </p>
+            ) : null}
+
             <div className="flex items-end gap-3">
-              <Boton type="submit" className="flex-1">
-                Crear mi cuenta
+              <Boton type="submit" className="flex-1" disabled={enviando}>
+                {enviando ? "Creando tu cuenta…" : "Crear mi cuenta"}
               </Boton>
               {ladoInicial ? (
                 <BotonLink href="/" variante="secundario">
