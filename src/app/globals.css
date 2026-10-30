@@ -211,3 +211,24 @@ html.recorrido-abierto {
     transform: translateY(0.75rem);
   }
 }
+
+/* Barra de avance de la etapa activa en "Cómo corre un ciclo". Se escala en vez
+   de animar el ancho. Con movimiento reducido no hay avance automático ni barra. */
+@keyframes etapa-llenar {
+  from {
+    transform: scaleX(0);
+  }
+  to {
+    transform: scaleX(1);
+  }
+}
+.etapa-progreso {
+  transform-origin: left;
+  animation: etapa-llenar var(--etapa-duracion, 7s) linear forwards;
+}
+@media (prefers-reduced-motion: reduce) {
+  .etapa-progreso {
+    animation: none;
+    transform: scaleX(1);
+  }
+}

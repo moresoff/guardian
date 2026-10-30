@@ -1,13 +1,4 @@
-import {
-  Gem,
-  HardHat,
-  Pill,
-  ShoppingCart,
-  Stethoscope,
-  Truck,
-  Wheat,
-  type LucideIcon,
-} from "lucide-react";
+import type { LucideIcon } from "lucide-react";
 import type { ComponentType, SVGProps } from "react";
 
 export type Icono = ComponentType<SVGProps<SVGSVGElement>> | LucideIcon;
@@ -40,14 +31,3 @@ export function Vaca(props: SVGProps<SVGSVGElement>) {
     </svg>
   );
 }
-
-/** Un ícono por rubro de lo que cubre un proyecto. */
-export const ICONO_RUBRO: Record<string, Icono> = {
-  "Compra de hacienda": ShoppingCart,
-  Ración: Wheat,
-  Suplementación: Pill,
-  Sanidad: Stethoscope,
-  "Sales minerales": Gem,
-  "Mano de obra": HardHat,
-  "Flete a faena": Truck,
-};

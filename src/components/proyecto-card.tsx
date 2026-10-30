@@ -9,7 +9,7 @@ import {
   porcentajeRecaudado,
 } from "@/lib/format";
 import { retornoCompacto } from "@/lib/proyecto";
-import { ICONO_RUBRO, Vaca, type Icono as TipoIcono } from "@/components/iconos";
+import { Vaca, type Icono as TipoIcono } from "@/components/iconos";
 import { CICLOS } from "@/lib/ciclos";
 import { partesDelTitulo, queCubre, situacionDelLote } from "@/lib/cubre";
 import type { Proyecto } from "@/lib/types";
@@ -27,11 +27,6 @@ function Dato({ icono: Icono, valor, etiqueta }: { icono: TipoIcono; valor: stri
       </span>
     </div>
   );
-}
-
-function RubroIcono({ rubro }: { rubro: string }) {
-  const I = ICONO_RUBRO[rubro];
-  return I ? <I className="size-3.5" strokeWidth={1.75} aria-hidden /> : null;
 }
 
 /** El círculo con la flecha, arriba a la derecha de la foto. La tarjeta entera es el enlace. */
@@ -125,9 +120,8 @@ export function ProyectoCard({
             {visibles.map((c) => (
               <li
                 key={c}
-                className="flex items-center gap-1.5 rounded-full bg-marca-suave px-2.5 py-1 text-sm font-medium text-marca"
+                className="rounded-full bg-marca-suave px-2.5 py-1 text-sm font-medium text-marca"
               >
-                <RubroIcono rubro={c} />
                 {c}
               </li>
             ))}

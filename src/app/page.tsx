@@ -1,16 +1,11 @@
 import {
   ClipboardList,
   FileCheck,
-  Handshake,
-  Layers,
   Mail,
   Phone,
-  Scale,
   ShieldCheck,
   Sprout,
   Split,
-  Target,
-  Tractor,
   Warehouse,
   type LucideIcon,
 } from "lucide-react";
@@ -44,7 +39,6 @@ const ANCHO_COMPLETO = "relative left-1/2 w-screen -translate-x-1/2";
 const PUERTAS = [
   {
     href: "/registro?lado=productor",
-    icono: Tractor,
     rotulo: "Productor",
     titulo: "Quiero publicar un ciclo",
     texto:
@@ -53,7 +47,6 @@ const PUERTAS = [
   },
   {
     href: "/registro?lado=colaborador",
-    icono: Handshake,
     rotulo: "Colaborador",
     titulo: "Quiero colaborar con un ciclo",
     texto:
@@ -63,27 +56,23 @@ const PUERTAS = [
 ];
 
 /** Lo que conviene saber antes de participar, sin ceremonia. El detalle está en la ficha. */
-const ANTES_DE_PARTICIPAR: { icono: LucideIcon; titulo: string; texto: string }[] = [
+const ANTES_DE_PARTICIPAR: { titulo: string; texto: string }[] = [
   {
-    icono: Target,
     titulo: "El destino está escrito",
     texto:
       "Cada proyecto dice en qué se usa lo aportado, en qué plazo y cómo se reparte. Salir de ahí es incumplimiento.",
   },
   {
-    icono: Scale,
     titulo: "El resultado sale de la venta",
     texto:
       "Guardian conecta y verifica la documentación. El resultado depende de la venta del lote: lo fija el romaneo del frigorífico y puede ser distinto de lo esperado.",
   },
   {
-    icono: Layers,
     titulo: "Cada proyecto va por separado",
     texto:
       "Tiene sus propias condiciones, su propia cuenta y su propia rendición. Lo que pasa en un ciclo no se mezcla con otro.",
   },
   {
-    icono: ClipboardList,
     titulo: "Rendición de cuentas",
     texto:
       "Cada proyecto rinde cuentas de gastos y pesadas mientras corre, y al cierre con el romaneo.",
@@ -171,7 +160,7 @@ export default async function Home() {
         contenido no entra, la sección crece en vez de recortarse.
       */}
       <section
-        className="relative mt-4 flex items-center overflow-hidden rounded-3xl bg-marca-fuerte"
+        className={`${ANCHO_COMPLETO} flex min-h-[calc(100svh-6.9rem)] sm:min-h-[calc(100svh-4.31rem)] items-center overflow-hidden bg-marca-fuerte`}
       >
         {fondo ? (
           <>
@@ -187,7 +176,7 @@ export default async function Home() {
           </>
         ) : null}
 
-        <div className="relative mx-auto grid w-full max-w-6xl items-center gap-6 px-5 py-8 sm:px-10 sm:py-12 lg:grid-cols-[1fr_1.1fr] lg:gap-12">
+        <div className="relative mx-auto grid w-full max-w-6xl items-center gap-8 px-4 py-8 sm:py-12 lg:grid-cols-[1fr_1.1fr] lg:gap-14">
           <div>
             <Image
               src="/imagenes/marca/logo-guardian-blanco.png"
@@ -195,22 +184,22 @@ export default async function Home() {
               width={847}
               height={796}
               priority
-              className="h-9 w-auto sm:h-11"
+              className="h-10 w-auto sm:h-14"
             />
-            <h1 className="mt-3 text-3xl font-semibold tracking-tight text-white sm:mt-3 sm:text-5xl">
+            <h1 className="mt-3 text-4xl font-semibold tracking-tight text-white sm:mt-4 sm:text-6xl">
               Guardian
             </h1>
-            <p className="mt-2 text-lg italic text-white/90 sm:text-2xl">
+            <p className="mt-2 text-xl italic text-white/90 sm:text-3xl">
               Crecé, ayudando a crecer
             </p>
-            <p className="mt-4 hidden max-w-sm text-white/85 sm:block">
+            <p className="mt-5 hidden max-w-md text-white/85 sm:block">
               Participá en el engorde de un lote concreto, con el activo real a la
               vista: un establecimiento con nombre y RENSPA.
             </p>
           </div>
 
           <div>
-            <h2 className="text-xl font-semibold tracking-tight text-white sm:text-2xl">
+            <h2 className="text-2xl font-semibold tracking-tight text-white sm:text-3xl">
               Elegí de qué lado entrás
             </h2>
             {/* /85 y no /80: sobre un cielo quemado, /80 da 4.38:1 y no llega. */}
@@ -218,18 +207,15 @@ export default async function Home() {
               Son dos problemas distintos. Elegí el tuyo y creás la cuenta ahí mismo.
             </p>
 
-            <div className="mt-5 grid gap-3">
+            <div className="mt-6 grid gap-4">
               {PUERTAS.map((p) => (
                 <Link
                   key={p.href}
                   href={p.href}
-                  className="group flex items-center gap-4 rounded-3xl bg-superficie p-4 shadow-[var(--sombra-alta)] transition-transform hover:-translate-y-0.5 sm:p-5"
+                  className="group flex items-center gap-4 rounded-2xl bg-superficie p-5 shadow-[var(--sombra-alta)] transition-transform hover:-translate-y-0.5 sm:p-6"
                 >
-                  <span className="flex size-12 shrink-0 items-center justify-center rounded-full bg-marca-suave text-marca">
-                    <p.icono className="size-6" strokeWidth={1.75} aria-hidden />
-                  </span>
                   <span className="flex-1">
-                    <span className="block text-lg font-semibold tracking-tight sm:text-xl">
+                    <span className="block text-xl font-semibold tracking-tight sm:text-2xl">
                       {p.titulo}
                     </span>
                     <span className="mt-1.5 block text-sm text-tinta-suave">
@@ -309,7 +295,7 @@ export default async function Home() {
         </div>
 
         <ol className="mt-10 grid gap-8 md:grid-cols-3 md:gap-0">
-          {SISTEMAS_EN_ORDEN.map((k, i) => (
+          {SISTEMAS_EN_ORDEN.map((k) => (
             <li key={k} className="relative md:pr-8">
               {/* El camino: un punto por tipo y una línea que sigue hacia el próximo. */}
               <div className="flex items-center" aria-hidden>
@@ -319,19 +305,7 @@ export default async function Home() {
                     return <I className="size-6" strokeWidth={1.75} />;
                   })()}
                 </span>
-                {i < SISTEMAS_EN_ORDEN.length - 1 ? (
-                  <span className="relative ml-1 hidden h-px flex-1 bg-marca/40 md:block">
-                    <svg
-                      viewBox="0 0 8 12"
-                      className="absolute -right-0.5 top-1/2 h-3 w-2 -translate-y-1/2 text-marca/60"
-                      fill="none"
-                      stroke="currentColor"
-                      strokeWidth="1.5"
-                    >
-                      <path d="M1 1l5 5-5 5" />
-                    </svg>
-                  </span>
-                ) : null}
+                
               </div>
               <h3 className="mt-4 text-xl font-semibold tracking-tight">{CICLOS[k].nombre}</h3>
               <p className="mt-1.5 text-tinta-suave">{CICLOS[k].descripcion}</p>
@@ -348,7 +322,7 @@ export default async function Home() {
         <div className="max-w-2xl">
           <h2 className="text-3xl font-semibold tracking-tight">Cómo corre un ciclo</h2>
           <p className="mt-3 text-tinta-suave">
-            Cinco etapas, de que el productor publica hasta que cierra el romaneo.
+            Cinco etapas, desde que el productor publica hasta que cierra el romaneo. Pasan solas, y podés elegir la que quieras ver.
           </p>
         </div>
         <div className="mt-9">
@@ -362,10 +336,7 @@ export default async function Home() {
         <dl className="mt-7 grid gap-x-10 gap-y-6 sm:grid-cols-2">
           {ANTES_DE_PARTICIPAR.map((c) => (
             <div key={c.titulo} className="border-t border-borde-fuerte pt-3">
-              <dt className="flex items-center gap-2.5 font-semibold tracking-tight">
-                <c.icono className="size-5 shrink-0 text-marca" strokeWidth={1.75} aria-hidden />
-                {c.titulo}
-              </dt>
+              <dt className="font-semibold tracking-tight">{c.titulo}</dt>
               <dd className="mt-1 text-tinta-suave">{c.texto}</dd>
             </div>
           ))}
@@ -410,8 +381,8 @@ export default async function Home() {
 
       {/* 7. Cierre: crear la cuenta y el contacto, juntos y al final */}
       <Banda>
-        <div className="mx-auto w-fit max-w-full overflow-hidden rounded-3xl bg-marca-fuerte text-white">
-        <div className="grid gap-8 px-6 py-9 sm:px-10 lg:grid-cols-[auto_auto] lg:gap-x-20">
+        <div className="mx-auto flex min-h-[calc(100svh-8rem)] w-fit max-w-full items-center overflow-hidden rounded-3xl bg-marca-fuerte text-white">
+        <div className="grid gap-10 px-6 py-12 sm:px-10 lg:grid-cols-[auto_auto] lg:gap-x-20">
           <div>
             <h2 className="text-3xl font-semibold tracking-tight">Empezá con tu cuenta</h2>
             <p className="mt-3 max-w-sm text-white/85">
