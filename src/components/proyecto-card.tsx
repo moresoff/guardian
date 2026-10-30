@@ -1,4 +1,4 @@
-import { ArrowRight, Beef, Check, ChartPie, Clock, Layers, type LucideIcon } from "lucide-react";
+import { ArrowRight, CalendarDays, Check, ChartPie, Scale, Tag } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { EstadoProyectoBadge } from "@/components/estados";
@@ -9,16 +9,17 @@ import {
   porcentajeRecaudado,
 } from "@/lib/format";
 import { retornoCompacto } from "@/lib/proyecto";
+import { ICONO_RUBRO, Vaca, type Icono as TipoIcono } from "@/components/iconos";
 import { CICLOS } from "@/lib/ciclos";
 import { partesDelTitulo, queCubre, situacionDelLote } from "@/lib/cubre";
 import type { Proyecto } from "@/lib/types";
 
 /** Un dato de la tarjeta: ícono, valor y etiqueta. */
-function Dato({ icono: Icono, valor, etiqueta }: { icono: LucideIcon; valor: string; etiqueta: string }) {
+function Dato({ icono: Icono, valor, etiqueta }: { icono: TipoIcono; valor: string; etiqueta: string }) {
   return (
     <div className="flex items-center gap-2.5">
       <span className="flex size-9 shrink-0 items-center justify-center rounded-full bg-marca-suave text-marca">
-        <Icono className="size-4" strokeWidth={1.75} aria-hidden />
+        <Icono className="size-5" strokeWidth={1.75} aria-hidden />
       </span>
       <span className="min-w-0">
         <span className="tabular block truncate font-semibold leading-tight">{valor}</span>
@@ -26,6 +27,11 @@ function Dato({ icono: Icono, valor, etiqueta }: { icono: LucideIcon; valor: str
       </span>
     </div>
   );
+}
+
+function RubroIcono({ rubro }: { rubro: string }) {
+  const I = ICONO_RUBRO[rubro];
+  return I ? <I className="size-3.5" strokeWidth={1.75} aria-hidden /> : null;
 }
 
 /** El círculo con la flecha, arriba a la derecha de la foto. La tarjeta entera es el enlace. */
@@ -104,11 +110,11 @@ export function ProyectoCard({
         {partes.lote ? <p className="font-medium text-tinta-suave">{partes.lote}</p> : null}
 
         <div className="mt-4 grid grid-cols-2 gap-x-3 gap-y-3 border-t border-borde pt-4">
-          <Dato icono={Beef} valor={formatNum(proyecto.cabezas)} etiqueta="Cabezas" />
-          <Dato icono={Layers} valor={proyecto.categoria} etiqueta="Categoría" />
+          <Dato icono={Vaca} valor={formatNum(proyecto.cabezas)} etiqueta="Cabezas" />
+          <Dato icono={Tag} valor={proyecto.categoria} etiqueta="Categoría" />
           {resumida ? null : (
             <>
-              <Dato icono={Clock} valor={`${proyecto.plazoDias} días`} etiqueta="Plazo" />
+              <Dato icono={CalendarDays} valor={`${proyecto.plazoDias} días`} etiqueta="Plazo" />
               <Dato icono={ChartPie} valor={retorno.valor} etiqueta={retorno.etiqueta} />
             </>
           )}
@@ -119,8 +125,9 @@ export function ProyectoCard({
             {visibles.map((c) => (
               <li
                 key={c}
-                className="rounded-full bg-marca-suave px-2.5 py-1 text-sm font-medium text-marca"
+                className="flex items-center gap-1.5 rounded-full bg-marca-suave px-2.5 py-1 text-sm font-medium text-marca"
               >
+                <RubroIcono rubro={c} />
                 {c}
               </li>
             ))}
@@ -206,8 +213,8 @@ export function CasoCerradoCard({
         {partes.lote ? <p className="font-medium text-tinta-suave">{partes.lote}</p> : null}
 
         <div className="mt-4 grid grid-cols-2 gap-x-3 gap-y-3 border-t border-borde pt-4">
-          <Dato icono={Beef} valor={formatNum(r.cabezasFaena)} etiqueta="Cabezas faenadas" />
-          <Dato icono={Layers} valor={`${formatNum(r.kgCarne)} kg`} etiqueta="Kilos de carne" />
+          <Dato icono={Vaca} valor={formatNum(r.cabezasFaena)} etiqueta="Cabezas faenadas" />
+          <Dato icono={Scale} valor={`${formatNum(r.kgCarne)} kg`} etiqueta="Kilos de carne" />
         </div>
 
         <p className="mt-4 flex items-start gap-2 text-sm text-tinta-suave">

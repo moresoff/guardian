@@ -1,4 +1,19 @@
-import { Mail, Phone } from "lucide-react";
+import {
+  ClipboardList,
+  FileCheck,
+  Handshake,
+  Layers,
+  Mail,
+  Phone,
+  Scale,
+  ShieldCheck,
+  Sprout,
+  Split,
+  Target,
+  Tractor,
+  Warehouse,
+  type LucideIcon,
+} from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { LineaDeTiempo, type Etapa } from "@/components/linea-tiempo";
@@ -29,6 +44,7 @@ const ANCHO_COMPLETO = "relative left-1/2 w-screen -translate-x-1/2";
 const PUERTAS = [
   {
     href: "/registro?lado=productor",
+    icono: Tractor,
     rotulo: "Productor",
     titulo: "Quiero publicar un ciclo",
     texto:
@@ -37,6 +53,7 @@ const PUERTAS = [
   },
   {
     href: "/registro?lado=colaborador",
+    icono: Handshake,
     rotulo: "Colaborador",
     titulo: "Quiero colaborar con un ciclo",
     texto:
@@ -46,41 +63,54 @@ const PUERTAS = [
 ];
 
 /** Lo que conviene saber antes de participar, sin ceremonia. El detalle está en la ficha. */
-const ANTES_DE_PARTICIPAR = [
+const ANTES_DE_PARTICIPAR: { icono: LucideIcon; titulo: string; texto: string }[] = [
   {
+    icono: Target,
     titulo: "El destino está escrito",
     texto:
       "Cada proyecto dice en qué se usa lo aportado, en qué plazo y cómo se reparte. Salir de ahí es incumplimiento.",
   },
   {
+    icono: Scale,
     titulo: "El resultado sale de la venta",
     texto:
       "Guardian conecta y verifica la documentación. El resultado depende de la venta del lote: lo fija el romaneo del frigorífico y puede ser distinto de lo esperado.",
   },
   {
+    icono: Layers,
     titulo: "Cada proyecto va por separado",
     texto:
       "Tiene sus propias condiciones, su propia cuenta y su propia rendición. Lo que pasa en un ciclo no se mezcla con otro.",
   },
   {
+    icono: ClipboardList,
     titulo: "Rendición de cuentas",
     texto:
       "Cada proyecto rinde cuentas de gastos y pesadas mientras corre, y al cierre con el romaneo.",
   },
 ];
 
-const QUE_HACEMOS = [
+const ICONO_CICLO: Record<string, LucideIcon> = {
+  corral: Warehouse,
+  mixto: Split,
+  pastura: Sprout,
+};
+
+const QUE_HACEMOS: { icono: LucideIcon; titulo: string; texto: string }[] = [
   {
+    icono: FileCheck,
     titulo: "Publicamos ciclos con respaldo",
     texto:
       "El productor declara el lote y sube la documentación que ya emite. Guardian la lee y cruza cada dato contra lo declarado.",
   },
   {
+    icono: ShieldCheck,
     titulo: "Verificamos antes de mostrar",
     texto:
       "Revisamos las discrepancias y comprobamos la autenticidad de los comprobantes por el canal oficial antes de que el proyecto sea visible.",
   },
   {
+    icono: ClipboardList,
     titulo: "Acompañamos hasta el cierre",
     texto:
       "Cada proyecto rinde cuentas mientras corre y cierra con el romaneo del frigorífico, que es la cifra que queda.",
@@ -173,7 +203,7 @@ export default async function Home() {
             <p className="mt-2 text-lg italic text-white/90 sm:text-2xl">
               Crecé, ayudando a crecer
             </p>
-            <p className="mt-4 hidden max-w-md text-white/85 sm:block">
+            <p className="mt-4 hidden max-w-sm text-white/85 sm:block">
               Participá en el engorde de un lote concreto, con el activo real a la
               vista: un establecimiento con nombre y RENSPA.
             </p>
@@ -195,9 +225,11 @@ export default async function Home() {
                   href={p.href}
                   className="group flex items-center gap-4 rounded-3xl bg-superficie p-4 shadow-[var(--sombra-alta)] transition-transform hover:-translate-y-0.5 sm:p-5"
                 >
+                  <span className="flex size-12 shrink-0 items-center justify-center rounded-full bg-marca-suave text-marca">
+                    <p.icono className="size-6" strokeWidth={1.75} aria-hidden />
+                  </span>
                   <span className="flex-1">
-                    <span className="rotulo block text-marca">{p.rotulo}</span>
-                    <span className="mt-1 block text-lg font-semibold tracking-tight sm:text-xl">
+                    <span className="block text-lg font-semibold tracking-tight sm:text-xl">
                       {p.titulo}
                     </span>
                     <span className="mt-1.5 block text-sm text-tinta-suave">
@@ -241,17 +273,26 @@ export default async function Home() {
         <h2 className="text-3xl font-semibold tracking-tight">Qué hacemos</h2>
         <div className="mt-7 grid gap-4 lg:grid-cols-5">
           <article className="rounded-2xl bg-superficie p-7 shadow-[var(--sombra-baja)] lg:col-span-3 lg:p-9">
-            <h3 className="text-2xl font-semibold tracking-tight">{QUE_HACEMOS[0].titulo}</h3>
+            <span className="flex size-12 items-center justify-center rounded-full bg-marca-suave text-marca">
+              <FileCheck className="size-6" strokeWidth={1.75} aria-hidden />
+            </span>
+            <h3 className="mt-5 text-2xl font-semibold tracking-tight">{QUE_HACEMOS[0].titulo}</h3>
             <p className="mt-3 max-w-prose text-tinta-suave">{QUE_HACEMOS[0].texto}</p>
           </article>
           <article className="rounded-2xl bg-marca-fuerte p-7 text-white lg:col-span-2 lg:p-9">
-            <h3 className="text-2xl font-semibold tracking-tight">{QUE_HACEMOS[1].titulo}</h3>
+            <span className="flex size-12 items-center justify-center rounded-full bg-white/15 text-white">
+              <ShieldCheck className="size-6" strokeWidth={1.75} aria-hidden />
+            </span>
+            <h3 className="mt-5 text-2xl font-semibold tracking-tight">{QUE_HACEMOS[1].titulo}</h3>
             <p className="mt-3 text-white/85">{QUE_HACEMOS[1].texto}</p>
           </article>
-          <article className="rounded-2xl border border-marca/25 bg-papel p-7 lg:col-span-5 lg:flex lg:items-baseline lg:justify-between lg:gap-10 lg:px-9">
-            <h3 className="text-xl font-semibold tracking-tight lg:shrink-0">
-              {QUE_HACEMOS[2].titulo}
-            </h3>
+          <article className="rounded-2xl border border-marca/25 bg-papel p-7 lg:col-span-5 lg:flex lg:items-center lg:justify-between lg:gap-10 lg:px-9">
+            <div className="flex items-center gap-4 lg:shrink-0">
+              <span className="flex size-12 shrink-0 items-center justify-center rounded-full bg-marca-suave text-marca">
+                <ClipboardList className="size-6" strokeWidth={1.75} aria-hidden />
+              </span>
+              <h3 className="text-xl font-semibold tracking-tight">{QUE_HACEMOS[2].titulo}</h3>
+            </div>
             <p className="mt-2 max-w-prose text-tinta-suave lg:mt-0">{QUE_HACEMOS[2].texto}</p>
           </article>
         </div>
@@ -272,7 +313,12 @@ export default async function Home() {
             <li key={k} className="relative md:pr-8">
               {/* El camino: un punto por tipo y una línea que sigue hacia el próximo. */}
               <div className="flex items-center" aria-hidden>
-                <span className="size-4 shrink-0 rounded-full bg-marca ring-4 ring-marca-suave" />
+                <span className="flex size-12 shrink-0 items-center justify-center rounded-full bg-marca text-marca-contraste">
+                  {(() => {
+                    const I = ICONO_CICLO[k];
+                    return <I className="size-6" strokeWidth={1.75} />;
+                  })()}
+                </span>
                 {i < SISTEMAS_EN_ORDEN.length - 1 ? (
                   <span className="relative ml-1 hidden h-px flex-1 bg-marca/40 md:block">
                     <svg
@@ -316,7 +362,10 @@ export default async function Home() {
         <dl className="mt-7 grid gap-x-10 gap-y-6 sm:grid-cols-2">
           {ANTES_DE_PARTICIPAR.map((c) => (
             <div key={c.titulo} className="border-t border-borde-fuerte pt-3">
-              <dt className="font-semibold tracking-tight">{c.titulo}</dt>
+              <dt className="flex items-center gap-2.5 font-semibold tracking-tight">
+                <c.icono className="size-5 shrink-0 text-marca" strokeWidth={1.75} aria-hidden />
+                {c.titulo}
+              </dt>
               <dd className="mt-1 text-tinta-suave">{c.texto}</dd>
             </div>
           ))}
@@ -361,11 +410,11 @@ export default async function Home() {
 
       {/* 7. Cierre: crear la cuenta y el contacto, juntos y al final */}
       <Banda>
-        <div className="overflow-hidden rounded-3xl bg-marca-fuerte text-white">
-        <div className="grid gap-10 px-6 py-12 sm:px-12 lg:grid-cols-2 lg:gap-16">
+        <div className="mx-auto w-fit max-w-full overflow-hidden rounded-3xl bg-marca-fuerte text-white">
+        <div className="grid gap-8 px-6 py-9 sm:px-10 lg:grid-cols-[auto_auto] lg:gap-x-20">
           <div>
             <h2 className="text-3xl font-semibold tracking-tight">Empezá con tu cuenta</h2>
-            <p className="mt-3 max-w-md text-white/85">
+            <p className="mt-3 max-w-sm text-white/85">
               Con una cuenta ves las condiciones de cada proyecto, el respaldo documental
               completo y seguís el ciclo hasta el cierre.
             </p>
@@ -387,7 +436,7 @@ export default async function Home() {
 
           <div>
             <h2 className="text-3xl font-semibold tracking-tight">Contacto</h2>
-            <p className="mt-3 max-w-md text-white/85">
+            <p className="mt-3 max-w-sm text-white/85">
               Consultá por modalidades de participación. Te respondemos por el medio que
               prefieras.
             </p>
@@ -418,17 +467,15 @@ export default async function Home() {
           </div>
         </div>
 
-        <div className="border-t border-white/15 px-6 py-5 sm:px-12">
-          <p className="max-w-3xl text-sm text-white/75">
-            Es el prototipo de la plataforma, con datos de prueba. La publicación de
-            proyectos, la carga de documentación y su validación se pueden recorrer de punta
-            a punta; la participación en proyectos todavía no.{" "}
-            <Link href="/admin" className="underline underline-offset-4 hover:text-white">
-              Ver la cola de validación de Guardian
-            </Link>
-          </p>
         </div>
-        </div>
+        <p className="mx-auto mt-6 max-w-2xl text-center text-sm text-tinta-suave">
+          Es el prototipo de la plataforma, con datos de prueba. La publicación de proyectos, la
+          carga de documentación y su validación se pueden recorrer de punta a punta; la
+          participación en proyectos todavía no.{" "}
+          <Link href="/admin" className="underline underline-offset-4 hover:text-marca">
+            Ver la cola de validación de Guardian
+          </Link>
+        </p>
       </Banda>
     </div>
   );
@@ -441,7 +488,7 @@ export default async function Home() {
 function Banda({ tono = "", children }: { tono?: string; children: React.ReactNode }) {
   return (
     <section className={`${ANCHO_COMPLETO} ${tono}`}>
-      <div className="mx-auto max-w-6xl px-4 py-14">{children}</div>
+      <div className="mx-auto max-w-6xl px-4 py-12 sm:py-14">{children}</div>
     </section>
   );
 }
