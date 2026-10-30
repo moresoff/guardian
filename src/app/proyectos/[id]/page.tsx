@@ -236,7 +236,7 @@ export default async function FichaProyecto({
                     {formatArs(proyecto.condiciones.proyeccion.costosEstimadosArs)}
                   </Dato>
                   <Dato
-                    etiqueta="Comisiones sobre el capital"
+                    etiqueta="Comisiones sobre lo aportado"
                     ayuda="Sin la comisión de éxito, que se calcula al cierre."
                   >
                     {comisionesCapital === null
@@ -255,7 +255,7 @@ export default async function FichaProyecto({
 
             {proyecto.destinoDetalle ? (
               <div className="mt-5 rounded-lg border border-borde bg-superficie-2 p-4">
-                <p className="text-sm font-medium">En qué se gasta el capital</p>
+                <p className="text-sm font-medium">En qué se usa lo aportado</p>
                 <p className="mt-1 text-sm text-tinta-suave">{proyecto.destinoDetalle}</p>
               </div>
             ) : null}
@@ -368,7 +368,7 @@ export default async function FichaProyecto({
 
             {comisionesCapital !== null ? (
               <p className="mt-4 text-sm text-tinta-suave">
-                Sobre el capital del proyecto son{" "}
+                Sobre lo aportado al proyecto son{" "}
                 <span className="tabular font-medium text-tinta">
                   {formatArs(comisionesCapital)}
                 </span>

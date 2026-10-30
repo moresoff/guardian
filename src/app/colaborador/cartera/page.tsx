@@ -49,7 +49,7 @@ export default async function CarteraPage() {
   // cuando cada uno se liquide, y por el monto que dé la liquidación.
   const enCiclosAbiertos = enCurso.reduce((a, p) => a + p.aporte.montoAcreditadoArs, 0);
 
-  // Cómo se reparte el capital acreditado. Sobre el acreditado y no sobre el
+  // Cómo se reparte lo acreditado. Sobre el acreditado y no sobre el
   // comprometido: lo que todavía no entró al fideicomiso no está puesto en nada.
   const totalAcreditado = posiciones.reduce(
     (a, p) => a + p.aporte.montoAcreditadoArs,
@@ -70,11 +70,11 @@ export default async function CarteraPage() {
       <div>
         <p className="rotulo text-tinta-tenue">Mi cartera</p>
         <h1 className="mt-2.5 text-2xl font-semibold tracking-tight">
-          Dónde está tu capital
+          Tus proyectos
         </h1>
         <p className="mt-1.5 text-sm text-tinta-suave">
-          Operaciones de cada serie, no un saldo: no hay dinero para retirar ni para pasar
-          de un proyecto a otro.
+          Tu participación en cada proyecto, no un saldo: no hay dinero para retirar ni para
+          pasar de un proyecto a otro.
         </p>
       </div>
 
@@ -92,14 +92,14 @@ export default async function CarteraPage() {
           <Dato etiqueta="Liquidado sin cobrar" ayuda="Calculado o aprobado, sin pagar.">
             {formatArs(cartera.liquidadoPendienteArs)}
           </Dato>
-          <Dato etiqueta="Cobrado" ayuda="Capital más resultado ya pagado.">
+          <Dato etiqueta="Cobrado" ayuda="Aporte más resultado ya pagado.">
             {formatArs(cartera.liquidadoPagadoArs)}
           </Dato>
         </dl>
       </Panel>
 
       {distribucion.length > 0 ? (
-        <Seccion titulo="Cómo se distribuye" descripcion="Tu capital acreditado, por proyecto.">
+        <Seccion titulo="Cómo se distribuye" descripcion="Tus aportes acreditados, por proyecto.">
           <Panel className="p-5">
             <ul className="space-y-4">
               {distribucion.map((d) => (
@@ -111,7 +111,7 @@ export default async function CarteraPage() {
                     </p>
                   </div>
                   <div className="mt-2">
-                    <Progreso valor={d.pct} label={`${d.titulo}: ${formatPct(d.pct)} de tu capital`} />
+                    <Progreso valor={d.pct} label={`${d.titulo}: ${formatPct(d.pct)} de tus aportes`} />
                   </div>
                 </li>
               ))}
@@ -246,7 +246,7 @@ export default async function CarteraPage() {
                 <div>
                   <p className="font-medium">{l.concepto}</p>
                   <p className="mt-0.5 text-sm text-tinta-tenue">
-                    {formatFecha(l.fecha)} · capital {formatArs(l.capitalArs)} · resultado{" "}
+                    {formatFecha(l.fecha)} · aporte {formatArs(l.capitalArs)} · resultado{" "}
                     {formatArs(l.resultadoArs)}
                   </p>
                 </div>

@@ -32,7 +32,7 @@ export function SaldosCard({ saldos }: { saldos: Saldos }) {
       valor: saldos.recaudadoHistorico,
       total: saldos.objetivoHistorico,
       ayuda:
-        "Todo el capital que se acreditó en tus proyectos desde el primero, sobre el total que pediste. Es tu historial, no dinero disponible.",
+        "Todo lo que se acreditó en tus proyectos desde el primero, sobre el total que pediste. Es tu historial, no dinero disponible.",
     },
   ];
 
