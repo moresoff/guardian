@@ -91,37 +91,37 @@ const ETAPAS: Etapa[] = [
   {
     n: "1",
     titulo: "Publicación",
-    duracion: "Minutos",
+    duracion: "Unos minutos",
     detalle:
-      "El productor declara el ciclo: cuántas cabezas, de qué categoría, con qué peso entran y con cuál salen, qué tipo de ciclo es y qué necesita para llevarlo adelante.",
+      "El productor cuenta qué lote tiene: cuántos animales, de qué tipo, cuánto pesan hoy y cuánto tienen que pesar al salir. También elige cómo se va a engordar: a corral, a pastura o mezclando las dos.",
   },
   {
     n: "2",
     titulo: "Documentación",
     duracion: "El mismo día",
     detalle:
-      "Sube los papeles que ya tiene —RENSPA, DT-e, listado de caravanas, boleto de compra-venta—. Guardian los lee y cruza cada dato contra lo declarado. Si el DT-e ampara 34 animales y el proyecto dice 200, aparece antes de publicarse.",
+      "Sube los papeles que ya tiene del campo y de los animales: el registro sanitario, las guías de traslado y la lista de caravanas. Guardian los lee y los compara con lo que el productor contó. Si dice 200 animales y las guías muestran 34, aparece la diferencia antes de publicar.",
   },
   {
     n: "3",
     titulo: "Validación",
-    duracion: "24 a 72 horas",
+    duracion: "De 1 a 3 días",
     detalle:
-      "Guardian revisa las discrepancias y verifica la autenticidad de los comprobantes por el canal oficial. Que los datos cierren entre sí no prueba que el papel sea auténtico. Son dos controles distintos y los dos tienen que pasar.",
+      "Una persona de Guardian revisa las diferencias y confirma con los organismos oficiales que los papeles sean auténticos. Que los números coincidan no alcanza: también hace falta que el papel sea verdadero. Hacen falta las dos cosas.",
   },
   {
     n: "4",
     titulo: "Colaboración",
     duracion: "Mientras el proyecto está abierto",
     detalle:
-      "El proyecto queda visible y los colaboradores se suman. Cuando está completo, lo necesario para el ciclo se libera según el estado de la hacienda: de una vez si el lote ya existe, por tramos si todavía hay que comprarlo.",
+      "El proyecto se hace visible y los colaboradores se suman. Cuando está completo, el productor recibe lo necesario para el ciclo: todo junto si los animales ya están en el campo, o por partes si todavía hay que comprarlos.",
   },
   {
     n: "5",
-    titulo: "Ciclo y liquidación",
+    titulo: "Engorde y cierre",
     duracion: "Según el tipo de ciclo",
     detalle:
-      "Corre el engorde. Al cerrar, el romaneo de playa del frigorífico dice cuántas cabezas se faenaron, cuántos kilos vivos entraron y cuántos kilos de carne salieron. El romaneo determina el resultado de cada participante.",
+      "Los animales engordan hasta el peso de venta. Al final, el frigorífico informa cuántos animales faenó y cuántos kilos de carne salieron. Con ese informe se calcula lo que le toca a cada participante.",
   },
 ];
 
