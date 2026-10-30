@@ -2,6 +2,7 @@ import { usuarioActual } from "@/lib/sesion";
 import { Suspense } from "react";
 import { notFound } from "next/navigation";
 import { Avisos, type Aviso } from "@/components/avisos";
+import { CabeceraProductor } from "@/components/cabecera-productor";
 import { SaldosCard } from "@/components/saldos-card";
 import type { ItemProyecto } from "@/components/tarjeta-proyecto";
 import { BotonLink, Vacio } from "@/components/ui/primitivos";
@@ -157,11 +158,10 @@ export default async function ResumenProductor() {
           <h1 className="text-2xl font-semibold tracking-tight">
             Hola, {(usuario?.nombre ?? productor.responsable).split(" ")[0]}
           </h1>
-          <p className="mt-1.5 text-sm text-tinta-suave">
-            {productor.establecimiento} · {productor.localidad}, {productor.provincia}
-          </p>
         </div>
       </div>
+
+      <CabeceraProductor />
 
       <section className="grid gap-6 lg:grid-cols-2">
         <SaldosCard saldos={saldos} />

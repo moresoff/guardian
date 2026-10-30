@@ -1,12 +1,8 @@
 import { notFound } from "next/navigation";
-import {
-  CabeceraPerfil,
-  type DatoCabecera,
-} from "@/components/cabecera-perfil";
+import { CabeceraProductor } from "@/components/cabecera-productor";
 import { Pestanas } from "@/components/pestanas";
 import {
   Badge,
-  BotonLink,
   Dato,
   Panel,
   Seccion,
@@ -14,18 +10,14 @@ import {
 } from "@/components/ui/primitivos";
 import {
   PRODUCTOR_DEMO,
-  getDocumentosPermanentes,
   getProductor,
   getProyectosDeProductor,
 } from "@/lib/data";
 import {
-  SISTEMA_LABEL,
-  formatArsCompacto,
   formatFecha,
   formatNum,
   formatPct,
 } from "@/lib/format";
-import { buscarImagen } from "@/lib/imagenes";
 import { AjustesCuenta } from "./ajustes";
 import { ConfiguracionPerfil } from "./configuracion";
 import { Documentos } from "./documentos";
@@ -60,89 +52,21 @@ export default async function EstablecimientoPage({
   if (!productor) notFound();
 
   const proyectos = await getProyectosDeProductor(PRODUCTOR_DEMO);
-  const permanentes = await getDocumentosPermanentes(PRODUCTOR_DEMO);
 
   const cerrados = proyectos.filter(
     (p) => p.estado === "cerrado" && p.resultado,
-  );
-  const activos = proyectos.filter((p) =>
-    ["abierto", "fondeado", "en_curso"].includes(p.estado),
-  );
-  const capitalMovilizado = proyectos
-    .filter((p) => p.estado !== "borrador" && p.estado !== "rechazado")
-    .reduce((acc, p) => acc + p.montoRecaudadoArs, 0);
-
-  const kgFaenados = cerrados.reduce(
-    (acc, p) => acc + (p.resultado?.kgCarne ?? 0),
-    0,
   );
   const rendimientoPromedio = cerrados.length
     ? cerrados.reduce((acc, p) => acc + (p.resultado?.rendimientoPct ?? 0), 0) /
       cerrados.length
     : 0;
-
-  /**
-   * El sello de verificado dice lo que se puede probar y nada más: que la
-   * constancia de RENSPA está contrastada contra SENASA. Si el papel todavía no
-   * se verificó, no hay sello.
-   */
-  const renspaVerificado = permanentes.some(
-    (d) => d.tipo === "renspa" && d.estadoAutenticidad === "verificada",
+  const activos = proyectos.filter((p) =>
+    ["abierto", "fondeado", "en_curso"].includes(p.estado),
   );
-
-  // Las fotos las carga el equipo en `public/imagenes/fotos`. Si todavía no
-  // están, la cabecera dibuja el fondo de marca y las iniciales.
-  const retrato =
-    buscarImagen("fotos", "ganadero") ?? buscarImagen("fotos", "productor");
-
-  // El primer proyecto publicado sirve para mirarse con los ojos del colaborador.
-  const publicado = proyectos.find((p) =>
-    ["abierto", "fondeado", "en_curso", "cerrado"].includes(p.estado),
-  );
-
-  const datosCabecera: DatoCabecera[] = [
-    { etiqueta: "Ciclos cerrados", valor: cerrados.length },
-    {
-      etiqueta: "Capital movilizado",
-      valor: formatArsCompacto(capitalMovilizado),
-    },
-    {
-      etiqueta: "Carne producida",
-      valor: `${formatNum(kgFaenados)} kg`,
-      codigo: true,
-    },
-    {
-      etiqueta: "Rendimiento de faena promedio",
-      valor: cerrados.length > 0 ? formatPct(rendimientoPromedio) : "—",
-      codigo: true,
-    },
-  ];
 
   return (
     <div className="space-y-8">
-      <CabeceraPerfil
-        titulo={productor.razonSocial}
-        subtitulo={`${productor.establecimiento} · ${productor.localidad}, ${
-          productor.provincia
-        } · ${SISTEMA_LABEL[productor.sistemaProductivo]}`}
-        sello={
-          renspaVerificado ? (
-            <Badge tono="ok">RENSPA verificado</Badge>
-          ) : undefined
-        }
-        foto={retrato}
-        datos={datosCabecera}
-        accion={
-          publicado ? (
-            <BotonLink
-              variante="secundario"
-              href={`/proyectos/${publicado.id}`}
-            >
-              Ver mi perfil público
-            </BotonLink>
-          ) : undefined
-        }
-      />
+      <CabeceraProductor />
 
       <Pestanas
         pestanas={PESTANAS}
