@@ -1,4 +1,5 @@
 import { usuarioActual } from "@/lib/sesion";
+import Link from "next/link";
 import { Suspense } from "react";
 import { notFound } from "next/navigation";
 import { Avisos, type Aviso } from "@/components/avisos";
@@ -139,10 +140,10 @@ export default async function ResumenProductor() {
     proyectos.filter((p) => estados.includes(p.estado)).length;
 
   const recuento = [
-    { t: "Con aportes activos", v: cuenta(["abierto", "fondeado", "en_curso"]) },
-    { t: "En revisión", v: cuenta(["en_validacion"]) },
-    { t: "Borradores", v: cuenta(["borrador"]) },
-    { t: "Completados", v: cuenta(["cerrado"]) },
+    { t: "Con aportes activos", solapa: "publicados", v: cuenta(["abierto", "fondeado", "en_curso"]) },
+    { t: "En revisión", solapa: "revision", v: cuenta(["en_validacion"]) },
+    { t: "Borradores", solapa: "borradores", v: cuenta(["borrador"]) },
+    { t: "Completados", solapa: "completados", v: cuenta(["cerrado"]) },
   ];
 
   const items: ItemProyecto[] = proyectos.map((p) => ({
@@ -163,25 +164,47 @@ export default async function ResumenProductor() {
 
       <CabeceraProductor />
 
-      <section className="grid gap-6 lg:grid-cols-2">
-        <SaldosCard saldos={saldos} />
+      <section className="grid gap-6 lg:grid-cols-12">
+        <div className="lg:col-span-7">
+          <SaldosCard saldos={saldos} />
+        </div>
 
-        <div className="flex flex-col">
+        {/* Los cuatro estados en un solo panel y no en cuatro tarjetas iguales:
+            cada fila lleva a esa solapa de la lista de abajo. */}
+        <div className="flex flex-col rounded-2xl border border-borde bg-superficie p-5 shadow-[var(--sombra-baja)] sm:p-6 lg:col-span-5">
           <h2 className="text-lg font-semibold tracking-tight">Tus proyectos</h2>
-
-          {/* Las cuatro tarjetas ocupan lo mismo que la tarjeta de saldos: son
-              las dos mitades de un mismo bloque, no dos bloques sueltos. */}
-          <dl className="mt-4 grid flex-1 grid-cols-2 gap-3">
+          <p className="mt-1 text-sm text-tinta-suave">
+            {proyectos.length} en total · tocá uno para verlos abajo.
+          </p>
+          <ul className="mt-4 flex flex-1 flex-col justify-between gap-2">
             {recuento.map((x) => (
-              <div
-                key={x.t}
-                className="flex flex-col items-center justify-center gap-1 rounded-2xl border border-borde bg-superficie p-5 text-center"
-              >
-                <dt className="text-sm text-tinta-suave">{x.t}</dt>
-                <dd className="tabular text-4xl font-semibold leading-none">{x.v}</dd>
-              </div>
+              <li key={x.t}>
+                <Link
+                  href={`/productor?estado=${x.solapa}#proyectos`}
+                  scroll
+                  className="block rounded-xl px-3 py-2.5 transition-colors hover:bg-superficie-2"
+                >
+                  <span className="flex items-baseline justify-between gap-3">
+                    <span className="text-sm text-tinta-suave">{x.t}</span>
+                    <span className="tabular text-2xl font-semibold leading-none">
+                      {x.v}
+                    </span>
+                  </span>
+                  <span
+                    className="mt-2 block h-1.5 overflow-hidden rounded-full bg-superficie-2"
+                    aria-hidden
+                  >
+                    <span
+                      className="block h-full rounded-full bg-marca"
+                      style={{
+                        width: `${proyectos.length ? (x.v / proyectos.length) * 100 : 0}%`,
+                      }}
+                    />
+                  </span>
+                </Link>
+              </li>
             ))}
-          </dl>
+          </ul>
         </div>
       </section>
 
@@ -194,7 +217,7 @@ export default async function ResumenProductor() {
         </section>
       ) : null}
 
-      <section className="border-t border-borde pt-8">
+      <section id="proyectos" className="scroll-mt-20 border-t border-borde pt-8">
         {items.length === 0 ? (
           <Vacio
             titulo="Todavía no publicaste ningún proyecto"

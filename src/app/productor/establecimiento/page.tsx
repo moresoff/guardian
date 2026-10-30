@@ -1,10 +1,9 @@
 import { notFound } from "next/navigation";
+import { CicloCerradoCard } from "@/components/ciclo-cerrado-card";
 import { CabeceraProductor } from "@/components/cabecera-productor";
 import { Pestanas } from "@/components/pestanas";
 import {
-  Badge,
   Dato,
-  Panel,
   Seccion,
   Vacio,
 } from "@/components/ui/primitivos";
@@ -14,8 +13,6 @@ import {
   getProyectosDeProductor,
 } from "@/lib/data";
 import {
-  formatFecha,
-  formatNum,
   formatPct,
 } from "@/lib/format";
 import { AjustesCuenta } from "./ajustes";
@@ -119,38 +116,10 @@ export default async function EstablecimientoPage({
                 frigorífico y se liquida el resultado real.
               </Vacio>
             ) : (
-              <ul className="space-y-3">
+              <ul className="grid gap-4 md:grid-cols-2">
                 {cerrados.map((p) => (
                   <li key={p.id}>
-                    <Panel className="p-5">
-                      <div className="flex flex-wrap items-start justify-between gap-3">
-                        <div>
-                          <h3 className="font-semibold">{p.titulo}</h3>
-                          <p className="mt-1 text-sm text-tinta-suave">
-                            {formatNum(p.cabezas)} {p.categoria} · faenado el{" "}
-                            {formatFecha(p.resultado!.fecha)} · DT-e de salida{" "}
-                            <span className="codigo">
-                              {p.resultado!.dteSalida}
-                            </span>
-                          </p>
-                        </div>
-                        <Badge tono="ok">Liquidado</Badge>
-                      </div>
-                      <dl className="mt-5 grid grid-cols-2 gap-x-6 gap-y-5 border-t border-borde pt-4 sm:grid-cols-4">
-                        <Dato etiqueta="Cabezas faenadas" codigo>
-                          {formatNum(p.resultado!.cabezasFaena)}
-                        </Dato>
-                        <Dato etiqueta="Kilos vivos" codigo>
-                          {formatNum(p.resultado!.kilosVivos)} kg
-                        </Dato>
-                        <Dato etiqueta="Kilos carne" codigo>
-                          {formatNum(p.resultado!.kgCarne)} kg
-                        </Dato>
-                        <Dato etiqueta="Rendimiento de faena" codigo>
-                          {formatPct(p.resultado!.rendimientoPct)}
-                        </Dato>
-                      </dl>
-                    </Panel>
+                    <CicloCerradoCard proyecto={p} />
                   </li>
                 ))}
               </ul>
