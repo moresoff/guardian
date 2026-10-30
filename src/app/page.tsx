@@ -146,7 +146,9 @@ const ETAPAS: Etapa[] = [
 
 export default async function Home() {
   const fondo = buscarImagen("marca", "fondo");
-  const abiertos = (await getProyectosPublicos()).filter((p) => p.estado === "abierto");
+  const abiertos = (await getProyectosPublicos()).filter(
+    (p) => p.estado === "abierto",
+  );
   const cerrado = await getProyecto("pry-6");
   const destacados = abiertos.slice(0, 2);
   const fotoCaso = cerrado ? fotoDelProyecto(cerrado.id) : null;
@@ -193,8 +195,8 @@ export default async function Home() {
               Crecé, ayudando a crecer
             </p>
             <p className="mt-5 hidden max-w-md text-white/85 sm:block">
-              Participá en el engorde de un lote concreto, con el activo real a la
-              vista: un establecimiento con nombre y RENSPA.
+              Participá en el engorde de un lote concreto, con el activo real a
+              la vista: un establecimiento con nombre y RENSPA.
             </p>
           </div>
 
@@ -204,7 +206,8 @@ export default async function Home() {
             </h2>
             {/* /85 y no /80: sobre un cielo quemado, /80 da 4.38:1 y no llega. */}
             <p className="mt-2 text-white/85">
-              Son dos problemas distintos. Elegí el tuyo y creás la cuenta ahí mismo.
+              Son dos problemas distintos. Elegí el tuyo y creás la cuenta ahí
+              mismo.
             </p>
 
             <div className="mt-6 grid gap-4">
@@ -237,19 +240,22 @@ export default async function Home() {
 
       {/* 1. Quién es Guardian */}
       <Banda>
-        <h2 className="text-3xl font-semibold tracking-tight">Quién es Guardian</h2>
+        <h2 className="text-3xl font-semibold tracking-tight">
+          Quién es Guardian
+        </h2>
         <div className="mt-5 grid gap-x-10 gap-y-4 lg:grid-cols-2">
           <p className="text-tinta-suave">
-            Guardian es una plataforma que pone en contacto a productores ganaderos con
-            personas que quieren colaborar en un ciclo de engorde. No es una fiduciaria ni
-            administra el dinero de nadie: conecta, verifica la documentación y deja todo a
-            la vista.
+            Guardian es una plataforma que pone en contacto a productores
+            ganaderos con personas que quieren colaborar en un ciclo de engorde.
+            No es una fiduciaria ni administra el dinero de nadie: conecta,
+            verifica la documentación y deja todo a la vista.
           </p>
           <p className="text-tinta-suave">
-            Nació de un problema concreto: al productor que engorda se le termina el dinero
-            antes que el ciclo y sale a vender hacienda liviana, la peor venta posible. Del
-            otro lado hay gente que quiere participar en un ciclo ganadero y no encuentra
-            por dónde entrar sin comprar un campo.
+            Nació de un problema concreto: al productor que engorda se le
+            termina el dinero antes que el ciclo y sale a vender hacienda
+            liviana, la peor venta posible. Del otro lado hay gente que quiere
+            participar en un ciclo ganadero y no encuentra por dónde entrar sin
+            comprar un campo.
           </p>
         </div>
       </Banda>
@@ -262,24 +268,38 @@ export default async function Home() {
             <span className="flex size-12 items-center justify-center rounded-full bg-marca-suave text-marca">
               <FileCheck className="size-6" strokeWidth={1.75} aria-hidden />
             </span>
-            <h3 className="mt-5 text-2xl font-semibold tracking-tight">{QUE_HACEMOS[0].titulo}</h3>
-            <p className="mt-3 max-w-prose text-tinta-suave">{QUE_HACEMOS[0].texto}</p>
+            <h3 className="mt-5 text-2xl font-semibold tracking-tight">
+              {QUE_HACEMOS[0].titulo}
+            </h3>
+            <p className="mt-3 max-w-prose text-tinta-suave">
+              {QUE_HACEMOS[0].texto}
+            </p>
           </article>
           <article className="rounded-2xl bg-marca-fuerte p-7 text-white lg:col-span-2 lg:p-9">
             <span className="flex size-12 items-center justify-center rounded-full bg-white/15 text-white">
               <ShieldCheck className="size-6" strokeWidth={1.75} aria-hidden />
             </span>
-            <h3 className="mt-5 text-2xl font-semibold tracking-tight">{QUE_HACEMOS[1].titulo}</h3>
+            <h3 className="mt-5 text-2xl font-semibold tracking-tight">
+              {QUE_HACEMOS[1].titulo}
+            </h3>
             <p className="mt-3 text-white/85">{QUE_HACEMOS[1].texto}</p>
           </article>
           <article className="rounded-2xl border border-marca/25 bg-papel p-7 lg:col-span-5 lg:flex lg:items-center lg:justify-between lg:gap-10 lg:px-9">
             <div className="flex items-center gap-4 lg:shrink-0">
               <span className="flex size-12 shrink-0 items-center justify-center rounded-full bg-marca-suave text-marca">
-                <ClipboardList className="size-6" strokeWidth={1.75} aria-hidden />
+                <ClipboardList
+                  className="size-6"
+                  strokeWidth={1.75}
+                  aria-hidden
+                />
               </span>
-              <h3 className="text-xl font-semibold tracking-tight">{QUE_HACEMOS[2].titulo}</h3>
+              <h3 className="text-xl font-semibold tracking-tight">
+                {QUE_HACEMOS[2].titulo}
+              </h3>
             </div>
-            <p className="mt-2 max-w-prose text-tinta-suave lg:mt-0">{QUE_HACEMOS[2].texto}</p>
+            <p className="mt-2 max-w-prose text-tinta-suave lg:mt-0">
+              {QUE_HACEMOS[2].texto}
+            </p>
           </article>
         </div>
       </Banda>
@@ -287,10 +307,13 @@ export default async function Home() {
       {/* 3. Tres tipos de ciclo, como un recorrido del corral a la pastura */}
       <Banda tono="bg-superficie">
         <div className="max-w-2xl">
-          <h2 className="text-3xl font-semibold tracking-tight">Tres tipos de ciclo</h2>
+          <h2 className="text-3xl font-semibold tracking-tight">
+            Tres tipos de ciclo
+          </h2>
           <p className="mt-3 text-tinta-suave">
-            Cada proyecto es de uno de estos tres tipos. Van de menos a más pastura: del
-            corral de punta a punta, a todo el ciclo sobre el campo.
+            Cada proyecto es de uno de estos tres tipos. Van de menos a más
+            pastura: del corral de punta a punta, a todo el ciclo sobre el
+            campo.
           </p>
         </div>
 
@@ -305,9 +328,10 @@ export default async function Home() {
                     return <I className="size-6" strokeWidth={1.75} />;
                   })()}
                 </span>
-                
               </div>
-              <h3 className="mt-4 text-xl font-semibold tracking-tight">{CICLOS[k].nombre}</h3>
+              <h3 className="mt-4 text-xl font-semibold tracking-tight">
+                {CICLOS[k].nombre}
+              </h3>
               <p className="mt-1.5 text-tinta-suave">{CICLOS[k].descripcion}</p>
             </li>
           ))}
@@ -320,9 +344,12 @@ export default async function Home() {
       {/* 4. Cómo corre un ciclo */}
       <Banda>
         <div className="max-w-2xl">
-          <h2 className="text-3xl font-semibold tracking-tight">Cómo corre un ciclo</h2>
+          <h2 className="text-3xl font-semibold tracking-tight">
+            Cómo corre un ciclo
+          </h2>
           <p className="mt-3 text-tinta-suave">
-            Cinco etapas, desde que el productor publica hasta que cierra el romaneo. Pasan solas, y podés elegir la que quieras ver.
+            Cinco etapas, desde que el productor publica hasta que cierra el
+            romaneo. Pasan solas, y podés elegir la que quieras ver.
           </p>
         </div>
         <div className="mt-9">
@@ -332,7 +359,9 @@ export default async function Home() {
 
       {/* 5. Antes de participar */}
       <Banda tono="bg-superficie-2">
-        <h2 className="text-3xl font-semibold tracking-tight">Antes de participar</h2>
+        <h2 className="text-3xl font-semibold tracking-tight">
+          Antes de participar
+        </h2>
         <dl className="mt-7 grid gap-x-10 gap-y-6 sm:grid-cols-2">
           {ANTES_DE_PARTICIPAR.map((c) => (
             <div key={c.titulo} className="border-t border-borde-fuerte pt-3">
@@ -351,8 +380,8 @@ export default async function Home() {
               Proyectos y casos cerrados
             </h2>
             <p className="mt-3 text-tinta-suave">
-              Lo que está abierto hoy y un ciclo ya cerrado, con lo que dijo el romaneo del
-              frigorífico.
+              Lo que está abierto hoy y un ciclo ya cerrado, con lo que dijo el
+              romaneo del frigorífico.
             </p>
           </div>
           <BotonLink href="/proyectos" variante="secundario">
@@ -371,7 +400,7 @@ export default async function Home() {
             </li>
           ))}
 
-              {cerrado?.resultado ? (
+          {cerrado?.resultado ? (
             <li>
               <CasoCerradoCard proyecto={cerrado} foto={fotoCaso} />
             </li>
@@ -380,14 +409,15 @@ export default async function Home() {
       </Banda>
 
       {/* 7. Cierre: crear la cuenta y el contacto, juntos y al final */}
-      <Banda>
-        <div className="mx-auto flex min-h-[calc(100svh-8rem)] w-fit max-w-full items-center overflow-hidden rounded-3xl bg-marca-fuerte text-white">
-        <div className="grid gap-10 px-6 py-12 sm:px-10 lg:grid-cols-[auto_auto] lg:gap-x-20">
+      <section className={`${ANCHO_COMPLETO} bg-marca-fuerte text-white`}>
+        <div className="mx-auto grid max-w-6xl gap-10 px-4 py-12 sm:py-14 lg:grid-cols-2 lg:gap-16">
           <div>
-            <h2 className="text-3xl font-semibold tracking-tight">Empezá con tu cuenta</h2>
+            <h2 className="text-3xl font-semibold tracking-tight">
+              Empezá con tu cuenta
+            </h2>
             <p className="mt-3 max-w-sm text-white/85">
-              Con una cuenta ves las condiciones de cada proyecto, el respaldo documental
-              completo y seguís el ciclo hasta el cierre.
+              Con una cuenta ves las condiciones de cada proyecto, el respaldo
+              documental completo y seguís el ciclo hasta el cierre.
             </p>
             <div className="mt-6 flex flex-wrap gap-3">
               <Link
@@ -408,12 +438,15 @@ export default async function Home() {
           <div>
             <h2 className="text-3xl font-semibold tracking-tight">Contacto</h2>
             <p className="mt-3 max-w-sm text-white/85">
-              Consultá por modalidades de participación. Te respondemos por el medio que
-              prefieras.
+              Consultá por modalidades de participación. Te respondemos por el
+              medio que prefieras.
             </p>
             <dl className="mt-6 space-y-3">
               <div>
-                <dt className="flex items-center gap-2 text-sm text-white/70"><Mail className="size-4" strokeWidth={1.75} aria-hidden />Correo</dt>
+                <dt className="flex items-center gap-2 text-sm text-white/70">
+                  <Mail className="size-4" strokeWidth={1.75} aria-hidden />
+                  Correo
+                </dt>
                 <dd>
                   <a
                     href={`mailto:${CORREO_CONTACTO}`}
@@ -424,7 +457,10 @@ export default async function Home() {
                 </dd>
               </div>
               <div>
-                <dt className="flex items-center gap-2 text-sm text-white/70"><Phone className="size-4" strokeWidth={1.75} aria-hidden />Teléfono</dt>
+                <dt className="flex items-center gap-2 text-sm text-white/70">
+                  <Phone className="size-4" strokeWidth={1.75} aria-hidden />
+                  Teléfono
+                </dt>
                 <dd>
                   <a
                     href={`tel:+54${TELEFONO_CONTACTO.replace(/\D/g, "")}`}
@@ -437,13 +473,16 @@ export default async function Home() {
             </dl>
           </div>
         </div>
-
-        </div>
-        <p className="mx-auto mt-6 max-w-2xl text-center text-sm text-tinta-suave">
-          Es el prototipo de la plataforma, con datos de prueba. La publicación de proyectos, la
-          carga de documentación y su validación se pueden recorrer de punta a punta; la
-          participación en proyectos todavía no.{" "}
-          <Link href="/admin" className="underline underline-offset-4 hover:text-marca">
+      </section>
+      <Banda>
+        <p className="mx-auto max-w-2xl text-center text-sm text-tinta-suave">
+          Es el prototipo de la plataforma, con datos de prueba. La publicación
+          de proyectos, la carga de documentación y su validación se pueden
+          recorrer de punta a punta; la participación en proyectos todavía no.{" "}
+          <Link
+            href="/admin"
+            className="underline underline-offset-4 hover:text-marca"
+          >
             Ver la cola de validación de Guardian
           </Link>
         </p>
@@ -456,7 +495,13 @@ export default async function Home() {
  * Cada sección es una franja de ancho completo con su propio tono: sin eso las
  * seis se leen como un solo bloque de texto.
  */
-function Banda({ tono = "", children }: { tono?: string; children: React.ReactNode }) {
+function Banda({
+  tono = "",
+  children,
+}: {
+  tono?: string;
+  children: React.ReactNode;
+}) {
   return (
     <section className={`${ANCHO_COMPLETO} ${tono}`}>
       <div className="mx-auto max-w-6xl px-4 py-12 sm:py-14">{children}</div>
