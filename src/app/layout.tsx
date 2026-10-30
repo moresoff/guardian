@@ -2,7 +2,7 @@ import type { Metadata, Viewport } from "next";
 import { JetBrains_Mono, Poppins } from "next/font/google";
 import { Nav } from "@/components/nav";
 import { usuarioActual } from "@/lib/sesion";
-import { BotonRecorrido, RecorridoGuiado } from "@/components/recorrido-guiado";
+import { RecorridoGuiado } from "@/components/recorrido-guiado";
 import "./globals.css";
 
 const poppins = Poppins({
@@ -58,10 +58,7 @@ export default async function RootLayout({ children }: LayoutProps<"/">) {
           <p className="mx-auto max-w-6xl text-sm text-tinta-suave">
             <span className="font-medium">Guardian</span> — prototipo de la
             plataforma. Los datos son de prueba y nada de lo que se muestra acá
-            constituye oferta pública.{" "}
-            {conSesion ? (
-              <BotonRecorrido className="font-medium text-marca underline underline-offset-2" />
-            ) : null}
+            constituye oferta pública.
           </p>
         </footer>
         <RecorridoGuiado />

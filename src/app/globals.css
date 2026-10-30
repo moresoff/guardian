@@ -194,11 +194,6 @@ label:has(> input[type="checkbox"]) {
   }
 }
 
-/* Con la guía del recorrido abierta, lo que enfoca el teclado no queda debajo. */
-html.recorrido-abierto {
-  scroll-padding-bottom: 14rem;
-}
-
 @media (prefers-reduced-motion: no-preference) {
   .recorrido {
     animation: recorrido-entra 220ms cubic-bezier(0.22, 1, 0.36, 1);

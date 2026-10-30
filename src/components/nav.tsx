@@ -5,6 +5,7 @@ import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import { cerrarSesion } from "@/app/sesion/acciones";
+import { BotonRecorrido } from "@/components/recorrido-guiado";
 
 /**
  * La navegación es distinta según de qué lado de la plataforma estés.
@@ -200,6 +201,7 @@ export function Nav({ conSesion, nombre }: { conSesion: boolean; nombre: string 
                   {nombre}
                 </span>
               ) : null}
+              <BotonRecorrido className="flex min-h-11 items-center rounded-full px-3 py-2 text-sm font-medium text-tinta-suave transition-colors hover:bg-superficie-2 hover:text-tinta" />
               <CambiarVista area={area} />
               <button
                 type="button"
