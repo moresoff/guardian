@@ -412,12 +412,21 @@ export function RecorridoGuiado() {
 }
 
 /** Para volver a ver el recorrido cuando ya se cerró. */
-export function BotonRecorrido({ className = "" }: { className?: string }) {
+export function BotonRecorrido({
+  className = "",
+  alAbrir,
+}: {
+  className?: string;
+  alAbrir?: () => void;
+}) {
   return (
     <button
       type="button"
       className={className}
-      onClick={() => window.dispatchEvent(new Event(ABRIR_RECORRIDO))}
+      onClick={() => {
+        alAbrir?.();
+        window.dispatchEvent(new Event(ABRIR_RECORRIDO));
+      }}
     >
       Ver recorrido
     </button>

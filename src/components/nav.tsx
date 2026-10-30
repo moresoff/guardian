@@ -68,10 +68,27 @@ const VISTAS = [
   },
 ] as const;
 
-/** Selector de vista: decir a dónde vas es la mitad del trabajo del enlace. */
-function CambiarVista({ area }: { area: Area }) {
+/**
+ * El perfil en un círculo: ahí viven el nombre, mi perfil, el recorrido y el
+ * cambio de vista, para que la barra quede solo con el logo, las secciones y
+ * «Salir». Decir a dónde vas es la mitad del trabajo del enlace.
+ */
+function MenuPerfil({ area, nombre }: { area: Area; nombre: string | null }) {
   const [abierto, setAbierto] = useState(false);
   const contenedor = useRef<HTMLDivElement>(null);
+  const iniciales =
+    (nombre ?? "")
+      .split(/\s+/)
+      .filter(Boolean)
+      .slice(0, 2)
+      .map((p) => p[0]!.toUpperCase())
+      .join("") || "·";
+  const miPerfil =
+    area === "productor"
+      ? "/productor/establecimiento"
+      : area === "colaborador"
+        ? "/colaborador/cartera?tab=datos"
+        : null;
 
   useEffect(() => {
     if (!abierto) return;
@@ -96,15 +113,10 @@ function CambiarVista({ area }: { area: Area }) {
         onClick={() => setAbierto((v) => !v)}
         aria-expanded={abierto}
         aria-haspopup="menu"
-        className="flex min-h-11 items-center gap-2 rounded-full border border-borde px-3.5 py-2 text-sm font-medium text-tinta-suave transition-colors hover:bg-superficie-2 hover:text-tinta"
+        aria-label={nombre ? `Mi perfil: ${nombre}` : "Mi perfil"}
+        className="grid size-11 place-items-center rounded-full bg-marca-suave text-sm font-semibold text-marca transition-colors hover:bg-marca hover:text-marca-contraste"
       >
-        {area ? MENUS[area].etiqueta : "Cambiar de vista"}
-        <span
-          className={`text-[0.7em] transition-transform ${abierto ? "rotate-180" : ""}`}
-          aria-hidden
-        >
-          ▼
-        </span>
+        {iniciales}
       </button>
 
       {abierto ? (
@@ -112,7 +124,26 @@ function CambiarVista({ area }: { area: Area }) {
           role="menu"
           className="absolute right-0 top-[calc(100%+0.5rem)] z-30 w-72 overflow-hidden rounded-2xl border border-borde bg-superficie shadow-[var(--sombra-alta)]"
         >
-          <p className="border-b border-borde px-4 py-3 text-sm text-tinta-tenue">
+          {nombre ? (
+            <p className="truncate border-b border-borde px-4 py-3 font-semibold">
+              {nombre}
+            </p>
+          ) : null}
+          {miPerfil ? (
+            <Link
+              href={miPerfil}
+              role="menuitem"
+              onClick={() => setAbierto(false)}
+              className="flex min-h-11 items-center px-4 text-sm transition-colors hover:bg-superficie-2"
+            >
+              Mi perfil
+            </Link>
+          ) : null}
+          <BotonRecorrido
+            className="flex min-h-11 w-full items-center px-4 text-left text-sm transition-colors hover:bg-superficie-2"
+            alAbrir={() => setAbierto(false)}
+          />
+          <p className="border-y border-borde px-4 py-3 text-sm text-tinta-tenue">
             Las dos vistas son de la misma cuenta.
           </p>
           {VISTAS.map((v) => (
@@ -207,24 +238,7 @@ export function Nav({
         <div className="ml-auto flex flex-wrap items-center gap-2">
           {area ? (
             <>
-              {area === "productor" && !pathname.startsWith("/productor/proyectos/nuevo") ? (
-                <Link
-                  href="/productor/proyectos/nuevo"
-                  className="flex min-h-11 items-center rounded-full bg-marca px-4 py-2 text-sm font-medium text-marca-contraste transition-colors hover:bg-marca-fuerte"
-                >
-                  Publicar un proyecto
-                </Link>
-              ) : null}
-              {nombre ? (
-                <span
-                  className="max-w-40 truncate px-1 text-sm font-medium text-tinta sm:max-w-56"
-                  title={nombre}
-                >
-                  {nombre}
-                </span>
-              ) : null}
-              <BotonRecorrido className="flex min-h-11 items-center rounded-full px-3 py-2 text-sm font-medium text-tinta-suave transition-colors hover:bg-superficie-2 hover:text-tinta" />
-              <CambiarVista area={area} />
+              <MenuPerfil area={area} nombre={nombre} />
               <button
                 type="button"
                 onClick={async () => {

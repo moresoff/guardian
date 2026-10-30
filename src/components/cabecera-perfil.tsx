@@ -42,6 +42,7 @@ export function CabeceraPerfil({
     .join("");
 
   return (
+    <div className="space-y-3">
     <section className="rounded-2xl border border-borde bg-superficie p-5 shadow-[var(--sombra-baja)] sm:p-7">
       {/* El retrato al lado del nombre y sin portada detrás: montado sobre una
           foto de fondo se pisaban, y la foto no aportaba nada que el nombre no
@@ -78,12 +79,17 @@ export function CabeceraPerfil({
         {accion}
       </div>
 
-      <dl className="mt-6 grid grid-cols-2 gap-x-6 gap-y-5 border-t border-borde pt-5 sm:grid-cols-4 sm:divide-x sm:divide-borde">
-        {datos.map((d, i) => (
-          <div key={d.etiqueta} className={i > 0 ? "sm:pl-6" : undefined}>
+    </section>
+
+      <dl className="grid grid-cols-2 gap-3 sm:grid-cols-4">
+        {datos.map((d) => (
+          <div
+            key={d.etiqueta}
+            className="rounded-2xl border border-borde bg-superficie p-5 shadow-[var(--sombra-baja)]"
+          >
             <dt className="text-sm text-tinta-suave">{d.etiqueta}</dt>
             <dd
-              className={`mt-1 text-xl font-semibold tracking-tight ${
+              className={`mt-2 text-2xl font-semibold tracking-tight ${
                 d.codigo ? "codigo" : "tabular"
               }`}
             >
@@ -92,6 +98,6 @@ export function CabeceraPerfil({
           </div>
         ))}
       </dl>
-    </section>
+    </div>
   );
 }

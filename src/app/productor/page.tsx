@@ -153,13 +153,14 @@ export default async function ResumenProductor() {
   }));
 
   return (
-    <div className="space-y-12">
-      <div className="flex flex-wrap items-end justify-between gap-4">
+    <div className="space-y-8">
+      <div className="flex flex-wrap items-center justify-between gap-4">
         <div>
           <h1 className="text-2xl font-semibold tracking-tight">
             Hola, {(usuario?.nombre ?? productor.responsable).split(" ")[0]}
           </h1>
         </div>
+        <BotonLink href="/productor/proyectos/nuevo">Publicar un proyecto</BotonLink>
       </div>
 
       <CabeceraProductor />
