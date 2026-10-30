@@ -2,7 +2,6 @@ import { usuarioActual } from "@/lib/sesion";
 import Link from "next/link";
 import { Suspense } from "react";
 import { notFound } from "next/navigation";
-import { Avisos, type Aviso } from "@/components/avisos";
 import { CabeceraProductor } from "@/components/cabecera-productor";
 import { SaldosCard } from "@/components/saldos-card";
 import type { ItemProyecto } from "@/components/tarjeta-proyecto";
@@ -20,9 +19,6 @@ import { fotoDelProyecto } from "@/lib/imagenes";
 import { ListaProyectos } from "./lista";
 import {
   documentosRequeridos,
-  formatNum,
-  formatPct,
-  porcentajeRecaudado,
 } from "@/lib/format";
 
 export const metadata = { title: "Mis proyectos — Guardian" };
@@ -41,12 +37,8 @@ export default async function ResumenProductor() {
   const proyectos = await getProyectosDeProductor(PRODUCTOR_DEMO);
   const saldos = await getSaldosDeProductor(PRODUCTOR_DEMO);
 
-  const avisos: Aviso[] = [];
   /** Lo que cada proyecto le está pidiendo al productor, para la tarjeta. */
   const pendientes = new Map<string, string>();
-
-  // Los ciclos viejos ya se leyeron: solo el último cierre sigue siendo noticia.
-  const ultimoCierre = proyectos.find((p) => p.estado === "cerrado" && p.resultado);
 
   for (const p of proyectos) {
     const sinResolver = (await getDiscrepanciasDeProyecto(p.id)).filter(
@@ -59,18 +51,9 @@ export default async function ResumenProductor() {
           sinResolver.length === 1 ? "discrepancia" : "discrepancias"
         } entre lo declarado y la documentación`,
       );
-      avisos.push({
-        id: `disc-${p.id}`,
-        titulo: `${sinResolver.length} ${
-          sinResolver.length === 1 ? "discrepancia" : "discrepancias"
-        } sin resolver`,
-        texto: `En ${p.titulo}. Guardian no lo publica hasta que los números cierren con la documentación.`,
-        href: `/proyectos/${p.id}`,
-        accion: "Revisar",
-      });
     }
 
-    if (p.estado === "borrador") {
+    if (p.estado === "borrador" && !pendientes.has(p.id)) {
       const documentos = await getDocumentosVigentesDeProyecto(p.id, p.productorId);
       const cargados = new Set(documentos.map((d) => d.tipo));
       const faltanDocs = documentosRequeridos(p.tipoPosesion).filter(
@@ -78,61 +61,20 @@ export default async function ResumenProductor() {
       ).length;
       const faltanDatos = camposIncompletos(p).length;
       if (faltanDatos > 0 || faltanDocs > 0) {
-        if (!pendientes.has(p.id)) {
-          pendientes.set(
-            p.id,
-            `Faltan ${[
-              faltanDatos > 0
-                ? `${faltanDatos} ${faltanDatos === 1 ? "dato" : "datos"} de la ficha`
-                : null,
-              faltanDocs > 0
-                ? `${faltanDocs} ${faltanDocs === 1 ? "documento" : "documentos"}`
-                : null,
-            ]
-              .filter(Boolean)
-              .join(" y ")}`,
-          );
-        }
-        avisos.push({
-          id: `borr-${p.id}`,
-          titulo: "Te falta completar una ficha",
-          texto: `${p.titulo}: ${[
+        pendientes.set(
+          p.id,
+          `Faltan ${[
             faltanDatos > 0
-              ? `${faltanDatos} ${faltanDatos === 1 ? "dato" : "datos"}`
+              ? `${faltanDatos} ${faltanDatos === 1 ? "dato" : "datos"} de la ficha`
               : null,
             faltanDocs > 0
               ? `${faltanDocs} ${faltanDocs === 1 ? "documento" : "documentos"}`
               : null,
           ]
             .filter(Boolean)
-            .join(" y ")} para poder enviarlo a revisión.`,
-          href: `/proyectos/${p.id}`,
-          accion: "Completar",
-        });
+            .join(" y ")}`,
+        );
       }
-    }
-
-    if (p.estado === "abierto") {
-      const pct = porcentajeRecaudado(p.montoRecaudadoArs, p.montoObjetivoArs);
-      avisos.push({
-        id: `pub-${p.id}`,
-        titulo: "Tu proyecto está publicado",
-        texto: `${p.titulo} lleva ${pct} % del capital comprometido por colaboradores.`,
-        href: `/proyectos/${p.id}`,
-        accion: "Ver la ficha pública",
-      });
-    }
-
-    if (p.resultado && p.id === ultimoCierre?.id) {
-      avisos.push({
-        id: `cierre-${p.id}`,
-        titulo: "Ciclo cerrado y liquidado",
-        texto: `${p.titulo} cerró con un rendimiento de faena de ${formatPct(p.resultado.rendimientoPct)} sobre ${formatNum(
-          p.resultado.kilosVivos,
-        )} kg vivos, según el romaneo.`,
-        href: `/proyectos/${p.id}`,
-        accion: "Ver el cierre",
-      });
     }
   }
 
@@ -208,15 +150,6 @@ export default async function ResumenProductor() {
           </ul>
         </div>
       </section>
-
-      {avisos.length > 0 ? (
-        <section>
-          <h2 className="mb-4 text-lg font-semibold tracking-tight">
-            Para ponerte al día
-          </h2>
-          <Avisos avisos={avisos} />
-        </section>
-      ) : null}
 
       <section id="proyectos" className="scroll-mt-20 border-t border-borde pt-8">
         {items.length === 0 ? (

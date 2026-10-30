@@ -146,11 +146,11 @@ export function SlotDocumento({
       {estado.fase === "listo" ? (
         <div className="mt-4 border-t border-borde pt-3">
           <p className="rotulo mb-2 text-tinta-tenue">Leído del documento</p>
-          <dl className="grid gap-x-6 gap-y-1.5 sm:grid-cols-2">
+          <dl className="grid gap-y-2.5">
             {estado.lectura.campos.map((c) => (
-              <div key={c.etiqueta} className="flex justify-between gap-3 text-sm">
+              <div key={c.etiqueta} className="min-w-0 text-sm">
                 <dt className="text-tinta-suave">{c.etiqueta}</dt>
-                <dd className="tabular font-medium">{c.valor}</dd>
+                <dd className="tabular break-words font-medium">{c.valor}</dd>
               </div>
             ))}
           </dl>

@@ -234,7 +234,6 @@ export function WizardPublicacion({
   const [cargas, setCargas] = useState<Record<string, EstadoCarga>>({});
   const [enviado, setEnviado] = useState(false);
   const [huecos, setHuecos] = useState<ClaveFicha[]>([]);
-  const [faltanDocs, setFaltanDocs] = useState(false);
   const [opciones, setOpciones] = useState(false);
   const [paso, setPaso] = useState(0);
   const titulo = useRef<HTMLHeadingElement>(null);
@@ -292,24 +291,16 @@ export function WizardPublicacion({
     );
 
   /**
-   * El botón nunca está gris. Se aprieta, y si falta algo el foco cae en el
-   * primer dato vacío con el error escrito al lado.
+   * Los papeles no frenan el envío: se pueden subir ahora o después, desde el
+   * proyecto. Lo único obligatorio son los datos del primer paso.
    */
   const enviar = () => {
     const pendientes = OBLIGATORIOS.filter(
       (c) => b[c].trim() === "" || Number(b[c]) === 0,
     );
-    setHuecos(pendientes);
-    const sinSubir = completos < requeridos.length;
-    setFaltanDocs(sinSubir);
     if (pendientes.length > 0) {
-      document.getElementById(idDeCampo(pendientes[0]))?.focus();
-      return;
-    }
-    if (sinSubir || discrepancias.length > 0) {
-      document
-        .getElementById("documentacion-alta")
-        ?.scrollIntoView({ behavior: "smooth", block: "center" });
+      setHuecos(pendientes);
+      irA(0);
       return;
     }
     setEnviado(true);
@@ -464,8 +455,8 @@ export function WizardPublicacion({
         {paso === 3 ? (
           <div className="mt-5" id="documentacion-alta">
             <p className="text-sm text-tinta-suave">
-              {completos} de {requeridos.length} subidos. Guardian los lee y los
-              cruza con lo que cargaste.
+              {completos} de {requeridos.length} subidos. Podés enviarlo así y completar
+              los papeles después; Guardian los lee y los cruza con lo que cargaste.
             </p>
             <div className="mt-4 grid gap-3 sm:grid-cols-2">
               {requeridos.map((tipo) => (
@@ -514,11 +505,7 @@ export function WizardPublicacion({
                   (c) => CAMPOS_FICHA.find((x) => x.clave === c)?.etiqueta ?? c,
                 )
                 .join(", ")}.`
-            : paso === 3 && faltanDocs && completos < requeridos.length
-              ? `Faltan ${requeridos.length - completos} de ${requeridos.length} documentos.`
-              : paso === 3 && discrepancias.length > 0
-                ? "Resolvé las diferencias antes de enviar el proyecto."
-                : ""}
+            : ""}
         </p>
 
         <div className="mt-3 flex items-center justify-between gap-3 border-t border-borde pt-5">

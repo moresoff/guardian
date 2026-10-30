@@ -23,10 +23,55 @@ export interface ItemProyecto {
  * la cuenta y en el listado completo: la misma cosa no debería cambiar de forma
  * según la pantalla donde aparece.
  */
-export function TarjetaProyecto({ item }: { item: ItemProyecto }) {
+export function TarjetaProyecto({
+  item,
+  compacta = false,
+}: {
+  item: ItemProyecto;
+  /** Foto chica a un costado: para ver muchos proyectos con poco scroll. */
+  compacta?: boolean;
+}) {
   const p = item.proyecto;
   const pct = porcentajeRecaudado(p.montoRecaudadoArs, p.montoObjetivoArs);
   const conMonto = p.estado !== "borrador" && p.estado !== "en_validacion";
+
+  if (compacta) {
+    return (
+      <Panel className="relative flex h-full overflow-hidden transition-shadow hover:shadow-md">
+        <div className="relative w-28 shrink-0 bg-marca-suave sm:w-32">
+          {item.foto ? (
+            <Image src={item.foto} alt="" fill sizes="8rem" className="object-cover" />
+          ) : null}
+        </div>
+        <div className="flex min-w-0 flex-1 flex-col p-4">
+          <div className="flex flex-wrap items-center gap-x-2 gap-y-1">
+            <EstadoProyectoBadge estado={p.estado} />
+            <span className="text-sm text-tinta-tenue">{formatFecha(p.creadoAt)}</span>
+          </div>
+          <h3 className="mt-2 font-semibold leading-snug tracking-tight">
+            <Link href={`/proyectos/${p.id}`} className="hover:text-marca">
+              <span className="absolute inset-0" aria-hidden />
+              {p.titulo}
+            </Link>
+          </h3>
+          <p className="mt-1 text-sm text-tinta-suave">
+            {formatNum(p.cabezas)} cabezas · {p.plazoDias} días
+          </p>
+          {item.pendiente ? (
+            <p className="mt-2 text-sm font-medium text-alerta">{item.pendiente}</p>
+          ) : conMonto ? (
+            <p className="tabular mt-auto pt-2 text-sm">
+              <span className="font-medium">{formatArsCompacto(p.montoRecaudadoArs)}</span>
+              <span className="text-tinta-suave">
+                {" "}
+                de {formatArsCompacto(p.montoObjetivoArs)} · {pct} %
+              </span>
+            </p>
+          ) : null}
+        </div>
+      </Panel>
+    );
+  }
 
   return (
     <Panel className="relative flex h-full flex-col overflow-hidden transition-shadow hover:shadow-md">

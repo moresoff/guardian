@@ -45,9 +45,12 @@ export function EnviadoAValidacion({
           qué falta y quién lo hace. Un modal que hay que leer entero es un modal
           que se cierra sin leer. */}
       <p className="text-tinta-suave">
-        {formatNum(cabezas)} cabezas y {documentos}{" "}
-        {documentos === 1 ? "comprobante" : "comprobantes"}: las cifras cierran. El
-        proyecto pasa de borrador a{" "}
+        {documentos === 0
+          ? `${formatNum(cabezas)} cabezas, todavía sin comprobantes: los podés subir desde el proyecto.`
+          : `${formatNum(cabezas)} cabezas y ${documentos} ${
+              documentos === 1 ? "comprobante" : "comprobantes"
+            }: las cifras cierran.`}{" "}
+        El proyecto pasa de borrador a{" "}
         <strong className="font-medium text-tinta">En revisión</strong>.
       </p>
       <ol className="mt-4 list-decimal space-y-1.5 pl-5 text-sm text-tinta-suave marker:text-tinta-tenue">

@@ -1,7 +1,7 @@
 "use client";
 
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
-import { useMemo } from "react";
+import { useMemo, useState } from "react";
 import { TarjetaProyecto, type ItemProyecto } from "@/components/tarjeta-proyecto";
 import type { EstadoProyecto } from "@/lib/types";
 
@@ -18,6 +18,21 @@ const SOLAPAS: {
   estados: EstadoProyecto[];
   vacio: string;
 }[] = [
+  {
+    clave: "todos",
+    titulo: "Todos",
+    descripcion: "",
+    estados: [
+      "borrador",
+      "rechazado",
+      "en_validacion",
+      "abierto",
+      "fondeado",
+      "en_curso",
+      "cerrado",
+    ],
+    vacio: "Todavía no tenés proyectos.",
+  },
   {
     clave: "borradores",
     titulo: "Borradores",
@@ -49,24 +64,8 @@ const SOLAPAS: {
   },
 ];
 
-/**
- * Filtro de fecha sin calendario: nadie se acuerda del día exacto en que cargó
- * un proyecto, pero sí de si fue hace poco o el año pasado.
- */
-const FECHAS = [
-  { clave: "reciente", label: "Más reciente primero" },
-  { clave: "viejo", label: "Más viejo primero" },
-  { clave: "anio", label: "Del último año" },
-  { clave: "mes", label: "Del último mes" },
-] as const;
-
-type ClaveFecha = (typeof FECHAS)[number]["clave"];
-
-function desde(meses: number): string {
-  const d = new Date();
-  d.setMonth(d.getMonth() - meses);
-  return d.toISOString().slice(0, 10);
-}
+/** Cuántos proyectos se ven antes de pedir «Ver más»: dos filas de dos. */
+const VISIBLES = 4;
 
 export function ListaProyectos({ items }: { items: ItemProyecto[] }) {
   const router = useRouter();
@@ -75,8 +74,7 @@ export function ListaProyectos({ items }: { items: ItemProyecto[] }) {
 
   const solapa =
     SOLAPAS.find((s) => s.clave === params.get("estado"))?.clave ?? SOLAPAS[0].clave;
-  const fecha = (FECHAS.find((f) => f.clave === params.get("desde"))?.clave ??
-    "reciente") as ClaveFecha;
+  const [verTodos, setVerTodos] = useState(false);
 
   /**
    * Se reemplaza la entrada del historial en vez de apilar una nueva: cambiar de
@@ -92,7 +90,6 @@ export function ListaProyectos({ items }: { items: ItemProyecto[] }) {
   };
 
   const setSolapa = (v: string) => cambiar("estado", v, SOLAPAS[0].clave);
-  const setFecha = (v: string) => cambiar("desde", v, "reciente");
 
   const cuentas = useMemo(
     () =>
@@ -107,20 +104,16 @@ export function ListaProyectos({ items }: { items: ItemProyecto[] }) {
 
   const actual = SOLAPAS.find((s) => s.clave === solapa) ?? SOLAPAS[0];
 
-  const visibles = useMemo(() => {
-    const corte =
-      fecha === "mes" ? desde(1) : fecha === "anio" ? desde(12) : null;
-    return items
-      .filter((i) => actual.estados.includes(i.proyecto.estado))
-      .filter((i) => (corte ? i.proyecto.creadoAt >= corte : true))
-      .sort((a, b) =>
-        fecha === "viejo"
-          ? a.proyecto.creadoAt.localeCompare(b.proyecto.creadoAt)
-          : b.proyecto.creadoAt.localeCompare(a.proyecto.creadoAt),
-      );
-  }, [items, actual, fecha]);
+  // El más reciente primero: es lo que el productor busca casi siempre.
+  const visibles = useMemo(
+    () =>
+      items
+        .filter((i) => actual.estados.includes(i.proyecto.estado))
+        .sort((a, b) => b.proyecto.creadoAt.localeCompare(a.proyecto.creadoAt)),
+    [items, actual],
+  );
 
-  const recortados = cuentas.get(actual.clave) ?? 0;
+  const mostrados = verTodos ? visibles : visibles.slice(0, VISIBLES);
 
   return (
     <div>
@@ -148,46 +141,35 @@ export function ListaProyectos({ items }: { items: ItemProyecto[] }) {
             );
           })}
         </div>
-
-        <div className="ml-auto flex items-center gap-2">
-          <label htmlFor="filtro-fecha" className="text-sm text-tinta-suave">
-            Fecha
-          </label>
-          <select
-            id="filtro-fecha"
-            value={fecha}
-            onChange={(e) => setFecha(e.target.value as ClaveFecha)}
-            className="min-h-11 rounded-xl border border-borde-fuerte bg-superficie px-3.5 py-2.5 text-sm text-tinta"
-          >
-            {FECHAS.map((f) => (
-              <option key={f.clave} value={f.clave}>
-                {f.label}
-              </option>
-            ))}
-          </select>
-        </div>
       </div>
 
-      <p className="mt-4 border-t border-borde pt-4 text-sm text-tinta-suave">
-        {actual.descripcion}
-      </p>
-
       {visibles.length === 0 ? (
-        <p className="pt-6 text-sm text-tinta-tenue">
-          {recortados === 0
-            ? actual.vacio
-            : `Ninguno de los ${recortados} de esta solapa entra en el período elegido.`}
-        </p>
+        <p className="pt-6 text-sm text-tinta-tenue">{actual.vacio}</p>
       ) : (
-        <ul className="mt-6 grid gap-5 sm:grid-cols-2">
-          {visibles.map((i) => (
-            <li key={i.proyecto.id}>
-              <TarjetaProyecto item={i} />
-            </li>
-          ))}
-        </ul>
+        <>
+          <ul className="mt-5 grid gap-4 sm:grid-cols-2">
+            {mostrados.map((i) => (
+              <li key={i.proyecto.id}>
+                <TarjetaProyecto item={i} compacta />
+              </li>
+            ))}
+          </ul>
+          {visibles.length > VISIBLES ? (
+            <div className="mt-5 flex justify-center">
+              <button
+                type="button"
+                onClick={() => setVerTodos((v) => !v)}
+                aria-expanded={verTodos}
+                className="flex min-h-11 items-center rounded-full border border-borde-fuerte bg-superficie px-5 text-sm font-medium transition-colors hover:border-marca hover:bg-marca-suave"
+              >
+                {verTodos
+                  ? "Ver menos"
+                  : `Ver más (${visibles.length - VISIBLES})`}
+              </button>
+            </div>
+          ) : null}
+        </>
       )}
     </div>
   );
 }
-
