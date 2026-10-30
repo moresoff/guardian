@@ -33,7 +33,7 @@ export function Resenas({ resenas }: { resenas: Resena[] }) {
         {resenas.map((r) => (
           <li
             key={r.nombre}
-            className="relative flex w-[19rem] shrink-0 snap-start flex-col overflow-hidden rounded-xl border border-borde bg-superficie p-6 shadow-[var(--sombra-baja)]"
+            className="relative flex w-[19rem] shrink-0 snap-start flex-col overflow-hidden rounded-2xl border border-borde bg-superficie p-6 shadow-[var(--sombra-baja)]"
           >
             <span
               className="pointer-events-none absolute -top-3 right-4 text-6xl font-semibold text-marca-viva/35"

@@ -103,7 +103,7 @@ export function DocumentoCard({
           <p className="mb-3 rotulo text-tinta-tenue">Discrepancias con lo declarado</p>
           <ul className="space-y-3">
             {sinResolver.map((d) => (
-              <li key={d.id} className="rounded-lg border border-borde p-4">
+              <li key={d.id} className="rounded-xl border border-borde p-4">
                 <div className="flex flex-wrap items-center justify-between gap-2">
                   <p className="font-medium">{d.etiqueta}</p>
                   <SeveridadBadge severidad={d.severidad} />

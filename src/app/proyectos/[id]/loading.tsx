@@ -25,7 +25,7 @@ export default function Cargando() {
         <Esqueleto className="h-3 w-24" />
         <Esqueleto className="mt-3 h-7 w-36" />
         <Esqueleto className="mt-5 h-1.5 w-full rounded-full" />
-        <Esqueleto className="mt-6 h-9 w-full rounded-lg" />
+        <Esqueleto className="mt-6 h-9 w-full rounded-xl" />
       </Panel>
     </div>
   );

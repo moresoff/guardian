@@ -1,9 +1,10 @@
+import { Mail, Phone } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { LineaDeTiempo, type Etapa } from "@/components/linea-tiempo";
 import { BotonLink } from "@/components/ui/primitivos";
 import { getProyecto, getProyectosPublicos } from "@/lib/data";
-import { buscarImagen } from "@/lib/imagenes";
+import { buscarImagen, fotoDelProyecto } from "@/lib/imagenes";
 import { CasoCerradoCard, ProyectoCard } from "@/components/proyecto-card";
 import { CORREO_CONTACTO, TELEFONO_CONTACTO } from "@/lib/contacto";
 import { CICLOS, SISTEMAS_EN_ORDEN } from "@/lib/ciclos";
@@ -129,7 +130,7 @@ export default async function Home() {
   const abiertos = (await getProyectosPublicos()).filter((p) => p.estado === "abierto");
   const cerrado = await getProyecto("pry-6");
   const destacados = abiertos.slice(0, 2);
-  const fotoCaso = buscarImagen("fotos", "proyecto-3");
+  const fotoCaso = cerrado ? fotoDelProyecto(cerrado.id) : null;
 
   return (
     <div className="-mb-10 -mt-10">
@@ -140,7 +141,7 @@ export default async function Home() {
         contenido no entra, la sección crece en vez de recortarse.
       */}
       <section
-        className={`${ANCHO_COMPLETO} flex items-center overflow-hidden bg-marca-fuerte`}
+        className="relative mt-4 flex items-center overflow-hidden rounded-3xl bg-marca-fuerte"
       >
         {fondo ? (
           <>
@@ -156,7 +157,7 @@ export default async function Home() {
           </>
         ) : null}
 
-        <div className="relative mx-auto grid w-full max-w-6xl items-center gap-6 px-4 py-8 sm:py-10 lg:grid-cols-[1fr_1.1fr] lg:gap-12">
+        <div className="relative mx-auto grid w-full max-w-6xl items-center gap-6 px-5 py-8 sm:px-10 sm:py-12 lg:grid-cols-[1fr_1.1fr] lg:gap-12">
           <div>
             <Image
               src="/imagenes/marca/logo-guardian-blanco.png"
@@ -192,7 +193,7 @@ export default async function Home() {
                 <Link
                   key={p.href}
                   href={p.href}
-                  className="group flex items-center gap-4 rounded-2xl bg-superficie p-4 shadow-[var(--sombra-alta)] transition-transform hover:-translate-y-0.5 sm:p-5"
+                  className="group flex items-center gap-4 rounded-3xl bg-superficie p-4 shadow-[var(--sombra-alta)] transition-transform hover:-translate-y-0.5 sm:p-5"
                 >
                   <span className="flex-1">
                     <span className="rotulo block text-marca">{p.rotulo}</span>
@@ -340,11 +341,11 @@ export default async function Home() {
         </div>
 
         <ul className="mt-9 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
-          {destacados.map((p, i) => (
+          {destacados.map((p) => (
             <li key={p.id}>
               <ProyectoCard
                 proyecto={p}
-                foto={buscarImagen("fotos", `proyecto-${i + 1}`)}
+                foto={fotoDelProyecto(p.id)}
                 resumida
               />
             </li>
@@ -359,8 +360,9 @@ export default async function Home() {
       </Banda>
 
       {/* 7. Cierre: crear la cuenta y el contacto, juntos y al final */}
-      <section className={`${ANCHO_COMPLETO} bg-marca-fuerte text-white`}>
-        <div className="mx-auto grid max-w-6xl gap-10 px-4 py-14 lg:grid-cols-2 lg:gap-16">
+      <Banda>
+        <div className="overflow-hidden rounded-3xl bg-marca-fuerte text-white">
+        <div className="grid gap-10 px-6 py-12 sm:px-12 lg:grid-cols-2 lg:gap-16">
           <div>
             <h2 className="text-3xl font-semibold tracking-tight">Empezá con tu cuenta</h2>
             <p className="mt-3 max-w-md text-white/85">
@@ -370,13 +372,13 @@ export default async function Home() {
             <div className="mt-6 flex flex-wrap gap-3">
               <Link
                 href="/registro"
-                className="flex min-h-11 items-center rounded-lg bg-white px-5 py-2 font-medium text-marca-fuerte transition-colors hover:bg-marca-suave"
+                className="flex min-h-11 items-center rounded-full bg-white px-5 py-2 font-medium text-marca-fuerte transition-colors hover:bg-marca-suave"
               >
                 Crear mi cuenta
               </Link>
               <Link
                 href="/ingresar"
-                className="flex min-h-11 items-center rounded-lg border border-white/40 px-5 py-2 font-medium text-white transition-colors hover:bg-white/10"
+                className="flex min-h-11 items-center rounded-full border border-white/40 px-5 py-2 font-medium text-white transition-colors hover:bg-white/10"
               >
                 Ya tengo cuenta
               </Link>
@@ -391,7 +393,7 @@ export default async function Home() {
             </p>
             <dl className="mt-6 space-y-3">
               <div>
-                <dt className="text-sm text-white/70">Correo</dt>
+                <dt className="flex items-center gap-2 text-sm text-white/70"><Mail className="size-4" strokeWidth={1.75} aria-hidden />Correo</dt>
                 <dd>
                   <a
                     href={`mailto:${CORREO_CONTACTO}`}
@@ -402,7 +404,7 @@ export default async function Home() {
                 </dd>
               </div>
               <div>
-                <dt className="text-sm text-white/70">Teléfono</dt>
+                <dt className="flex items-center gap-2 text-sm text-white/70"><Phone className="size-4" strokeWidth={1.75} aria-hidden />Teléfono</dt>
                 <dd>
                   <a
                     href={`tel:+54${TELEFONO_CONTACTO.replace(/\D/g, "")}`}
@@ -416,7 +418,7 @@ export default async function Home() {
           </div>
         </div>
 
-        <div className="mx-auto max-w-6xl border-t border-white/15 px-4 py-5">
+        <div className="border-t border-white/15 px-6 py-5 sm:px-12">
           <p className="max-w-3xl text-sm text-white/75">
             Es el prototipo de la plataforma, con datos de prueba. La publicación de
             proyectos, la carga de documentación y su validación se pueden recorrer de punta
@@ -426,7 +428,8 @@ export default async function Home() {
             </Link>
           </p>
         </div>
-      </section>
+        </div>
+      </Banda>
     </div>
   );
 }

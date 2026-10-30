@@ -37,3 +37,15 @@ export function listarImagenes(carpeta: string, prefijo?: string): string[] {
     .sort((a, b) => a.localeCompare(b, "es", { numeric: true }))
     .map((n) => `/imagenes/${carpeta}/${n}`);
 }
+
+/**
+ * La foto de un proyecto, siempre la misma para el mismo proyecto: sale del
+ * número del id (`pry-7`) y no de la posición en la lista, que cambia con los
+ * filtros. Así el catálogo, la portada y la ficha muestran el mismo lote.
+ */
+export function fotoDelProyecto(id: string): string | null {
+  const fotos = listarImagenes("fotos", "proyecto");
+  if (fotos.length === 0) return null;
+  const n = Number(id.replace(/\D/g, "")) || 1;
+  return fotos[(n - 1) % fotos.length];
+}

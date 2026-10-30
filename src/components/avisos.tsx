@@ -25,7 +25,7 @@ export function Avisos({ avisos }: { avisos: Aviso[] }) {
 
   return (
     <div
-      className="flex flex-wrap items-center gap-x-6 gap-y-4 rounded-xl border border-marca bg-superficie px-5 py-4"
+      className="flex flex-wrap items-center gap-x-6 gap-y-4 rounded-2xl border border-marca bg-superficie px-5 py-4"
       aria-live="polite"
     >
       <div className="min-w-[16rem] flex-1">
@@ -35,7 +35,7 @@ export function Avisos({ avisos }: { avisos: Aviso[] }) {
 
       <Link
         href={aviso.href}
-        className="flex min-h-11 items-center rounded-lg border border-marca px-4 py-2 text-sm font-medium text-marca transition-colors hover:bg-marca hover:text-marca-contraste"
+        className="flex min-h-11 items-center rounded-xl border border-marca px-4 py-2 text-sm font-medium text-marca transition-colors hover:bg-marca hover:text-marca-contraste"
       >
         {aviso.accion}
       </Link>

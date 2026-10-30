@@ -44,7 +44,7 @@ export function SaldosCard({ saldos }: { saldos: Saldos }) {
         {filas.map((f) => {
           const pct = f.total > 0 ? Math.min(100, (f.valor / f.total) * 100) : 0;
           return (
-            <li key={f.titulo} className="rounded-xl bg-white/8 p-4">
+            <li key={f.titulo} className="rounded-2xl bg-white/8 p-4">
               <div className="flex flex-wrap items-baseline justify-between gap-x-4 gap-y-1">
                 <span className="flex items-center gap-2 font-medium">
                   {f.titulo}

@@ -203,3 +203,8 @@ Prohibiciones concretas, ordenadas por frecuencia con la que aparecen solas:
 5. ¿Los datos de documentos están en mono y los tipeados no?
 6. ¿Hay estado vacío, de carga y de error para cada pantalla que trae datos?
 7. `impeccable detect src` pasa limpio.
+
+## Íconos y formas
+
+- Los íconos salen de `lucide-react` (`import { Beef } from "lucide-react"`), con `strokeWidth={1.75}` y `aria-hidden`. Nunca solos: van con su dato escrito al lado.
+- Esquinas redondeadas: paneles y tarjetas `rounded-2xl`/`rounded-3xl`, botones y píldoras `rounded-full`, fotos adentro de un marco redondeado.

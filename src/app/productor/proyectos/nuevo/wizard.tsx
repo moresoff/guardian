@@ -400,14 +400,14 @@ function Paso1({
         <TituloBloque descripcion="Los aportes cubren el proceso productivo de engorde: la hacienda, si todavía hay que comprarla, y los gastos del ciclo.">
           Qué cubre el proyecto
         </TituloBloque>
-        <div className="rounded-lg border border-borde bg-superficie p-4">
+        <div className="rounded-xl border border-borde bg-superficie p-4">
           <p className="text-sm font-medium">{MODALIDAD_LABEL.compra_engorde}</p>
           <p className="mt-1 text-sm text-tinta-suave">
             {MODALIDAD_DESCRIPCION.compra_engorde}
           </p>
         </div>
         {/* Lo que va a recibir el colaborador, a la vista de quien publica. */}
-        <div className="mt-4 rounded-lg border border-borde bg-superficie-2 p-4">
+        <div className="mt-4 rounded-xl border border-borde bg-superficie-2 p-4">
           <p className="text-sm font-medium">Qué va a recibir el colaborador</p>
           <p className="mt-1 text-sm text-tinta-suave">{MODALIDAD_RETORNO[b.modalidad]}</p>
         </div>
@@ -770,7 +770,7 @@ function PresupuestoEditor({
 
       <ul className="space-y-3">
         {filas.map((fila, i) => (
-          <li key={i} className="rounded-lg border border-borde p-4">
+          <li key={i} className="rounded-xl border border-borde p-4">
             <div className="grid gap-4 sm:grid-cols-[10rem_minmax(0,1fr)_9rem_auto] sm:items-end">
               <Seleccion
                 etiqueta="Rubro"

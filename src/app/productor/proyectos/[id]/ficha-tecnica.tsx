@@ -530,7 +530,7 @@ function ModalLectura({
       </dl>
 
       {discrepa ? (
-        <p className="mt-5 rounded-lg bg-alerta-suave p-4">
+        <p className="mt-5 rounded-xl bg-alerta-suave p-4">
           Declaraste {formatNum(cabezas)} cabezas y el documento ampara{" "}
           {formatNum(detectadas)}. Corregí la cantidad o subí el comprobante que cubra el
           lote completo: Guardian no publica proyectos con discrepancias sin resolver.

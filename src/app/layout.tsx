@@ -46,7 +46,7 @@ export default async function RootLayout({ children }: LayoutProps<"/">) {
         */}
         <a
           href="#contenido"
-          className="sr-only focus:not-sr-only focus:absolute focus:top-3 focus:left-3 focus:z-50 focus:inline-flex focus:min-h-11 focus:items-center focus:rounded-lg focus:border focus:border-borde-fuerte focus:bg-superficie focus:px-4 focus:font-medium"
+          className="sr-only focus:not-sr-only focus:absolute focus:top-3 focus:left-3 focus:z-50 focus:inline-flex focus:min-h-11 focus:items-center focus:rounded-xl focus:border focus:border-borde-fuerte focus:bg-superficie focus:px-4 focus:font-medium"
         >
           Saltar al contenido
         </a>

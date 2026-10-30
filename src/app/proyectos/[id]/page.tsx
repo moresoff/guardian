@@ -1,10 +1,9 @@
+import { PortadaProyecto } from "@/components/portada-proyecto";
 import type { Metadata } from "next";
-import Link from "next/link";
 import { notFound } from "next/navigation";
 import {
   AutenticidadBadge,
   ConsistenciaBadge,
-  EstadoProyectoBadge,
 } from "@/components/estados";
 import { CondicionesPanel } from "@/components/condiciones-panel";
 import { FichaPublica } from "@/components/ficha-publica";
@@ -13,7 +12,6 @@ import { BloqueGarantia, DatoGarantia } from "@/components/garantia";
 import { Seguimiento } from "@/components/seguimiento";
 import {
   Aviso,
-  Badge,
   Panel,
   Dato,
   Progreso,
@@ -118,20 +116,7 @@ export default async function FichaProyecto({
 
   return (
     <div>
-      <Link href="/proyectos" className="inline-flex min-h-11 items-center text-sm text-tinta-suave hover:text-marca">
-        ← Volver al catálogo
-      </Link>
-
-      <div className="mt-3 flex flex-wrap items-start justify-between gap-3">
-        <div>
-          <p className="text-sm text-tinta-tenue">
-            {proyecto.provincia} · {SISTEMA_LABEL[proyecto.sistemaProductivo]} ·{" "}
-            {productor?.nombre}
-          </p>
-          <h1 className="mt-1 text-2xl font-semibold tracking-tight">{proyecto.titulo}</h1>
-        </div>
-        <EstadoProyectoBadge estado={proyecto.estado} />
-      </div>
+      <PortadaProyecto proyecto={proyecto} productor={productor?.nombre} />
 
       <div className="mt-6 grid gap-6 lg:grid-cols-[1fr_20rem]">
         <div className="space-y-8">
@@ -203,7 +188,7 @@ export default async function FichaProyecto({
               </Dato>
             </dl>
 
-            <div className="mt-5 rounded-lg border border-borde bg-superficie-2 p-4">
+            <div className="mt-5 rounded-xl border border-borde bg-superficie-2 p-4">
               <p className="text-sm font-medium">Qué recibe el colaborador</p>
               <p className="mt-1 text-sm text-tinta-suave">
                 {MODALIDAD_RETORNO[proyecto.modalidad]}
@@ -223,7 +208,7 @@ export default async function FichaProyecto({
             ) : null}
 
             {proyecto.condiciones.proyeccion ? (
-              <div className="mt-4 rounded-lg border border-borde bg-superficie-2 p-4">
+              <div className="mt-4 rounded-xl border border-borde bg-superficie-2 p-4">
                 <p className="text-sm font-medium">
                   Resultado proyectado por el productor ·{" "}
                   {formatFecha(proyecto.condiciones.proyeccion.fecha)}
@@ -254,13 +239,13 @@ export default async function FichaProyecto({
             ) : null}
 
             {proyecto.destinoDetalle ? (
-              <div className="mt-5 rounded-lg border border-borde bg-superficie-2 p-4">
+              <div className="mt-5 rounded-xl border border-borde bg-superficie-2 p-4">
                 <p className="text-sm font-medium">En qué se usa lo aportado</p>
                 <p className="mt-1 text-sm text-tinta-suave">{proyecto.destinoDetalle}</p>
               </div>
             ) : null}
 
-            <div className="mt-4 rounded-lg border border-borde bg-superficie-2 p-4">
+            <div className="mt-4 rounded-xl border border-borde bg-superficie-2 p-4">
               <p className="text-sm font-medium">
                 {POSESION_LABEL[proyecto.tipoPosesion]}
               </p>
@@ -321,7 +306,7 @@ export default async function FichaProyecto({
                 {proyecto.cronograma.map((h, i) => (
                   <li
                     key={h.hito}
-                    className="rounded-lg border border-borde bg-superficie-2 p-4"
+                    className="rounded-xl border border-borde bg-superficie-2 p-4"
                   >
                     <div className="flex flex-wrap items-baseline justify-between gap-x-4 gap-y-1">
                       <p className="font-medium">
@@ -401,7 +386,7 @@ export default async function FichaProyecto({
                 {proyecto.condiciones.contingencias.map((c) => (
                   <li
                     key={c.caso}
-                    className="rounded-xl border border-borde bg-superficie p-5 shadow-[var(--sombra-baja)]"
+                    className="rounded-2xl border border-borde bg-superficie p-5 shadow-[var(--sombra-baja)]"
                   >
                     <p className="font-semibold tracking-tight">
                       {CONTINGENCIA_LABEL[c.caso]}
@@ -602,7 +587,7 @@ export default async function FichaProyecto({
               {/* El sello dice qué se verificó y con qué alcance. "Productor
                   verificado" a secas dejaba pensar que Guardian garantiza la
                   propiedad de los animales, y no es eso lo que se revisó. */}
-              <div className="mt-4 rounded-lg border border-borde bg-superficie-2 p-3">
+              <div className="mt-4 rounded-xl border border-borde bg-superficie-2 p-3">
                 <p className="text-sm font-medium">Qué revisó Guardian</p>
                 <p className="mt-1 text-sm text-tinta-suave">
                   El legajo del productor y del establecimiento: identidad, constancia de

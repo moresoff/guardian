@@ -2,7 +2,6 @@ import { usuarioActual } from "@/lib/sesion";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { Avisos, type Aviso } from "@/components/avisos";
-import { EstadoProyectoBadge } from "@/components/estados";
 import { SaldosCard } from "@/components/saldos-card";
 import { TarjetaProyecto, type ItemProyecto } from "@/components/tarjeta-proyecto";
 import { BotonLink, Vacio } from "@/components/ui/primitivos";
@@ -186,7 +185,7 @@ export default async function ResumenProductor() {
             {recuento.map((x) => (
               <div
                 key={x.t}
-                className="flex flex-col items-center justify-center gap-1 rounded-xl border border-borde bg-superficie p-5 text-center"
+                className="flex flex-col items-center justify-center gap-1 rounded-2xl border border-borde bg-superficie p-5 text-center"
               >
                 <dt className="text-sm text-tinta-suave">{x.t}</dt>
                 <dd className="tabular text-4xl font-semibold leading-none">{x.v}</dd>

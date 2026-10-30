@@ -104,7 +104,7 @@ export function SlotDocumento({
 
   return (
     <div
-      className={`rounded-lg border p-4 ${
+      className={`rounded-xl border p-4 ${
         discrepa ? "border-alerta/30 bg-alerta-suave" : "border-borde"
       }`}
     >

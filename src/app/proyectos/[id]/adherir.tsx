@@ -96,7 +96,7 @@ export function Adherir({
               importe con el número de orden como referencia.
             </p>
 
-            <div className="rounded-lg border border-borde bg-superficie-2 p-4">
+            <div className="rounded-xl border border-borde bg-superficie-2 p-4">
               <p className="rotulo text-tinta-tenue">Número de orden</p>
               <p className="codigo mt-1 text-lg font-medium">{orden}</p>
               <dl className="mt-4 space-y-2 text-sm">
@@ -137,7 +137,7 @@ export function Adherir({
               error={intentado && montoNum <= 0 ? "Falta el importe." : undefined}
             />
 
-            <div className="rounded-lg border border-borde p-4">
+            <div className="rounded-xl border border-borde p-4">
               <label className="flex min-h-11 items-start gap-3">
                 <input
                   type="checkbox"

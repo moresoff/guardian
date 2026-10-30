@@ -42,7 +42,7 @@ export function Ayuda({ etiqueta, children }: { etiqueta: string; children: Reac
         <span
           role="tooltip"
           id={id}
-          className="absolute left-1/2 top-[calc(100%+0.75rem)] z-30 w-64 -translate-x-1/2 rounded-lg border border-borde bg-superficie p-3.5 text-sm font-normal normal-case tracking-normal text-tinta shadow-[var(--sombra-alta)]"
+          className="absolute left-1/2 top-[calc(100%+0.75rem)] z-30 w-64 -translate-x-1/2 rounded-xl border border-borde bg-superficie p-3.5 text-sm font-normal normal-case tracking-normal text-tinta shadow-[var(--sombra-alta)]"
         >
           {children}
         </span>

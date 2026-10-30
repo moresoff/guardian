@@ -134,7 +134,7 @@ export function ListaProyectos({ items }: { items: ItemProyecto[] }) {
                 type="button"
                 onClick={() => setSolapa(s.clave)}
                 aria-pressed={activa}
-                className={`flex min-h-11 items-center gap-2 rounded-lg border px-4 py-2 text-sm transition-colors ${
+                className={`flex min-h-11 items-center gap-2 rounded-xl border px-4 py-2 text-sm transition-colors ${
                   activa
                     ? "border-marca bg-marca-suave font-medium text-marca"
                     : "border-borde text-tinta-suave hover:bg-superficie-2 hover:text-tinta"
@@ -157,7 +157,7 @@ export function ListaProyectos({ items }: { items: ItemProyecto[] }) {
             id="filtro-fecha"
             value={fecha}
             onChange={(e) => setFecha(e.target.value as ClaveFecha)}
-            className="min-h-11 rounded-lg border border-borde-fuerte bg-superficie px-3.5 py-2.5 text-sm text-tinta"
+            className="min-h-11 rounded-xl border border-borde-fuerte bg-superficie px-3.5 py-2.5 text-sm text-tinta"
           >
             {FECHAS.map((f) => (
               <option key={f.clave} value={f.clave}>

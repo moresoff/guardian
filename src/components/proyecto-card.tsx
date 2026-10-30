@@ -1,3 +1,4 @@
+import { ArrowRight, Beef, Check, ChartPie, Clock, Layers, type LucideIcon } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { EstadoProyectoBadge } from "@/components/estados";
@@ -12,42 +13,12 @@ import { CICLOS } from "@/lib/ciclos";
 import { partesDelTitulo, queCubre, situacionDelLote } from "@/lib/cubre";
 import type { Proyecto } from "@/lib/types";
 
-/**
- * Íconos propios, un solo trazo y un solo grosor. Acompañan al dato, nunca lo
- * reemplazan: cada uno va con su valor y su etiqueta escritos.
- */
-const ICONOS = {
-  cabezas: "M4 7h16M4 12h16M4 17h16",
-  categoria: "M12 3l9 5-9 5-9-5 9-5zM3 13l9 5 9-5",
-  plazo: "M12 7v5l3 2M21 12a9 9 0 11-18 0 9 9 0 0118 0z",
-  reparto: "M12 3v9h9M20.5 15A9 9 0 119 3.5",
-  flecha: "M5 12h14M13 6l6 6-6 6",
-  faena: "M5 12l4 4 10-10",
-} as const;
-
-function Icono({ d, className = "size-4" }: { d: string; className?: string }) {
-  return (
-    <svg
-      viewBox="0 0 24 24"
-      className={className}
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="1.75"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      aria-hidden
-    >
-      <path d={d} />
-    </svg>
-  );
-}
-
 /** Un dato de la tarjeta: ícono, valor y etiqueta. */
-function Dato({ icono, valor, etiqueta }: { icono: string; valor: string; etiqueta: string }) {
+function Dato({ icono: Icono, valor, etiqueta }: { icono: LucideIcon; valor: string; etiqueta: string }) {
   return (
     <div className="flex items-center gap-2.5">
       <span className="flex size-9 shrink-0 items-center justify-center rounded-full bg-marca-suave text-marca">
-        <Icono d={icono} />
+        <Icono className="size-4" strokeWidth={1.75} aria-hidden />
       </span>
       <span className="min-w-0">
         <span className="tabular block truncate font-semibold leading-tight">{valor}</span>
@@ -64,7 +35,7 @@ function Flecha() {
       className="absolute right-3 top-3 flex size-10 items-center justify-center rounded-full bg-white text-marca-fuerte shadow-[var(--sombra-alta)] transition-transform group-hover:translate-x-0.5"
       aria-hidden
     >
-      <Icono d={ICONOS.flecha} className="size-[1.125rem]" />
+      <ArrowRight className="size-[1.125rem]" strokeWidth={1.75} aria-hidden />
     </span>
   );
 }
@@ -133,12 +104,12 @@ export function ProyectoCard({
         {partes.lote ? <p className="font-medium text-tinta-suave">{partes.lote}</p> : null}
 
         <div className="mt-4 grid grid-cols-2 gap-x-3 gap-y-3 border-t border-borde pt-4">
-          <Dato icono={ICONOS.cabezas} valor={formatNum(proyecto.cabezas)} etiqueta="Cabezas" />
-          <Dato icono={ICONOS.categoria} valor={proyecto.categoria} etiqueta="Categoría" />
+          <Dato icono={Beef} valor={formatNum(proyecto.cabezas)} etiqueta="Cabezas" />
+          <Dato icono={Layers} valor={proyecto.categoria} etiqueta="Categoría" />
           {resumida ? null : (
             <>
-              <Dato icono={ICONOS.plazo} valor={`${proyecto.plazoDias} días`} etiqueta="Plazo" />
-              <Dato icono={ICONOS.reparto} valor={retorno.valor} etiqueta={retorno.etiqueta} />
+              <Dato icono={Clock} valor={`${proyecto.plazoDias} días`} etiqueta="Plazo" />
+              <Dato icono={ChartPie} valor={retorno.valor} etiqueta={retorno.etiqueta} />
             </>
           )}
         </div>
@@ -162,7 +133,7 @@ export function ProyectoCard({
         ) : null}
 
         <p className="mt-4 flex items-start gap-2 text-sm text-tinta-suave">
-          <Icono d={ICONOS.faena} className="mt-0.5 size-4 shrink-0 text-marca" />
+          <Check className="mt-0.5 size-4 shrink-0 text-marca" strokeWidth={2} aria-hidden />
           {situacionDelLote(proyecto.tipoPosesion)}
         </p>
 
@@ -235,12 +206,12 @@ export function CasoCerradoCard({
         {partes.lote ? <p className="font-medium text-tinta-suave">{partes.lote}</p> : null}
 
         <div className="mt-4 grid grid-cols-2 gap-x-3 gap-y-3 border-t border-borde pt-4">
-          <Dato icono={ICONOS.cabezas} valor={formatNum(r.cabezasFaena)} etiqueta="Cabezas faenadas" />
-          <Dato icono={ICONOS.categoria} valor={`${formatNum(r.kgCarne)} kg`} etiqueta="Kilos de carne" />
+          <Dato icono={Beef} valor={formatNum(r.cabezasFaena)} etiqueta="Cabezas faenadas" />
+          <Dato icono={Layers} valor={`${formatNum(r.kgCarne)} kg`} etiqueta="Kilos de carne" />
         </div>
 
         <p className="mt-4 flex items-start gap-2 text-sm text-tinta-suave">
-          <Icono d={ICONOS.faena} className="mt-0.5 size-4 shrink-0 text-marca" />
+          <Check className="mt-0.5 size-4 shrink-0 text-marca" strokeWidth={2} aria-hidden />
           Cifras del romaneo del frigorífico
         </p>
       </div>

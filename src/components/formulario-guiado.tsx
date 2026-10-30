@@ -59,7 +59,7 @@ export function FormularioGuiado({
               </>
             );
 
-            const clases = `flex gap-2.5 rounded-xl border p-4 ${
+            const clases = `flex gap-2.5 rounded-2xl border p-4 ${
               p.estado === "actual"
                 ? "border-marca bg-marca-suave"
                 : "border-borde bg-superficie"

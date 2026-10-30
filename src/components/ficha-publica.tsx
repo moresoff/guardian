@@ -1,6 +1,5 @@
-import Link from "next/link";
+import { PortadaProyecto } from "@/components/portada-proyecto";
 import { ConsultaModalidades } from "@/components/consulta-modalidades";
-import { EstadoProyectoBadge } from "@/components/estados";
 import { BotonLink, Dato, Panel, TituloBloque } from "@/components/ui/primitivos";
 import { CICLOS } from "@/lib/ciclos";
 import { DOCUMENTO_LABEL, POSESION_LABEL, formatNum } from "@/lib/format";
@@ -27,24 +26,8 @@ export function FichaPublica({
   const tipos = [...new Set(documentos.map((d) => d.tipo))];
 
   return (
-    <div className="mx-auto max-w-3xl">
-      <Link
-        href="/proyectos"
-        className="inline-flex min-h-11 items-center text-sm text-tinta-suave hover:text-marca"
-      >
-        ← Volver al catálogo
-      </Link>
-
-      <div className="mt-2 flex flex-wrap items-start justify-between gap-3">
-        <div>
-          <p className="text-sm text-tinta-tenue">
-            {proyecto.provincia} · {ciclo.nombre}
-            {productor ? ` · ${productor}` : ""}
-          </p>
-          <h1 className="mt-1 text-2xl font-semibold tracking-tight">{proyecto.titulo}</h1>
-        </div>
-        <EstadoProyectoBadge estado={proyecto.estado} />
-      </div>
+    <div className="mx-auto max-w-4xl">
+      <PortadaProyecto proyecto={proyecto} productor={productor} />
 
       <p className="mt-4 text-tinta-suave">{proyecto.destinoDetalle}</p>
 

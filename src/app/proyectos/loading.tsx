@@ -4,7 +4,7 @@ export default function Cargando() {
   return (
     <div>
       <EsqueletoTitulo />
-      <Esqueleto className="mb-6 h-9 w-full max-w-lg rounded-lg" />
+      <Esqueleto className="mb-6 h-9 w-full max-w-lg rounded-xl" />
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3" role="status" aria-label="Cargando proyectos">
         {Array.from({ length: 6 }).map((_, i) => (
           <Panel key={i} className="p-5">

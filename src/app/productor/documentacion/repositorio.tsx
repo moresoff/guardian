@@ -193,7 +193,7 @@ function Migas({
       <button
         type="button"
         onClick={onVolver}
-        className="min-h-11 rounded-lg text-marca underline underline-offset-2 hover:text-marca-viva"
+        className="min-h-11 rounded-xl text-marca underline underline-offset-2 hover:text-marca-viva"
       >
         Todas las carpetas
       </button>
@@ -239,7 +239,7 @@ function FichaCarpeta({
     <button
       type="button"
       onClick={onAbrir}
-      className="block h-full w-full rounded-xl border border-borde bg-superficie p-5 text-left shadow-[var(--sombra-baja)] transition-colors hover:border-borde-fuerte hover:bg-superficie-2"
+      className="block h-full w-full rounded-2xl border border-borde bg-superficie p-5 text-left shadow-[var(--sombra-baja)] transition-colors hover:border-borde-fuerte hover:bg-superficie-2"
     >
       <p className="font-medium">{carpeta.titulo}</p>
       <p className="mt-1 text-sm text-tinta-suave">

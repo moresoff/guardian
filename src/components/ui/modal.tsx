@@ -95,7 +95,7 @@ export function Modal({
             type="button"
             onClick={onCerrar}
             aria-label="Cerrar"
-            className="-m-2 grid size-11 shrink-0 place-items-center rounded-lg text-tinta-suave transition-colors hover:bg-superficie-2 hover:text-tinta"
+            className="-m-2 grid size-11 shrink-0 place-items-center rounded-xl text-tinta-suave transition-colors hover:bg-superficie-2 hover:text-tinta"
           >
             ✕
           </button>

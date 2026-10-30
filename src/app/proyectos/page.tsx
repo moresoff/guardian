@@ -1,7 +1,7 @@
 import { ProyectoCard } from "@/components/proyecto-card";
 import { Vacio } from "@/components/ui/primitivos";
 import { getProyectosPublicos } from "@/lib/data";
-import { listarImagenes } from "@/lib/imagenes";
+import { fotoDelProyecto } from "@/lib/imagenes";
 import { ConsultaModalidades } from "@/components/consulta-modalidades";
 import { haySesion } from "@/lib/sesion";
 import { BotonLink } from "@/components/ui/primitivos";
@@ -23,8 +23,6 @@ export default async function CatalogoPage({
   });
 
   const provincias = ["Buenos Aires", "Córdoba", "Santa Fe", "La Pampa"];
-  // Las fotos se reparten en orden y se repiten si hay menos que proyectos.
-  const fotos = listarImagenes("fotos", "proyecto");
 
   return (
     <div>
@@ -63,11 +61,11 @@ export default async function CatalogoPage({
             {proyectos.length === 1 ? "proyecto abierto" : "proyectos abiertos"}
           </h2>
           <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
-            {proyectos.map((p, i) => (
+            {proyectos.map((p) => (
               <ProyectoCard
                 key={p.id}
                 proyecto={p}
-                foto={fotos.length > 0 ? fotos[i % fotos.length] : null}
+                foto={fotoDelProyecto(p.id)}
                 resumida={!conSesion}
               />
             ))}

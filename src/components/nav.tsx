@@ -92,7 +92,7 @@ function CambiarVista({ area }: { area: Area }) {
         onClick={() => setAbierto((v) => !v)}
         aria-expanded={abierto}
         aria-haspopup="menu"
-        className="flex min-h-11 items-center gap-2 rounded-lg border border-borde px-3.5 py-2 text-sm font-medium text-tinta-suave transition-colors hover:bg-superficie-2 hover:text-tinta"
+        className="flex min-h-11 items-center gap-2 rounded-full border border-borde px-3.5 py-2 text-sm font-medium text-tinta-suave transition-colors hover:bg-superficie-2 hover:text-tinta"
       >
         {area ? MENUS[area].etiqueta : "Cambiar de vista"}
         <span
@@ -106,7 +106,7 @@ function CambiarVista({ area }: { area: Area }) {
       {abierto ? (
         <div
           role="menu"
-          className="absolute right-0 top-[calc(100%+0.5rem)] z-30 w-72 overflow-hidden rounded-xl border border-borde bg-superficie shadow-[var(--sombra-alta)]"
+          className="absolute right-0 top-[calc(100%+0.5rem)] z-30 w-72 overflow-hidden rounded-2xl border border-borde bg-superficie shadow-[var(--sombra-alta)]"
         >
           <p className="border-b border-borde px-4 py-3 text-sm text-tinta-tenue">
             Las dos vistas son de la misma cuenta.
@@ -170,7 +170,7 @@ export function Nav({ conSesion, nombre }: { conSesion: boolean; nombre: string 
                   key={s.href}
                   href={s.href}
                   aria-current={activa ? "page" : undefined}
-                  className={`rounded-lg px-3 py-2 text-sm transition-colors ${
+                  className={`rounded-full px-3 py-2 text-sm transition-colors ${
                     activa
                       ? "bg-marca-suave font-medium text-marca"
                       : "text-tinta-suave hover:bg-superficie-2"
@@ -208,7 +208,7 @@ export function Nav({ conSesion, nombre }: { conSesion: boolean; nombre: string 
                   router.push("/");
                   router.refresh();
                 }}
-                className="flex min-h-11 items-center rounded-lg px-3 py-2 text-sm font-medium text-tinta-suave transition-colors hover:bg-superficie-2 hover:text-tinta"
+                className="flex min-h-11 items-center rounded-full px-3 py-2 text-sm font-medium text-tinta-suave transition-colors hover:bg-superficie-2 hover:text-tinta"
               >
                 Salir
               </button>
@@ -217,13 +217,13 @@ export function Nav({ conSesion, nombre }: { conSesion: boolean; nombre: string 
             <>
               <Link
                 href="/ingresar"
-                className="flex min-h-11 items-center rounded-lg px-3 py-2 text-sm font-medium text-tinta-suave transition-colors hover:bg-superficie-2 hover:text-tinta"
+                className="flex min-h-11 items-center rounded-full px-3 py-2 text-sm font-medium text-tinta-suave transition-colors hover:bg-superficie-2 hover:text-tinta"
               >
                 Iniciar sesión
               </Link>
               <Link
                 href="/registro"
-                className="flex min-h-11 items-center rounded-lg bg-marca px-4 py-2 text-sm font-medium text-marca-contraste transition-colors hover:bg-marca-fuerte"
+                className="flex min-h-11 items-center rounded-full bg-marca px-4 py-2 text-sm font-medium text-marca-contraste transition-colors hover:bg-marca-fuerte"
               >
                 Registrarse
               </Link>

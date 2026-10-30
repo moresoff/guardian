@@ -191,7 +191,7 @@ function Guia() {
   return (
     <aside
       aria-label="Recorrido por Guardian"
-      className="recorrido fixed inset-x-3 bottom-3 z-40 mx-auto max-w-md rounded-xl border border-borde-fuerte bg-superficie p-4 shadow-[var(--sombra-alta)] sm:right-4 sm:left-auto sm:mx-0"
+      className="recorrido fixed inset-x-3 bottom-3 z-40 mx-auto max-w-md rounded-2xl border border-borde-fuerte bg-superficie p-4 shadow-[var(--sombra-alta)] sm:right-4 sm:left-auto sm:mx-0"
       style={{ marginBottom: "env(safe-area-inset-bottom)" }}
     >
       <div className="flex items-start justify-between gap-3">
@@ -212,7 +212,7 @@ function Guia() {
         {estaAhi ? null : (
           <Link
             href={paso.href}
-            className="inline-flex min-h-11 items-center rounded-lg bg-marca px-4 text-sm font-medium text-marca-contraste hover:bg-marca-fuerte"
+            className="inline-flex min-h-11 items-center rounded-xl bg-marca px-4 text-sm font-medium text-marca-contraste hover:bg-marca-fuerte"
           >
             {paso.accion}
           </Link>
@@ -221,7 +221,7 @@ function Guia() {
           <button
             type="button"
             onClick={cerrar}
-            className="min-h-11 rounded-lg border border-borde-fuerte px-4 text-sm font-medium hover:bg-superficie-2"
+            className="min-h-11 rounded-xl border border-borde-fuerte px-4 text-sm font-medium hover:bg-superficie-2"
           >
             Terminar
           </button>
@@ -229,7 +229,7 @@ function Guia() {
           <button
             type="button"
             onClick={() => ir(estado.paso + 1)}
-            className={`min-h-11 rounded-lg px-4 text-sm font-medium ${
+            className={`min-h-11 rounded-xl px-4 text-sm font-medium ${
               estaAhi
                 ? "bg-marca text-marca-contraste hover:bg-marca-fuerte"
                 : "border border-borde-fuerte hover:bg-superficie-2"

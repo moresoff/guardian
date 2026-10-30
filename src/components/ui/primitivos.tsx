@@ -55,8 +55,8 @@ type Nivel = "plano" | "contorno" | "elevado";
 
 const NIVEL: Record<Nivel, string> = {
   plano: "bg-transparent",
-  contorno: "rounded-xl border border-borde bg-superficie shadow-[var(--sombra-baja)]",
-  elevado: "rounded-xl border border-borde bg-superficie shadow-[var(--sombra-alta)]",
+  contorno: "rounded-2xl border border-borde bg-superficie shadow-[var(--sombra-baja)]",
+  elevado: "rounded-2xl border border-borde bg-superficie shadow-[var(--sombra-alta)]",
 };
 
 export function Panel({
@@ -159,7 +159,7 @@ const BOTON_VARIANTE = {
 type Variante = keyof typeof BOTON_VARIANTE;
 
 const BOTON_BASE =
-  "inline-flex min-h-11 items-center justify-center gap-2 rounded-lg border px-5 py-2.5 text-base font-medium transition-colors disabled:cursor-not-allowed disabled:opacity-45";
+  "inline-flex min-h-11 items-center justify-center gap-2 rounded-full border px-5 py-2.5 text-base font-medium transition-colors disabled:cursor-not-allowed disabled:opacity-45";
 
 export function Boton({
   variante = "primario",
@@ -214,7 +214,7 @@ export function Vacio({
   accion?: ReactNode;
 }) {
   return (
-    <div className="rounded-xl border border-dashed border-borde-fuerte p-10 text-center">
+    <div className="rounded-2xl border border-dashed border-borde-fuerte p-10 text-center">
       <p className="font-medium">{titulo}</p>
       {children ? (
         <p className="mx-auto mt-1.5 max-w-md text-sm text-tinta-suave">{children}</p>
@@ -263,7 +263,7 @@ export function Aviso({
   const etiqueta = AVISO_ETIQUETA[tono];
 
   return (
-    <div className={`rounded-lg px-4 py-3.5 text-sm ${fondo[tono]}`}>
+    <div className={`rounded-xl px-4 py-3.5 text-sm ${fondo[tono]}`}>
       {etiqueta ? (
         <p className={`rotulo mb-1.5 ${acento[tono]}`}>{etiqueta}</p>
       ) : null}

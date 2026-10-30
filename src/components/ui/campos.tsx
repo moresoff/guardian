@@ -43,7 +43,7 @@ export function Campo({
         id={id}
         aria-invalid={error ? true : undefined}
         aria-describedby={describe || undefined}
-        className={`mt-1 block min-h-11 w-full rounded-lg border bg-superficie px-3 py-2 text-base text-tinta placeholder:text-tinta-tenue ${
+        className={`mt-1 block min-h-11 w-full rounded-xl border bg-superficie px-3 py-2 text-base text-tinta placeholder:text-tinta-tenue ${
           error ? "border-error" : "border-borde-fuerte"
         } ${className}`}
         {...props}
@@ -97,7 +97,7 @@ export function CampoLargo({
         rows={3}
         aria-invalid={error ? true : undefined}
         aria-describedby={describe || undefined}
-        className={`mt-1.5 block w-full rounded-lg border bg-superficie px-3.5 py-2.5 text-base text-tinta placeholder:text-tinta-tenue ${
+        className={`mt-1.5 block w-full rounded-xl border bg-superficie px-3.5 py-2.5 text-base text-tinta placeholder:text-tinta-tenue ${
           error ? "border-error" : "border-borde-fuerte"
         } ${className}`}
         {...props}
@@ -184,7 +184,7 @@ export function GrupoOpciones<T extends string>({
             tabIndex={activa || (valor === null && i === 0) ? 0 : -1}
             onClick={() => onCambio(o.valor)}
             onKeyDown={(e) => conTeclado(e, i)}
-            className={`w-full rounded-xl border p-5 text-left transition-colors ${
+            className={`w-full rounded-2xl border p-5 text-left transition-colors ${
               activa
                 ? "border-marca bg-marca-suave"
                 : "border-borde bg-superficie hover:border-marca hover:bg-marca-suave"
@@ -246,7 +246,7 @@ export function Seleccion({
           [ayuda ? ayudaId : null, error ? errorId : null].filter(Boolean).join(" ") ||
           undefined
         }
-        className={`mt-1 block min-h-11 w-full rounded-lg border bg-superficie px-3 py-2 text-base text-tinta ${
+        className={`mt-1 block min-h-11 w-full rounded-xl border bg-superficie px-3 py-2 text-base text-tinta ${
           error ? "border-error" : "border-borde-fuerte"
         } ${className}`}
         {...props}
@@ -298,7 +298,7 @@ export function Interruptor({
       aria-labelledby={etiquetadoPor}
       onClick={() => onCambio(!activo)}
       // El área táctil es de 44px aunque la pista dibujada sea más baja.
-      className="grid h-11 w-14 shrink-0 place-items-center rounded-lg"
+      className="grid h-11 w-14 shrink-0 place-items-center rounded-xl"
     >
       <span
         className={`flex h-7 w-12 items-center rounded-full border transition-colors ${
