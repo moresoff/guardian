@@ -1,8 +1,8 @@
-import { CORREO_CONTACTO } from "@/lib/contacto";
+import { CORREO_CONTACTO, TELEFONO_CONTACTO } from "@/lib/contacto";
 
 /**
  * El cierre de toda pantalla abierta: no se dan condiciones, se invita a
- * consultar. Con correo definido lo enlaza; sin él, solo dice la frase.
+ * consultar. Enlaza el correo y el teléfono de contacto.
  */
 export function ConsultaModalidades({ className = "" }: { className?: string }) {
   return (
@@ -16,6 +16,17 @@ export function ConsultaModalidades({ className = "" }: { className?: string }) 
             className="font-medium text-marca underline underline-offset-2"
           >
             {CORREO_CONTACTO}
+          </a>
+        </>
+      ) : null}
+      {TELEFONO_CONTACTO ? (
+        <>
+          {" o al "}
+          <a
+            href={`tel:+54${TELEFONO_CONTACTO.replace(/\D/g, "")}`}
+            className="font-medium text-marca underline underline-offset-2"
+          >
+            {TELEFONO_CONTACTO}
           </a>
         </>
       ) : null}

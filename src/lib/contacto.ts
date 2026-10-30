@@ -1,9 +1,10 @@
 /**
- * El canal de contacto genérico de Guardian. Es un correo, sin montos ni
- * condiciones: quien consulta por modalidades de participación escribe acá.
+ * El canal de contacto genérico de Guardian: un correo y un teléfono, sin
+ * montos ni condiciones. Quien consulta por modalidades de participación
+ * escribe o llama acá. Pueden pisarse con variables de entorno al desplegar.
  *
- * Sale de `NEXT_PUBLIC_CORREO_CONTACTO` y no está escrito en el código: la
- * dirección es un dato de la organización, y mientras no esté definida la
- * interfaz no muestra ningún enlace en vez de inventar uno.
+ * El teléfono es provisorio (formato de ejemplo) hasta tener el número real.
  */
-export const CORREO_CONTACTO = process.env.NEXT_PUBLIC_CORREO_CONTACTO ?? "";
+export const CORREO_CONTACTO =
+  process.env.NEXT_PUBLIC_CORREO_CONTACTO || "guardian@gmail.com";
+export const TELEFONO_CONTACTO = process.env.NEXT_PUBLIC_TELEFONO_CONTACTO || "11 1234 5678";
