@@ -27,3 +27,7 @@ Los ejemplos y montos son ilustrativos. Las propuestas nuevas se guardan únicam
 La aplicación principal y su integración con la base de datos se conservan. Este MVP tiene su propio package.json y lockfile y se prueba por separado; no reemplaza el despliegue actual. Para una vista previa independiente, usar `prototipos/mvp` como directorio raíz.
 
 Validación local previa: compilación de producción y comprobación en navegador del recorrido, formulario y proyectos precargados.
+
+## Despliegue
+
+MVP publicado directamente en el equipo Leonard de Vercel: https://guardian-mvp-leonard22.vercel.app/ . El proyecto Vercel se llama `guardian-mvp`. La integración automática con GitHub no está habilitada; subir cambios a esta rama no actualiza por sí solo el despliegue. Las fotos se optimizaron para reducir el peso de carga.

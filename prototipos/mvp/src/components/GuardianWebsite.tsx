@@ -37,7 +37,7 @@ const demoProjects: Project[] = [
     system: "A corral",
     months: 8,
     status: "En evaluación",
-    photo: "/guardian/proyecto.png",
+    photo: "/guardian/proyecto.jpg",
   },
   {
     name: "Ciclo La Esperanza",
@@ -47,7 +47,7 @@ const demoProjects: Project[] = [
     system: "Mixto",
     months: 10,
     status: "En ejecución",
-    photo: "/guardian/cierre.png",
+    photo: "/guardian/cierre.jpg",
   },
 ];
 const nav = [
@@ -331,7 +331,7 @@ export function GuardianWebsite({ section = "home" }: { section?: Section }) {
                           system: String(data.get("system")),
                           months: Number(data.get("months")),
                           status: "En evaluación",
-                          photo: "/guardian/engorde.png",
+                          photo: "/guardian/engorde.jpg",
                         },
                       ]);
                       setMessage(
@@ -465,10 +465,10 @@ export function GuardianWebsite({ section = "home" }: { section?: Section }) {
                 <Image
                   src={
                     section === "about"
-                      ? "/guardian/engorde.png"
+                      ? "/guardian/engorde.jpg"
                       : section === "invest"
-                        ? "/guardian/proyecto.png"
-                        : "/guardian/fondo.png"
+                        ? "/guardian/proyecto.jpg"
+                        : "/guardian/fondo.jpg"
                   }
                   alt="Producción ganadera argentina"
                   fill
@@ -532,7 +532,7 @@ export function GuardianWebsite({ section = "home" }: { section?: Section }) {
                 </section>
                 <section className="site-photo-band">
                   <Image
-                    src="/guardian/proyecto.png"
+                    src="/guardian/proyecto.jpg"
                     alt="Lote de hacienda en engorde"
                     fill
                     sizes="100vw"
@@ -626,7 +626,7 @@ export function GuardianWebsite({ section = "home" }: { section?: Section }) {
                 </section>
                 <section className="site-photo-band">
                   <Image
-                    src="/guardian/cierre.png"
+                    src="/guardian/cierre.jpg"
                     alt="Hacienda en un establecimiento ganadero"
                     fill
                     sizes="100vw"
@@ -714,7 +714,7 @@ export function GuardianWebsite({ section = "home" }: { section?: Section }) {
                 </section>
                 <section className="site-photo-band">
                   <Image
-                    src="/guardian/fondo.png"
+                    src="/guardian/fondo.jpg"
                     alt="Hacienda de engorde al atardecer"
                     fill
                     sizes="100vw"
