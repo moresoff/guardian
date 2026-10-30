@@ -1,11 +1,10 @@
 import Image from "next/image";
 import Link from "next/link";
 import { LineaDeTiempo, type Etapa } from "@/components/linea-tiempo";
-import { BotonLink, Panel } from "@/components/ui/primitivos";
+import { BotonLink } from "@/components/ui/primitivos";
 import { getProyecto, getProyectosPublicos } from "@/lib/data";
-import { formatNum, modalidadLabel } from "@/lib/format";
 import { buscarImagen } from "@/lib/imagenes";
-import { ProyectoCard } from "@/components/proyecto-card";
+import { CasoCerradoCard, ProyectoCard } from "@/components/proyecto-card";
 import { CORREO_CONTACTO, TELEFONO_CONTACTO } from "@/lib/contacto";
 import { CICLOS, SISTEMAS_EN_ORDEN } from "@/lib/ciclos";
 
@@ -352,54 +351,10 @@ export default async function Home() {
           ))}
 
               {cerrado?.resultado ? (
-                <li>
-                  <Panel className="flex h-full flex-col overflow-hidden">
-                    <div className="relative aspect-[16/10] bg-marca-suave">
-                      {fotoCaso ? (
-                        <Image
-                          src={fotoCaso}
-                          alt=""
-                          fill
-                          sizes="(max-width: 40rem) 100vw, 22rem"
-                          className="object-cover"
-                        />
-                      ) : null}
-                      {/* Rotulado como demostrativo: es un ciclo del seed, no
-                          una operación real de Guardian. */}
-                      <span className="absolute left-3 top-3 rounded-full bg-marca px-3 py-1 text-sm font-medium text-marca-contraste">
-                        Caso cerrado · demostrativo
-                      </span>
-                    </div>
-                    <div className="flex flex-1 flex-col p-5">
-                      <p className="text-sm text-tinta-tenue">
-                        {cerrado.provincia} · {modalidadLabel(cerrado.modalidad)}
-                      </p>
-                      <h3 className="mt-1.5 font-semibold">
-                        <Link
-                          href={`/proyectos/${cerrado.id}`}
-                          className="hover:text-marca"
-                        >
-                          {cerrado.titulo}
-                        </Link>
-                      </h3>
-                      <dl className="mt-4 space-y-2 border-t border-borde pt-4 text-sm">
-                        <div className="flex items-baseline justify-between gap-3">
-                          <dt className="text-tinta-suave">Cabezas faenadas</dt>
-                          <dd className="codigo font-medium">
-                            {formatNum(cerrado.resultado.cabezasFaena)}
-                          </dd>
-                        </div>
-                        <div className="flex items-baseline justify-between gap-3">
-                          <dt className="text-tinta-suave">Kilos de carne</dt>
-                          <dd className="codigo font-medium">
-                            {formatNum(cerrado.resultado.kgCarne)} kg
-                          </dd>
-                        </div>
-                      </dl>
-                    </div>
-                  </Panel>
-                </li>
-              ) : null}
+            <li>
+              <CasoCerradoCard proyecto={cerrado} foto={fotoCaso} />
+            </li>
+          ) : null}
         </ul>
       </Banda>
 
