@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { Modal } from "@/components/ui/modal";
 import { EnviadoAValidacion } from "@/components/enviado-a-validacion";
 import {
@@ -211,31 +211,19 @@ const USOS = [
   "Flete a faena",
 ] as const;
 
-/** Un bloque de la pantalla: título corto y su contenido, sin adornos. */
-function Bloque({
-  titulo,
-  children,
-  id,
-}: {
-  titulo: string;
-  children: React.ReactNode;
-  id?: string;
-}) {
-  return (
-    <section
-      id={id}
-      className="scroll-mt-24 rounded-2xl border border-borde bg-superficie p-4"
-    >
-      <h2 className="text-base font-semibold tracking-tight">{titulo}</h2>
-      <div className="mt-2.5">{children}</div>
-    </section>
-  );
-}
+const PASOS = ["Tus animales", "Tenencia", "El ciclo", "Tus papeles"] as const;
+
+const TITULOS = [
+  "¿Qué animales vas a engordar y cuánto necesitás?",
+  "¿Los animales ya son tuyos?",
+  "¿Cómo los vas a engordar?",
+  "Subí tus papeles",
+] as const;
 
 /**
- * Publicar un proyecto, en una sola pantalla. Antes eran cuatro pasos y había
- * que desplazar mucho: acá todo está a la vista, en bloques chicos, y los papeles
- * que se piden cambian solos según si los animales ya son del productor.
+ * Publicar un proyecto, de a un paso por vez: los animales y el monto, si ya son
+ * del productor, el ciclo y los papeles. Cada paso es una sola pregunta, así no
+ * se ve todo junto, y los papeles que se piden cambian solos según la tenencia.
  */
 export function WizardPublicacion({
   garantias,
@@ -248,6 +236,25 @@ export function WizardPublicacion({
   const [huecos, setHuecos] = useState<ClaveFicha[]>([]);
   const [faltanDocs, setFaltanDocs] = useState(false);
   const [opciones, setOpciones] = useState(false);
+  const [paso, setPaso] = useState(0);
+  const titulo = useRef<HTMLHeadingElement>(null);
+  const primeraVez = useRef(true);
+
+  // Al cambiar de paso el foco va al título: con teclado o lector de pantalla
+  // se entiende que cambió la pantalla, y se vuelve a ver desde arriba.
+  useEffect(() => {
+    if (primeraVez.current) {
+      primeraVez.current = false;
+      return;
+    }
+    titulo.current?.focus();
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  }, [paso]);
+
+  const irA = (n: number) => {
+    setHuecos([]);
+    setPaso(n);
+  };
 
   const set = <K extends keyof Borrador>(k: K, v: Borrador[K]) =>
     setB((prev) => ({ ...prev, [k]: v }));
@@ -308,12 +315,62 @@ export function WizardPublicacion({
     setEnviado(true);
   };
 
+  /** El primer paso no deja seguir con datos vacíos: el foco cae en el primero. */
+  const siguiente = () => {
+    if (paso === 0) {
+      const pendientes = OBLIGATORIOS.filter(
+        (c) => b[c].trim() === "" || Number(b[c]) === 0,
+      );
+      if (pendientes.length > 0) {
+        setHuecos(pendientes);
+        document.getElementById(idDeCampo(pendientes[0]))?.focus();
+        return;
+      }
+    }
+    irA(paso + 1);
+  };
+
   return (
-    <div className="space-y-3">
-      {/* Arriba, lo esencial: los animales y cuánto necesitás, y si ya son tuyos. */}
-      <div className="grid gap-3 lg:grid-cols-[2fr_1fr]">
-        <Bloque titulo="¿Qué animales vas a engordar y cuánto necesitás?">
-          <div className="grid gap-x-3 gap-y-2 sm:grid-cols-3">
+    <div className="mx-auto max-w-3xl">
+      <div className="mb-5">
+        <ol className="flex gap-2" aria-label="Pasos para publicar">
+          {PASOS.map((t, i) => (
+            <li
+              key={t}
+              aria-current={i === paso ? "step" : undefined}
+              className="flex-1"
+            >
+              <span
+                className={`block h-1.5 rounded-full transition-colors ${
+                  i <= paso ? "bg-marca" : "bg-borde"
+                }`}
+              />
+              <span
+                className={`mt-2 hidden text-sm sm:block ${
+                  i === paso ? "font-medium text-tinta" : "text-tinta-suave"
+                }`}
+              >
+                {i + 1}. {t}
+              </span>
+            </li>
+          ))}
+        </ol>
+        <p className="mt-2 text-sm text-tinta-suave sm:hidden">
+          Paso {paso + 1} de {PASOS.length} · {PASOS[paso]}
+        </p>
+      </div>
+
+      <section className="rounded-2xl border border-borde bg-superficie p-5 shadow-[var(--sombra-baja)] sm:p-7">
+        <h2
+          ref={titulo}
+          tabIndex={-1}
+          className="text-xl font-semibold tracking-tight outline-none"
+        >
+          {TITULOS[paso]}
+        </h2>
+
+        {paso === 0 ? (
+          <div className="mt-5 grid gap-x-4 gap-y-4 sm:grid-cols-2">
             <CamposDeFicha
               grupo="El lote"
               b={b}
@@ -321,7 +378,7 @@ export function WizardPublicacion({
               huecos={huecos}
               sinAyuda
             />
-            <div>
+            <div className="sm:col-span-2">
               <Campo
                 id={idDeCampo("montoObjetivoArs")}
                 etiqueta="Monto que necesitás ($)"
@@ -337,127 +394,148 @@ export function WizardPublicacion({
                 onChange={(e) => set("montoObjetivoArs", e.target.value)}
               />
               {porCabeza > 0 ? (
-                <p className="mt-1 text-sm text-tinta-suave">
+                <p className="mt-1.5 text-sm text-tinta-suave">
                   Unos {formatArs(Math.round(porCabeza))} por animal.
                 </p>
               ) : null}
             </div>
           </div>
-        </Bloque>
+        ) : null}
 
-        <Bloque titulo="¿Los animales ya son tuyos?">
-          <GrupoOpciones
-            etiqueta="¿Los animales ya son tuyos?"
-            className="space-y-2"
-            valor={b.tipoPosesion}
-            onCambio={(v) => set("tipoPosesion", v)}
-            opciones={TENENCIA}
-            compacto
-          />
-        </Bloque>
-      </div>
-
-      <Bloque titulo="¿Cómo los vas a engordar?">
-        <GrupoOpciones
-          etiqueta="Tipo de ciclo"
-          className="grid gap-3 md:grid-cols-3"
-          valor={b.sistemaProductivo}
-          onCambio={(v) => {
-            set("sistemaProductivo", v);
-            set("plazoDias", String(CICLOS[v].plazoDias));
-          }}
-          opciones={SISTEMAS_EN_ORDEN.map((k) => ({
-            valor: k,
-            titulo: `${CICLOS[k].nombre} · ${CICLOS[k].plazoDias} días`,
-            descripcion: `Productor ${formatPct(CICLOS[k].productorPct)} · colaboradores ${formatPct(CICLOS[k].colaboradoresPct)}. Rentabilidad anual estimada para el productor: ${formatPct(CICLOS[k].rentabilidadAnualProductorPct)}.`,
-          }))}
-          compacto
-        />
-      </Bloque>
-
-      <section className="flex flex-wrap items-center gap-x-5 gap-y-2 rounded-2xl border border-borde bg-superficie px-4 py-3">
-        <h2 className="text-base font-semibold tracking-tight">
-          ¿En qué lo vas a usar?
-        </h2>
-        <ul className="flex flex-wrap gap-2" aria-label="En qué se usa">
-          {USOS.map((u) => {
-            const activo = b.usos.includes(u);
-            return (
-              <li key={u}>
-                <button
-                  type="button"
-                  aria-pressed={activo}
-                  onClick={() => alternar(u)}
-                  className={`min-h-11 rounded-full border px-4 text-sm font-medium transition-colors ${
-                    activo
-                      ? "border-marca bg-marca text-marca-contraste"
-                      : "border-borde-fuerte bg-superficie text-tinta hover:border-marca hover:bg-marca-suave"
-                  }`}
-                >
-                  {u}
-                </button>
-              </li>
-            );
-          })}
-        </ul>
-      </section>
-
-      <Bloque
-        titulo={`Tus papeles · ${completos} de ${requeridos.length} subidos`}
-        id="documentacion-alta"
-      >
-        <div className="grid gap-3 md:grid-cols-3">
-          {requeridos.map((tipo) => (
-            <SlotDocumento
-              key={tipo}
-              tipo={tipo}
-              estado={cargas[tipo] ?? { fase: "vacio" }}
-              cabezas={cabezasNum}
-              onArchivo={(nombre) =>
-                leerArchivo(tipo, nombre, cabezasNum, (e) =>
-                  setCargas((prev) => ({ ...prev, [tipo]: e })),
-                )
-              }
+        {paso === 1 ? (
+          <div className="mt-5">
+            <GrupoOpciones
+              etiqueta="¿Los animales ya son tuyos?"
+              className="space-y-3"
+              valor={b.tipoPosesion}
+              onCambio={(v) => set("tipoPosesion", v)}
+              opciones={TENENCIA}
             />
-          ))}
-        </div>
-
-        {discrepancias.length > 0 ? (
-          <div className="mt-3">
-            <Aviso
-              tono="alerta"
-              titulo={`${discrepancias.length === 1 ? "Una diferencia" : `${discrepancias.length} diferencias`} entre lo que cargaste y tus papeles`}
-            >
-              {discrepancias.map((d) => (
-                <span key={d.tipo} className="block">
-                  {DOCUMENTO_LABEL[d.tipo]}: cargaste {formatNum(d.declarado)}{" "}
-                  cabezas y el documento ampara {formatNum(d.extraido)}.
-                </span>
-              ))}
-            </Aviso>
+            <p className="mt-4 text-sm text-tinta-suave">
+              Según lo que elijas, en el último paso te pedimos unos papeles u otros.
+            </p>
           </div>
         ) : null}
-      </Bloque>
 
-      <div className="flex flex-wrap items-center justify-between gap-3">
-        <Boton variante="sutil" onClick={() => setOpciones(true)}>
-          Más opciones
-        </Boton>
-        <p className="flex-1 text-right text-sm text-alerta" role="alert">
+        {paso === 2 ? (
+          <div className="mt-5 space-y-6">
+            <GrupoOpciones
+              etiqueta="Tipo de ciclo"
+              className="space-y-3"
+              valor={b.sistemaProductivo}
+              onCambio={(v) => {
+                set("sistemaProductivo", v);
+                set("plazoDias", String(CICLOS[v].plazoDias));
+              }}
+              opciones={SISTEMAS_EN_ORDEN.map((k) => ({
+                valor: k,
+                titulo: `${CICLOS[k].nombre} · ${CICLOS[k].plazoDias} días`,
+                descripcion: `Productor ${formatPct(CICLOS[k].productorPct)} · colaboradores ${formatPct(CICLOS[k].colaboradoresPct)}. Rentabilidad anual estimada para el productor: ${formatPct(CICLOS[k].rentabilidadAnualProductorPct)}.`,
+              }))}
+            />
+
+            <div>
+              <h3 className="font-medium">¿En qué lo vas a usar?</h3>
+              <ul className="mt-3 flex flex-wrap gap-2" aria-label="En qué se usa">
+                {USOS.map((u) => {
+                  const activo = b.usos.includes(u);
+                  return (
+                    <li key={u}>
+                      <button
+                        type="button"
+                        aria-pressed={activo}
+                        onClick={() => alternar(u)}
+                        className={`min-h-11 rounded-full border px-4 text-sm font-medium transition-colors ${
+                          activo
+                            ? "border-marca bg-marca text-marca-contraste"
+                            : "border-borde-fuerte bg-superficie text-tinta hover:border-marca hover:bg-marca-suave"
+                        }`}
+                      >
+                        {u}
+                      </button>
+                    </li>
+                  );
+                })}
+              </ul>
+            </div>
+          </div>
+        ) : null}
+
+        {paso === 3 ? (
+          <div className="mt-5" id="documentacion-alta">
+            <p className="text-sm text-tinta-suave">
+              {completos} de {requeridos.length} subidos. Guardian los lee y los
+              cruza con lo que cargaste.
+            </p>
+            <div className="mt-4 grid gap-3 sm:grid-cols-2">
+              {requeridos.map((tipo) => (
+                <SlotDocumento
+                  key={tipo}
+                  tipo={tipo}
+                  estado={cargas[tipo] ?? { fase: "vacio" }}
+                  cabezas={cabezasNum}
+                  onArchivo={(nombre) =>
+                    leerArchivo(tipo, nombre, cabezasNum, (e) =>
+                      setCargas((prev) => ({ ...prev, [tipo]: e })),
+                    )
+                  }
+                />
+              ))}
+            </div>
+
+            {discrepancias.length > 0 ? (
+              <div className="mt-4">
+                <Aviso
+                  tono="alerta"
+                  titulo={`${discrepancias.length === 1 ? "Una diferencia" : `${discrepancias.length} diferencias`} entre lo que cargaste y tus papeles`}
+                >
+                  {discrepancias.map((d) => (
+                    <span key={d.tipo} className="block">
+                      {DOCUMENTO_LABEL[d.tipo]}: cargaste {formatNum(d.declarado)}{" "}
+                      cabezas y el documento ampara {formatNum(d.extraido)}.
+                    </span>
+                  ))}
+                </Aviso>
+              </div>
+            ) : null}
+
+            <div className="mt-4">
+              <Boton variante="sutil" onClick={() => setOpciones(true)}>
+                Más opciones
+              </Boton>
+            </div>
+          </div>
+        ) : null}
+
+        <p className="mt-5 min-h-5 text-sm text-alerta" role="alert">
           {huecos.length > 0
             ? `${huecos.length === 1 ? "Falta un dato: " : `Faltan ${huecos.length} datos: `}${huecos
                 .map(
                   (c) => CAMPOS_FICHA.find((x) => x.clave === c)?.etiqueta ?? c,
                 )
                 .join(", ")}.`
-            : faltanDocs && completos < requeridos.length
+            : paso === 3 && faltanDocs && completos < requeridos.length
               ? `Faltan ${requeridos.length - completos} de ${requeridos.length} documentos.`
-              : discrepancias.length > 0
+              : paso === 3 && discrepancias.length > 0
                 ? "Resolvé las diferencias antes de enviar el proyecto."
                 : ""}
         </p>
-        <Boton onClick={enviar}>Enviar a validación</Boton>
-      </div>
+
+        <div className="mt-3 flex items-center justify-between gap-3 border-t border-borde pt-5">
+          {paso > 0 ? (
+            <Boton variante="secundario" onClick={() => irA(paso - 1)}>
+              Atrás
+            </Boton>
+          ) : (
+            <span />
+          )}
+          {paso < PASOS.length - 1 ? (
+            <Boton onClick={siguiente}>Siguiente</Boton>
+          ) : (
+            <Boton onClick={enviar}>Enviar a validación</Boton>
+          )}
+        </div>
+      </section>
 
       <Modal
         abierto={opciones}

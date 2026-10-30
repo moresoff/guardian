@@ -19,7 +19,7 @@ export default async function NuevoProyectoPage() {
 
   return (
     <div className="mx-auto max-w-6xl">
-      <div className="mb-4 flex flex-wrap items-baseline justify-between gap-x-6 gap-y-1">
+      <div className="mb-5 flex flex-wrap items-baseline justify-between gap-x-6 gap-y-1">
         <h1 className="text-2xl font-semibold tracking-tight">Publicar un proyecto</h1>
         <Link
           href="/productor"
