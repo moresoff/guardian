@@ -1,6 +1,5 @@
 "use client";
 
-import { Pause, Play } from "lucide-react";
 import {
   useEffect,
   useId,
@@ -14,10 +13,10 @@ import {
  * llega las vea en orden sin tener que hacer nada; y cada una se puede elegir
  * (con el mouse, el dedo o el teclado) para quedarse en esa.
  *
- * El avance automático cumple lo que pide la accesibilidad: se pausa mientras el
- * mouse está encima, tiene un botón para pausar y reanudar, y no
- * corre si la persona pidió menos movimiento. Elegir una etapa lo pausa: quien
- * eligió una quiere leerla, no que se le vaya.
+ * El avance es automático y sin controles: se detiene mientras el mouse está
+ * sobre las etapas o el texto (para poder leer) y no corre si la persona pidió
+ * menos movimiento en su sistema. Elegir una etapa la muestra y el recorrido
+ * sigue desde ahí.
  *
  * Es un tablist: las cinco etapas gobiernan el mismo panel y un lector de
  * pantalla oye "seleccionada, 2 de 5".
@@ -29,7 +28,7 @@ export interface Etapa {
   detalle: string;
 }
 
-const SEGUNDOS = 7;
+const SEGUNDOS = 5;
 
 const sinMovimiento = {
   suscribir: (cb: () => void) => {
@@ -43,7 +42,6 @@ const sinMovimiento = {
 
 export function LineaDeTiempo({ etapas }: { etapas: Etapa[] }) {
   const [activa, setActiva] = useState(0);
-  const [pausadoPorUsuario, setPausadoPorUsuario] = useState(false);
   const [encima, setEncima] = useState(false);
   const reducido = useSyncExternalStore(
     sinMovimiento.suscribir,
@@ -53,7 +51,7 @@ export function LineaDeTiempo({ etapas }: { etapas: Etapa[] }) {
   const base = useId();
   const botones = useRef<(HTMLButtonElement | null)[]>([]);
 
-  const corriendo = !pausadoPorUsuario && !encima && !reducido;
+  const corriendo = !encima && !reducido;
 
   useEffect(() => {
     if (!corriendo) return;
@@ -64,10 +62,8 @@ export function LineaDeTiempo({ etapas }: { etapas: Etapa[] }) {
     return () => clearTimeout(t);
   }, [corriendo, activa, etapas.length]);
 
-  const elegir = (i: number) => {
-    setActiva(i);
-    setPausadoPorUsuario(true);
-  };
+  // Elegir una etapa la muestra y el recorrido sigue desde ahí.
+  const elegir = (i: number) => setActiva(i);
 
   const idEtapa = (i: number) => `${base}-etapa-${i}`;
   const idPanel = `${base}-detalle`;
@@ -95,7 +91,6 @@ export function LineaDeTiempo({ etapas }: { etapas: Etapa[] }) {
 
   return (
     <div>
-      {/* Con el mouse encima de las etapas o del texto el recorrido espera; el botón de pausa queda afuera para que "Reanudar" reanude. */}
       <div
         onMouseEnter={() => setEncima(true)}
         onMouseLeave={() => setEncima(false)}
@@ -157,7 +152,6 @@ export function LineaDeTiempo({ etapas }: { etapas: Etapa[] }) {
                             animationPlayState: corriendo
                               ? "running"
                               : "paused",
-                            // En pausa la barra queda llena: ya se sabe cuál es la elegida.
                             ...(corriendo
                               ? {}
                               : { animation: "none", transform: "scaleX(1)" }),
@@ -190,21 +184,6 @@ export function LineaDeTiempo({ etapas }: { etapas: Etapa[] }) {
           <p className="mt-3 max-w-2xl text-tinta-suave">{etapa.detalle}</p>
         </div>
       </div>
-
-      {reducido ? null : (
-        <button
-          type="button"
-          onClick={() => setPausadoPorUsuario((p) => !p)}
-          className="mt-3 inline-flex min-h-11 items-center gap-2 rounded-full px-3 text-sm font-medium text-tinta-suave transition-colors hover:bg-superficie hover:text-tinta"
-        >
-          {pausadoPorUsuario ? (
-            <Play className="size-4" strokeWidth={1.75} aria-hidden />
-          ) : (
-            <Pause className="size-4" strokeWidth={1.75} aria-hidden />
-          )}
-          {pausadoPorUsuario ? "Reanudar el recorrido" : "Pausar el recorrido"}
-        </button>
-      )}
     </div>
   );
 }
