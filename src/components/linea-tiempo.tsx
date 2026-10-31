@@ -43,6 +43,7 @@ const sinMovimiento = {
 export function LineaDeTiempo({ etapas }: { etapas: Etapa[] }) {
   const [activa, setActiva] = useState(0);
   const [encima, setEncima] = useState(false);
+  const [pausado, setPausado] = useState(false);
   const reducido = useSyncExternalStore(
     sinMovimiento.suscribir,
     sinMovimiento.actual,
@@ -51,7 +52,7 @@ export function LineaDeTiempo({ etapas }: { etapas: Etapa[] }) {
   const base = useId();
   const botones = useRef<(HTMLButtonElement | null)[]>([]);
 
-  const corriendo = !encima && !reducido;
+  const corriendo = !encima && !reducido && !pausado;
 
   useEffect(() => {
     if (!corriendo) return;
@@ -91,6 +92,14 @@ export function LineaDeTiempo({ etapas }: { etapas: Etapa[] }) {
 
   return (
     <div>
+      <button
+        type="button"
+        onClick={() => setPausado((p) => !p)}
+        aria-pressed={pausado}
+        className="mb-4 inline-flex min-h-11 items-center rounded-full border border-borde-fuerte px-4 py-2 text-sm font-medium text-marca"
+      >
+        {pausado ? "Reanudar recorrido" : "Pausar recorrido"}
+      </button>
       <div
         onMouseEnter={() => setEncima(true)}
         onMouseLeave={() => setEncima(false)}

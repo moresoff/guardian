@@ -15,11 +15,25 @@ import { partesDelTitulo, queCubre, situacionDelLote } from "@/lib/cubre";
 import type { Proyecto } from "@/lib/types";
 
 /** Un dato de la tarjeta: ícono, valor y etiqueta. */
-function Dato({ icono: Icono, valor, etiqueta }: { icono: TipoIcono; valor: string; etiqueta: string }) {
+function Dato({
+  icono: Icono,
+  valor,
+  etiqueta,
+  compacta = false,
+}: {
+  icono: TipoIcono;
+  valor: string;
+  etiqueta: string;
+  compacta?: boolean;
+}) {
   return (
     <div className="flex items-center gap-2.5">
-      <span className="flex size-9 shrink-0 items-center justify-center rounded-full bg-marca-suave text-marca">
-        <Icono className="size-5" strokeWidth={1.75} aria-hidden />
+      <span
+        className={`flex shrink-0 items-center justify-center rounded-full bg-marca-suave text-marca ${
+          compacta ? "size-7" : "size-9"
+        }`}
+      >
+        <Icono className={compacta ? "size-4" : "size-5"} strokeWidth={1.75} aria-hidden />
       </span>
       <span className="min-w-0">
         <span className="tabular block truncate font-semibold leading-tight">{valor}</span>
@@ -30,10 +44,10 @@ function Dato({ icono: Icono, valor, etiqueta }: { icono: TipoIcono; valor: stri
 }
 
 /** El círculo con la flecha, arriba a la derecha de la foto. La tarjeta entera es el enlace. */
-function Flecha() {
+function Flecha({ compacta = false }: { compacta?: boolean }) {
   return (
     <span
-      className="absolute right-3 top-3 flex size-10 items-center justify-center rounded-full bg-white text-marca-fuerte shadow-[var(--sombra-alta)] transition-transform group-hover:translate-x-0.5"
+      className={`absolute right-3 top-3 flex ${compacta ? "size-8" : "size-10"} items-center justify-center rounded-full bg-white text-marca-fuerte shadow-[var(--sombra-alta)] transition-transform group-hover:translate-x-0.5`}
       aria-hidden
     >
       <ArrowRight className="size-[1.125rem]" strokeWidth={1.75} aria-hidden />
@@ -55,6 +69,7 @@ export function ProyectoCard({
   proyecto,
   foto,
   resumida = false,
+  compacta = false,
 }: {
   proyecto: Proyecto;
   foto: string | null;
@@ -63,6 +78,8 @@ export function ProyectoCard({
    * plazos ni reparto, que son condiciones económicas y se ven con sesión.
    */
   resumida?: boolean;
+  /** Más chica, para la portada: los mismos datos en menos alto. */
+  compacta?: boolean;
 }) {
   const pct = porcentajeRecaudado(proyecto.montoRecaudadoArs, proyecto.montoObjetivoArs);
   const retorno = retornoCompacto(proyecto);
@@ -73,7 +90,7 @@ export function ProyectoCard({
 
   return (
     <article className={CONTENEDOR}>
-      <div className="relative aspect-[16/10] overflow-hidden rounded-2xl bg-marca-suave">
+      <div className={`relative overflow-hidden rounded-2xl bg-marca-suave ${compacta ? "aspect-[2/1]" : "aspect-[16/10]"}`}>
         {foto ? (
           <Image
             src={foto}
@@ -86,15 +103,15 @@ export function ProyectoCard({
         <span className="absolute left-3 top-3 rounded-full bg-white px-3 py-1 text-sm font-medium text-marca-fuerte shadow-[var(--sombra-baja)]">
           {CICLOS[proyecto.sistemaProductivo].nombre}
         </span>
-        <Flecha />
+        <Flecha compacta={compacta} />
         <span className="absolute bottom-3 left-3">
           <EstadoProyectoBadge estado={proyecto.estado} />
         </span>
       </div>
 
-      <div className="flex flex-1 flex-col px-3 pb-3 pt-4">
+      <div className={`flex flex-1 flex-col px-3 ${compacta ? "pb-2 pt-3" : "pb-3 pt-4"}`}>
         <p className="text-sm text-tinta-tenue">{proyecto.provincia}</p>
-        <h3 className="mt-0.5 text-xl font-semibold leading-snug tracking-tight">
+        <h3 className={`mt-0.5 font-semibold leading-snug tracking-tight ${compacta ? "text-lg" : "text-xl"}`}>
           <Link
             href={`/proyectos/${proyecto.id}`}
             className="after:absolute after:inset-0 after:rounded-3xl hover:text-marca"
@@ -104,19 +121,19 @@ export function ProyectoCard({
         </h3>
         {partes.lote ? <p className="font-medium text-tinta-suave">{partes.lote}</p> : null}
 
-        <div className="mt-4 grid grid-cols-2 gap-x-3 gap-y-3 border-t border-borde pt-4">
-          <Dato icono={Vaca} valor={formatNum(proyecto.cabezas)} etiqueta="Cabezas" />
-          <Dato icono={Tag} valor={proyecto.categoria} etiqueta="Categoría" />
+        <div className={`grid grid-cols-2 gap-x-3 gap-y-3 border-t border-borde ${compacta ? "mt-3 pt-3" : "mt-4 pt-4"}`}>
+          <Dato icono={Vaca} valor={formatNum(proyecto.cabezas)} etiqueta="Cabezas" compacta={compacta} />
+          <Dato icono={Tag} valor={proyecto.categoria} etiqueta="Categoría" compacta={compacta} />
           {resumida ? null : (
             <>
-              <Dato icono={CalendarDays} valor={`${proyecto.plazoDias} días`} etiqueta="Plazo" />
+              <Dato icono={CalendarDays} valor={`${proyecto.plazoDias} días`} etiqueta="Plazo" compacta={compacta} />
               <Dato icono={ChartPie} valor={retorno.valor} etiqueta={retorno.etiqueta} />
             </>
           )}
         </div>
 
         {visibles.length > 0 ? (
-          <ul className="mt-4 flex flex-wrap gap-1.5" aria-label="Qué cubre el proyecto">
+          <ul className={`flex flex-wrap gap-1.5 ${compacta ? "mt-3" : "mt-4"}`} aria-label="Qué cubre el proyecto">
             {visibles.map((c) => (
               <li
                 key={c}
@@ -133,7 +150,7 @@ export function ProyectoCard({
           </ul>
         ) : null}
 
-        <p className="mt-4 flex items-start gap-2 text-sm text-tinta-suave">
+        <p className={`flex items-start gap-2 text-sm text-tinta-suave ${compacta ? "mt-3" : "mt-4"}`}>
           <Check className="mt-0.5 size-4 shrink-0 text-marca" strokeWidth={2} aria-hidden />
           {situacionDelLote(proyecto.tipoPosesion)}
         </p>
@@ -164,9 +181,11 @@ export function ProyectoCard({
 export function CasoCerradoCard({
   proyecto,
   foto,
+  compacta = false,
 }: {
   proyecto: Proyecto;
   foto: string | null;
+  compacta?: boolean;
 }) {
   const r = proyecto.resultado;
   if (!r) return null;
@@ -174,7 +193,7 @@ export function CasoCerradoCard({
 
   return (
     <article className={CONTENEDOR}>
-      <div className="relative aspect-[16/10] overflow-hidden rounded-2xl bg-marca-suave">
+      <div className={`relative overflow-hidden rounded-2xl bg-marca-suave ${compacta ? "aspect-[2/1]" : "aspect-[16/10]"}`}>
         {foto ? (
           <Image
             src={foto}
@@ -187,16 +206,16 @@ export function CasoCerradoCard({
         <span className="absolute left-3 top-3 rounded-full bg-white px-3 py-1 text-sm font-medium text-marca-fuerte shadow-[var(--sombra-baja)]">
           {CICLOS[proyecto.sistemaProductivo].nombre}
         </span>
-        <Flecha />
+        <Flecha compacta={compacta} />
         {/* Rotulado como demostrativo: es un ciclo del seed, no una operación real. */}
         <span className="absolute bottom-3 left-3 rounded-full bg-marca px-3 py-1 text-sm font-medium text-marca-contraste">
           Caso cerrado · demostrativo
         </span>
       </div>
 
-      <div className="flex flex-1 flex-col px-3 pb-3 pt-4">
+      <div className={`flex flex-1 flex-col px-3 ${compacta ? "pb-2 pt-3" : "pb-3 pt-4"}`}>
         <p className="text-sm text-tinta-tenue">{proyecto.provincia}</p>
-        <h3 className="mt-0.5 text-xl font-semibold leading-snug tracking-tight">
+        <h3 className={`mt-0.5 font-semibold leading-snug tracking-tight ${compacta ? "text-lg" : "text-xl"}`}>
           <Link
             href={`/proyectos/${proyecto.id}`}
             className="after:absolute after:inset-0 after:rounded-3xl hover:text-marca"
@@ -206,12 +225,12 @@ export function CasoCerradoCard({
         </h3>
         {partes.lote ? <p className="font-medium text-tinta-suave">{partes.lote}</p> : null}
 
-        <div className="mt-4 grid grid-cols-2 gap-x-3 gap-y-3 border-t border-borde pt-4">
-          <Dato icono={Vaca} valor={formatNum(r.cabezasFaena)} etiqueta="Cabezas faenadas" />
-          <Dato icono={Scale} valor={`${formatNum(r.kgCarne)} kg`} etiqueta="Kilos de carne" />
+        <div className={`grid grid-cols-2 gap-x-3 gap-y-3 border-t border-borde ${compacta ? "mt-3 pt-3" : "mt-4 pt-4"}`}>
+          <Dato icono={Vaca} valor={formatNum(r.cabezasFaena)} etiqueta="Cabezas faenadas" compacta={compacta} />
+          <Dato icono={Scale} valor={`${formatNum(r.kgCarne)} kg`} etiqueta="Kilos de carne" compacta={compacta} />
         </div>
 
-        <p className="mt-4 flex items-start gap-2 text-sm text-tinta-suave">
+        <p className={`flex items-start gap-2 text-sm text-tinta-suave ${compacta ? "mt-3" : "mt-4"}`}>
           <Check className="mt-0.5 size-4 shrink-0 text-marca" strokeWidth={2} aria-hidden />
           Cifras del romaneo del frigorífico
         </p>

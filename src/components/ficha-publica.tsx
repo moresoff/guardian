@@ -1,6 +1,11 @@
 import { PortadaProyecto } from "@/components/portada-proyecto";
 import { ConsultaModalidades } from "@/components/consulta-modalidades";
-import { BotonLink, Dato, Panel, TituloBloque } from "@/components/ui/primitivos";
+import {
+  BotonLink,
+  Dato,
+  Panel,
+  TituloBloque,
+} from "@/components/ui/primitivos";
 import { CICLOS } from "@/lib/ciclos";
 import { DOCUMENTO_LABEL, POSESION_LABEL, formatNum } from "@/lib/format";
 import type { Documento, Proyecto } from "@/lib/types";
@@ -29,7 +34,7 @@ export function FichaPublica({
     <div className="mx-auto max-w-4xl">
       <PortadaProyecto proyecto={proyecto} productor={productor} />
 
-      <p className="mt-4 text-tinta-suave">{proyecto.destinoDetalle}</p>
+      <p className="mt-4 text-tinta-suave">{`Ciclo de engorde con ${formatNum(proyecto.cabezas)} cabezas de categoría ${proyecto.categoria.toLocaleLowerCase("es-AR")}. ${ciclo.descripcion}`}</p>
 
       <section className="mt-8">
         <TituloBloque descripcion="Lo que el productor declara al publicar el proyecto.">
@@ -43,8 +48,12 @@ export function FichaPublica({
             {ciclo.nombre}
           </Dato>
           <Dato etiqueta="Peso de entrada">{proyecto.pesoEntradaKg} kg</Dato>
-          <Dato etiqueta="Peso objetivo">{proyecto.pesoSalidaObjetivoKg} kg</Dato>
-          <Dato etiqueta="Hacienda">{POSESION_LABEL[proyecto.tipoPosesion]}</Dato>
+          <Dato etiqueta="Peso objetivo">
+            {proyecto.pesoSalidaObjetivoKg} kg
+          </Dato>
+          <Dato etiqueta="Hacienda">
+            {POSESION_LABEL[proyecto.tipoPosesion]}
+          </Dato>
         </dl>
       </section>
 
@@ -67,13 +76,17 @@ export function FichaPublica({
       ) : null}
 
       <Panel className="mt-10 p-5">
-        <h2 className="text-lg font-semibold tracking-tight">Condiciones del proyecto</h2>
+        <h2 className="text-lg font-semibold tracking-tight">
+          Condiciones del proyecto
+        </h2>
         <p className="mt-1 text-sm text-tinta-suave">
-          El presupuesto, los plazos, el reparto y las condiciones de participación se
-          ven con una cuenta.
+          El presupuesto, los plazos, el reparto y las condiciones de
+          participación se ven con una cuenta.
         </p>
         <div className="mt-4 flex flex-wrap items-center gap-3">
-          <BotonLink href="/registro?lado=colaborador">Crear mi cuenta</BotonLink>
+          <BotonLink href="/registro?lado=colaborador">
+            Crear mi cuenta
+          </BotonLink>
           <BotonLink href="/ingresar" variante="secundario">
             Ya tengo cuenta
           </BotonLink>
