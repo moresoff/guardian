@@ -76,10 +76,10 @@ export default async function FichaProyecto({
   searchParams,
 }: {
   params: Promise<{ id: string }>;
-  searchParams: Promise<{ tab?: string }>;
+  searchParams: Promise<{ tab?: string; ver?: string }>;
 }) {
   const { id } = await params;
-  const { tab } = await searchParams;
+  const { tab, ver } = await searchParams;
   const proyecto = await getProyecto(id);
   if (!proyecto) notFound();
 
@@ -139,7 +139,17 @@ export default async function FichaProyecto({
   const avisoDemostrativo = demostrativo
     ? "Condición de demostración: no sale de un contrato firmado."
     : undefined;
-  const gananciaPesoKg = proyecto.pesoSalidaObjetivoKg - proyecto.pesoEntradaKg;
+  /**
+   * La ficha se lee en tres partes y no en trece secciones seguidas: de qué va
+   * el proyecto, qué condiciones y riesgos tiene, y qué papeles lo respaldan.
+   * Nada se sacó: cada parte tiene su pestaña con nombre.
+   */
+  const vista = ver === "condiciones" || ver === "papeles" ? ver : "resumen";
+  // El dueño llega a esta vista por «Cómo lo ve el colaborador»: sus pestañas
+  // tienen que conservar ese parámetro.
+  const baseVista = pestanasDueno
+    ? `/proyectos/${proyecto.id}?tab=colaborador`
+    : `/proyectos/${proyecto.id}`;
 
   return (
     <div>
@@ -147,28 +157,117 @@ export default async function FichaProyecto({
       <PortadaProyecto proyecto={proyecto} productor={productor?.nombre} />
 
       <div className="mt-6 grid gap-6 lg:grid-cols-[1fr_20rem]">
-        <div className="space-y-8">
+        {/* min-w-0: sin esto la tabla de pesadas estira la columna y empuja el
+            panel de la derecha fuera de la pantalla. */}
+        <div className="min-w-0 space-y-8">
+          <Pestanas
+            base={baseVista}
+            param="ver"
+            activa={vista}
+            pestanas={[
+              { clave: "resumen", titulo: "Resumen" },
+              { clave: "condiciones", titulo: "Condiciones y riesgos" },
+              { clave: "papeles", titulo: "Papeles" },
+            ]}
+          />
+
+          {vista === "resumen" ? (
+            <>
           <section>
-            <TituloBloque descripcion="Lo que el productor declara al publicar el proyecto.">
+            <TituloBloque descripcion="Lo que el productor declaró al publicar.">
               El lote
             </TituloBloque>
             <dl className="grid grid-cols-2 gap-x-6 gap-y-5 sm:grid-cols-3">
               <Dato etiqueta="Cabezas">{formatNum(proyecto.cabezas)}</Dato>
               <Dato etiqueta="Categoría">{proyecto.categoria}</Dato>
-              <Dato etiqueta="Raza">{proyecto.raza || "—"}</Dato>
               <Dato etiqueta="Sistema">{SISTEMA_LABEL[proyecto.sistemaProductivo]}</Dato>
               <Dato etiqueta="Peso de entrada">{proyecto.pesoEntradaKg} kg</Dato>
               <Dato etiqueta="Peso objetivo">{proyecto.pesoSalidaObjetivoKg} kg</Dato>
-              <Dato
-                etiqueta="Ganancia de peso"
-                ayuda={`${(gananciaPesoKg / proyecto.plazoDias).toFixed(2)} kg/día`}
-              >
-                {gananciaPesoKg} kg
-              </Dato>
+              <Dato etiqueta="Plazo del ciclo">{proyecto.plazoDias} días</Dato>
             </dl>
+            <div className="mt-6">
+              <Aviso tono="alerta" titulo="El resultado proyectado no está garantizado">
+                Es una estimación del productor. El resultado sale de la venta cobrada y
+                puede ser menor, o negativo.
+              </Aviso>
+            </div>
           </section>
 
-          <section className="border-t border-borde pt-7">
+          {registros.length > 0 ? (
+            <section className="border-t border-borde pt-7">
+              <TituloBloque descripcion="Las pesadas que carga el productor durante el encierre.">
+                {proyecto.estado === "cerrado" ? "Cómo fue el ciclo" : "Cómo viene el ciclo"}
+              </TituloBloque>
+              <Seguimiento proyecto={proyecto} registros={registros} />
+            </section>
+          ) : null}
+
+          {proyecto.resultado ? (
+            <Panel className="p-5">
+              <TituloBloque descripcion="Del romaneo de playa del frigorífico. Es el resultado, no la proyección.">
+                Resultado del ciclo
+              </TituloBloque>
+              <dl className="grid grid-cols-2 gap-x-6 gap-y-5 sm:grid-cols-3">
+                <Dato etiqueta="Cabezas faenadas">
+                  {formatNum(proyecto.resultado.cabezasFaena)}
+                </Dato>
+                <Dato etiqueta="Kilos vivos">
+                  {formatNum(proyecto.resultado.kilosVivos)} kg
+                </Dato>
+                <Dato
+                  etiqueta="Promedio por cabeza"
+                  ayuda="Kilos vivos ÷ cabezas faenadas"
+                >
+                  {formatNum(
+                    Math.round(
+                      proyecto.resultado.kilosVivos / proyecto.resultado.cabezasFaena,
+                    ),
+                  )}{" "}
+                  kg
+                </Dato>
+                <Dato etiqueta="Kg de carne">
+                  {formatNum(proyecto.resultado.kgCarne)} kg
+                </Dato>
+                <Dato etiqueta="Rendimiento de faena">
+                  {formatPct(proyecto.resultado.rendimientoPct)}
+                </Dato>
+                <Dato etiqueta="DT-e de salida" codigo>{proyecto.resultado.dteSalida}</Dato>
+              </dl>
+            </Panel>
+          ) : null}
+
+          {productor ? (
+            <section className="border-t border-borde pt-7">
+              <TituloBloque>El productor</TituloBloque>
+              <dl className="grid grid-cols-2 gap-x-6 gap-y-5 sm:grid-cols-3">
+                <Dato etiqueta="Razón social">{productor.razonSocial}</Dato>
+                <Dato etiqueta="RENSPA" codigo>{productor.renspa}</Dato>
+                <Dato etiqueta="Establecimiento">
+                  {productor.establecimiento}
+                </Dato>
+                <Dato etiqueta="Ubicación">
+                  {productor.localidad}, {productor.provincia}
+                </Dato>
+                <Dato etiqueta="Ciclos completados en Guardian">
+                  {productor.ciclosCompletados}
+                </Dato>
+              </dl>
+              <div className="mt-4 rounded-xl border border-borde bg-superficie-2 p-3">
+                <p className="text-sm font-medium">Qué revisó Guardian</p>
+                <p className="mt-1 text-sm text-tinta-suave">
+                  El legajo del productor y del establecimiento: identidad, constancia de
+                  RENSPA y disponibilidad del predio. No acredita la propiedad de los
+                  animales ni del inmueble.
+                </p>
+              </div>
+            </section>
+          ) : null}
+            </>
+          ) : null}
+
+          {vista === "condiciones" ? (
+            <>
+          <section>
             <TituloBloque>
               Condiciones
             </TituloBloque>
@@ -282,12 +381,6 @@ export default async function FichaProyecto({
               </p>
             </div>
 
-            <div className="mt-4">
-              <Aviso tono="alerta" titulo="El resultado proyectado no está garantizado">
-                Es una estimación del productor. El resultado sale de la venta cobrada y
-                puede ser menor, o negativo.
-              </Aviso>
-            </div>
           </section>
 
           {proyecto.presupuesto.length > 0 ? (
@@ -429,80 +522,19 @@ export default async function FichaProyecto({
             </section>
           ) : null}
 
-          {proyecto.controles.length > 0 ? (
-            <section className="border-t border-borde pt-7">
-              <TituloBloque descripcion="Qué se revisó, cuándo y con qué método.">
-                Controles realizados
-              </TituloBloque>
-              <ul className="divide-y divide-borde border-y border-borde">
-                {proyecto.controles.map((c) => (
-                  <li key={c.control} className="py-3.5">
-                    <div className="flex flex-wrap items-baseline justify-between gap-x-4 gap-y-1">
-                      <p className="font-medium">{c.control}</p>
-                      <p className="tabular text-sm text-tinta-tenue">
-                        {formatFecha(c.fecha)}
-                      </p>
-                    </div>
-                    <p className="mt-1 text-sm text-tinta-suave">{c.alcance}</p>
-                    <p className="mt-0.5 text-sm text-tinta-tenue">
-                      {c.metodo} · {c.responsable}
-                    </p>
-                  </li>
-                ))}
-              </ul>
-            </section>
-          ) : null}
-
-          {registros.length > 0 ? (
-            <section className="border-t border-borde pt-7">
-              <TituloBloque descripcion="Las pesadas que carga el productor durante el encierre.">
-                {proyecto.estado === "cerrado" ? "Cómo fue el ciclo" : "Cómo viene el ciclo"}
-              </TituloBloque>
-              <Seguimiento proyecto={proyecto} registros={registros} />
-            </section>
-          ) : null}
-
+          <div className="space-y-6 border-t border-borde pt-7">
           <BloqueGarantia garantia={garantia} />
 
           {proyecto.fideicomiso ? (
             <CondicionesPanel fideicomiso={proyecto.fideicomiso} paraColaborador />
           ) : null}
-
-          {proyecto.resultado ? (
-            <Panel className="p-5">
-              <TituloBloque descripcion="Del romaneo de playa del frigorífico. Es el resultado, no la proyección.">
-                Resultado del ciclo
-              </TituloBloque>
-              <dl className="grid grid-cols-2 gap-x-6 gap-y-5 sm:grid-cols-3">
-                <Dato etiqueta="Cabezas faenadas">
-                  {formatNum(proyecto.resultado.cabezasFaena)}
-                </Dato>
-                <Dato etiqueta="Kilos vivos">
-                  {formatNum(proyecto.resultado.kilosVivos)} kg
-                </Dato>
-                <Dato
-                  etiqueta="Promedio por cabeza"
-                  ayuda="Kilos vivos ÷ cabezas faenadas"
-                >
-                  {formatNum(
-                    Math.round(
-                      proyecto.resultado.kilosVivos / proyecto.resultado.cabezasFaena,
-                    ),
-                  )}{" "}
-                  kg
-                </Dato>
-                <Dato etiqueta="Kg de carne">
-                  {formatNum(proyecto.resultado.kgCarne)} kg
-                </Dato>
-                <Dato etiqueta="Rendimiento de faena">
-                  {formatPct(proyecto.resultado.rendimientoPct)}
-                </Dato>
-                <Dato etiqueta="DT-e de salida" codigo>{proyecto.resultado.dteSalida}</Dato>
-              </dl>
-            </Panel>
+          </div>
+            </>
           ) : null}
 
-          <Panel className="p-5">
+          {vista === "papeles" ? (
+            <>
+          <section>
             <TituloBloque descripcion="Qué respalda el lote y qué fue verificado.">
               Respaldo documental
             </TituloBloque>
@@ -540,7 +572,33 @@ export default async function FichaProyecto({
                 verificado.
               </Aviso>
             </div>
-          </Panel>
+          </section>
+          {proyecto.controles.length > 0 ? (
+            <section className="border-t border-borde pt-7">
+              <TituloBloque descripcion="Qué se revisó, cuándo y con qué método.">
+                Controles realizados
+              </TituloBloque>
+              <ul className="divide-y divide-borde border-y border-borde">
+                {proyecto.controles.map((c) => (
+                  <li key={c.control} className="py-3.5">
+                    <div className="flex flex-wrap items-baseline justify-between gap-x-4 gap-y-1">
+                      <p className="font-medium">{c.control}</p>
+                      <p className="tabular text-sm text-tinta-tenue">
+                        {formatFecha(c.fecha)}
+                      </p>
+                    </div>
+                    <p className="mt-1 text-sm text-tinta-suave">{c.alcance}</p>
+                    <p className="mt-0.5 text-sm text-tinta-tenue">
+                      {c.metodo} · {c.responsable}
+                    </p>
+                  </li>
+                ))}
+              </ul>
+            </section>
+          ) : null}
+
+            </>
+          ) : null}
         </div>
 
         <aside className="space-y-4 lg:sticky lg:top-20 lg:self-start">
@@ -585,46 +643,6 @@ export default async function FichaProyecto({
             </div>
           </Panel>
 
-          {productor ? (
-            <Panel className="p-5">
-              <TituloBloque>El productor</TituloBloque>
-              <dl className="space-y-4">
-                <Dato etiqueta="Razón social">{productor.razonSocial}</Dato>
-                <Dato etiqueta="RENSPA" codigo>{productor.renspa}</Dato>
-                <Dato etiqueta="Establecimiento">
-                  {productor.establecimiento}
-                </Dato>
-                <Dato etiqueta="Ubicación">
-                  {productor.localidad}, {productor.provincia}
-                </Dato>
-                <Dato
-                  etiqueta="Ocupación"
-                  ayuda={`${formatNum(productor.ocupacionActual)} de ${formatNum(
-                    productor.capacidadInstalada,
-                  )} cabezas de capacidad`}
-                >
-                  {Math.round(
-                    (productor.ocupacionActual / productor.capacidadInstalada) * 100,
-                  )}{" "}
-                  %
-                </Dato>
-                <Dato etiqueta="Ciclos completados en Guardian">
-                  {productor.ciclosCompletados}
-                </Dato>
-              </dl>
-              {/* El sello dice qué se verificó y con qué alcance. "Productor
-                  verificado" a secas dejaba pensar que Guardian garantiza la
-                  propiedad de los animales, y no es eso lo que se revisó. */}
-              <div className="mt-4 rounded-xl border border-borde bg-superficie-2 p-3">
-                <p className="text-sm font-medium">Qué revisó Guardian</p>
-                <p className="mt-1 text-sm text-tinta-suave">
-                  El legajo del productor y del establecimiento: identidad, constancia de
-                  RENSPA y disponibilidad del predio. No acredita la propiedad de los
-                  animales ni del inmueble.
-                </p>
-              </div>
-            </Panel>
-          ) : null}
         </aside>
       </div>
     </div>
