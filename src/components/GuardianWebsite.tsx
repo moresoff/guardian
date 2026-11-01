@@ -149,11 +149,14 @@ export function GuardianWebsite({
   section = "home",
   children,
   nombre = null,
+  panel,
 }: {
   section?: Section;
   children?: ReactNode;
   /** El nombre de pila de quien entró, para el saludo del productor. */
   nombre?: string | null;
+  /** El tablero real del productor, armado en el servidor. */
+  panel?: ReactNode;
 }) {
   const [menuOpen, setMenuOpen] = useState(false);
   const [profileOpen, setProfileOpen] = useState(false);
@@ -340,6 +343,34 @@ export function GuardianWebsite({
       <main id="contenido">
         {children ? (
           <div className="more-home-content">{children}</div>
+        ) : producer && panel ? (
+          <>
+            <section className="producer-hero">
+              <Image
+                src="/imagenes/fotos/campo.webp"
+                alt=""
+                fill
+                priority
+                sizes="100vw"
+              />
+              <div className="producer-hero-overlay" />
+              <div className="producer-hero-content">
+                <span className="site-hero-eyebrow">Tu espacio</span>
+                <h1>{nombre ? `Bienvenido, ${nombre}` : "Bienvenido, productor"}</h1>
+                <p>
+                  Presentá el lote y reuní su documentación en un solo lugar.
+                </p>
+                <Link
+                  href="/productor/proyectos/nuevo"
+                  className="site-button site-button-light"
+                >
+                  <Plus aria-hidden strokeWidth={1.75} size={20} />
+                  Publicar un proyecto
+                </Link>
+              </div>
+            </section>
+            <section className="producer-panel">{panel}</section>
+          </>
         ) : producer ? (
           <>
             <div className="producer-demo-bar">

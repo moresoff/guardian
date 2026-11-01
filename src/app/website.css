@@ -1753,3 +1753,17 @@ html {
     grid-template-columns: 1fr;
   }
 }
+
+/* Tablero del productor (31/10/2026): el mismo de la plataforma, debajo de la
+   portada. Vuelve a la letra de la plataforma para que las cifras se lean. */
+.producer-panel {
+  width: min(1180px, calc(100% - 32px));
+  margin: 0 auto;
+  padding: 32px 0 64px;
+  font-size: 1rem;
+  color: var(--tinta);
+}
+.producer-panel h2 {
+  font-size: 1.125rem;
+  line-height: 1.3;
+}
