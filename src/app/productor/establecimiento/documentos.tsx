@@ -1,4 +1,4 @@
-import { Aviso, Panel, Vacio } from "@/components/ui/primitivos";
+import { Vacio } from "@/components/ui/primitivos";
 import {
   PRODUCTOR_DEMO,
   getDiscrepanciasDeDocumento,
@@ -6,7 +6,6 @@ import {
   getGarantiasConUso,
   getProyecto,
 } from "@/lib/data";
-import type { Discrepancia } from "@/lib/types";
 import { Garantias } from "./garantias";
 import { Repositorio, type CarpetaRepo } from "./repositorio";
 
@@ -55,48 +54,16 @@ export async function Documentos() {
   );
 
   const total = enriquecidos.length;
-  const conDiscrepancias = enriquecidos.filter((e) =>
-    e.discrepancias.some((x: Discrepancia) => !x.resuelta),
-  ).length;
-  const verificados = enriquecidos.filter(
-    (e) => e.documento.estadoAutenticidad === "verificada",
-  ).length;
 
   return (
     <div>
       <p className="mb-6 max-w-2xl text-sm text-tinta-suave">
-        Tus comprobantes y tus garantías en un solo lugar. Los documentos permanentes, como
-        el RENSPA, se reusan entre proyectos y no hace falta volver a subirlos; las
-        garantías también, con un cupo de proyectos simultáneos.
+        Lo que subís una vez, como el RENSPA, sirve para todos tus proyectos: no hace
+        falta volver a subirlo.
       </p>
 
       <div id="garantias" className="mb-10 scroll-mt-24">
         <Garantias garantias={garantias} />
-      </div>
-
-      <Panel className="mb-6 p-5">
-        <dl className="tabular grid grid-cols-3 gap-4 text-center">
-          <div>
-            <dt className="rotulo text-tinta-tenue">Documentos</dt>
-            <dd className="mt-1 text-2xl font-semibold">{total}</dd>
-          </div>
-          <div>
-            <dt className="rotulo text-tinta-tenue">Autenticidad verificada</dt>
-            <dd className="mt-1 text-2xl font-semibold text-marca">{verificados}</dd>
-          </div>
-          <div>
-            <dt className="rotulo text-tinta-tenue">Con discrepancias</dt>
-            <dd className="mt-1 text-2xl font-semibold text-alerta">{conDiscrepancias}</dd>
-          </div>
-        </dl>
-      </Panel>
-
-      <div className="mb-6">
-        <Aviso titulo="Consistencia no es autenticidad">
-          Guardian lee el documento, extrae sus datos y verifica que las cifras cierren entre
-          sí y con lo que declaraste. Eso no alcanza para afirmar que el documento sea
-          auténtico. Esa verificación se hace aparte, contra el organismo que lo emitió.
-        </Aviso>
       </div>
 
       {total === 0 ? (

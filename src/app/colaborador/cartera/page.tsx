@@ -45,8 +45,9 @@ const ESTADO_APORTE: Record<
  *
  * Lo que se ve acá son operaciones del fideicomiso, no un saldo: no hay dinero
  * disponible para mover ni botón para retirar. Por eso los montos van separados
- * —comprometido, acreditado, liquidado— en vez de sumados en un número grande
- * que parecería una billetera.
+ * —lo puesto en ciclos abiertos, lo cobrado y lo que falta cobrar— en vez de
+ * sumados en un número grande que parecería una billetera. Arriba, además, lo
+ * único que le pide algo al colaborador: una transferencia pendiente.
  */
 export default async function CarteraPage({
   searchParams,
@@ -77,22 +78,6 @@ export default async function CarteraPage({
     0,
   );
 
-  // Cómo se reparte lo acreditado. Sobre el acreditado y no sobre el
-  // comprometido: lo que todavía no entró al fideicomiso no está puesto en nada.
-  const totalAcreditado = posiciones.reduce(
-    (a, p) => a + p.aporte.montoAcreditadoArs,
-    0,
-  );
-  const distribucion = posiciones
-    .filter((p) => p.aporte.montoAcreditadoArs > 0)
-    .map((p) => ({
-      id: p.aporte.id,
-      titulo: p.proyecto.titulo,
-      monto: p.aporte.montoAcreditadoArs,
-      pct: (p.aporte.montoAcreditadoArs / totalAcreditado) * 100,
-    }))
-    .sort((a, b) => b.monto - a.monto);
-
   return (
     <div className="space-y-10">
       <div>
@@ -118,68 +103,36 @@ export default async function CarteraPage({
       ) : (
         <>
           <Panel className="p-5">
-            <dl className="tabular grid grid-cols-2 gap-x-6 gap-y-5 sm:grid-cols-3 lg:grid-cols-5">
-              <Dato etiqueta="Acreditado" ayuda="Lo que el banco acreditó.">
-                {formatArs(cartera.acreditadoArs)}
-              </Dato>
+            <dl className="tabular grid grid-cols-2 gap-x-6 gap-y-5 sm:grid-cols-3">
               <Dato
-                etiqueta="Comprometido sin acreditar"
-                ayuda="Adherido y sin transferir."
-              >
-                {formatArs(cartera.pendienteDeAcreditarArs)}
-              </Dato>
-              <Dato
-                etiqueta="En ciclos abiertos"
-                ayuda="Vuelve cuando cada ciclo se liquide."
+                etiqueta="Puesto en ciclos abiertos"
+                ayuda="Vuelve cuando cada ciclo se liquide, por lo que dé la venta."
               >
                 {formatArs(enCiclosAbiertos)}
               </Dato>
-              <Dato
-                etiqueta="Liquidado sin cobrar"
-                ayuda="Calculado o aprobado, sin pagar."
-              >
-                {formatArs(cartera.liquidadoPendienteArs)}
-              </Dato>
-              <Dato etiqueta="Cobrado" ayuda="Aporte más resultado ya pagado.">
+              <Dato etiqueta="Ya cobrado" ayuda="Aporte más resultado, ya pagado.">
                 {formatArs(cartera.liquidadoPagadoArs)}
               </Dato>
+              {cartera.liquidadoPendienteArs > 0 ? (
+                <Dato etiqueta="Por cobrar" ayuda="Liquidado y todavía sin pagar.">
+                  {formatArs(cartera.liquidadoPendienteArs)}
+                </Dato>
+              ) : null}
             </dl>
+            {cartera.pendienteDeAcreditarArs > 0 ? (
+              <p className="tabular mt-4 border-t border-borde pt-4 text-alerta">
+                Te falta transferir {formatArs(cartera.pendienteDeAcreditarArs)}. Abajo, en
+                cada proyecto, está la referencia para hacerlo.
+              </p>
+            ) : null}
           </Panel>
 
-          {distribucion.length > 0 ? (
-            <Seccion
-              titulo="Cómo se distribuye"
-              descripcion="Tus aportes acreditados, por proyecto."
-            >
-              <Panel className="p-5">
-                <ul className="space-y-4">
-                  {distribucion.map((d) => (
-                    <li key={d.id}>
-                      <div className="flex flex-wrap items-baseline justify-between gap-x-4 gap-y-1">
-                        <p className="text-sm font-medium">{d.titulo}</p>
-                        <p className="tabular text-sm text-tinta-suave">
-                          {formatArs(d.monto)} · {formatPct(d.pct)}
-                        </p>
-                      </div>
-                      <div className="mt-2">
-                        <Progreso
-                          valor={d.pct}
-                          label={`${d.titulo}: ${formatPct(d.pct)} de tus aportes`}
-                        />
-                      </div>
-                    </li>
-                  ))}
-                </ul>
-              </Panel>
-            </Seccion>
-          ) : null}
-
           <Seccion
-            titulo="Tus posiciones"
-            descripcion="Un proyecto por aporte."
+            titulo="En marcha"
+            descripcion="Los proyectos en los que participás."
           >
             {enCurso.length === 0 ? (
-              <Vacio titulo="No tenés posiciones abiertas">
+              <Vacio titulo="Todavía no participás en ningún proyecto">
                 En el catálogo están los proyectos con adhesión habilitada.
               </Vacio>
             ) : (
@@ -205,25 +158,19 @@ export default async function CarteraPage({
                         <EstadoProyectoBadge estado={proyecto.estado} />
                       </div>
 
-                      <dl className="tabular mt-5 grid grid-cols-2 gap-x-6 gap-y-5 border-t border-borde pt-4 sm:grid-cols-4">
-                        <Dato etiqueta="Comprometido">
+                      <dl className="tabular mt-5 grid grid-cols-2 gap-x-6 gap-y-5 border-t border-borde pt-4">
+                        <Dato etiqueta="Tu aporte">
                           {formatArs(aporte.montoComprometidoArs)}
-                        </Dato>
-                        <Dato etiqueta="Acreditado">
-                          {formatArs(aporte.montoAcreditadoArs)}
                         </Dato>
                         <Dato etiqueta={retornoDelProyecto(proyecto).etiqueta}>
                           {retornoDelProyecto(proyecto).valor}
-                        </Dato>
-                        <Dato etiqueta="Orden de suscripción" codigo>
-                          {aporte.ordenSuscripcion}
                         </Dato>
                       </dl>
 
                       <div className="mt-4">
                         <div className="flex flex-wrap items-baseline justify-between gap-x-4 gap-y-1">
                           <p className="text-sm text-tinta-suave">
-                            Fondeo del proyecto
+                            Cuánto juntó el proyecto
                           </p>
                           <p className="tabular text-sm">
                             {formatPct(fondeo.porcentaje)}
@@ -246,7 +193,7 @@ export default async function CarteraPage({
           </Seccion>
 
           {cerradas.length > 0 ? (
-            <Seccion titulo="Ciclos cerrados" descripcion="Lo que ya terminó.">
+            <Seccion titulo="Terminados" descripcion="Ciclos cerrados y lo que te tocó.">
               <ul className="space-y-3">
                 {cerradas.map(({ proyecto, aporte }) => (
                   <li key={aporte.id}>
@@ -274,8 +221,10 @@ export default async function CarteraPage({
                               etiqueta="Resultado liquidado"
                               ayuda={
                                 l.estado === "pagada"
-                                  ? `Pagada el ${formatFecha(l.pagadaAt ?? l.fecha)}`
-                                  : "Todavía no cobrada"
+                                  ? `Cobrado el ${formatFecha(l.pagadaAt ?? l.fecha)}`
+                                  : l.estado === "aprobada"
+                                    ? "Aprobado, todavía sin pagar"
+                                    : "Calculado, todavía sin aprobar"
                               }
                             >
                               {formatArs(l.resultadoArs)}
@@ -288,42 +237,6 @@ export default async function CarteraPage({
               </ul>
             </Seccion>
           ) : null}
-
-          <Seccion
-            titulo="Liquidaciones"
-            descripcion="Solo la pagada es dinero en tu cuenta."
-          >
-            {cartera.liquidaciones.length === 0 ? (
-              <Vacio titulo="Todavía no hay liquidaciones">
-                Aparecen cuando un ciclo cierra y se liquida el resultado.
-              </Vacio>
-            ) : (
-              <ul className="divide-y divide-borde border-y border-borde">
-                {cartera.liquidaciones.map((l) => (
-                  <li
-                    key={l.id}
-                    className="flex flex-wrap items-center justify-between gap-x-4 gap-y-2 py-3.5"
-                  >
-                    <div>
-                      <p className="font-medium">{l.concepto}</p>
-                      <p className="mt-0.5 text-sm text-tinta-tenue">
-                        {formatFecha(l.fecha)} · aporte{" "}
-                        {formatArs(l.capitalArs)} · resultado{" "}
-                        {formatArs(l.resultadoArs)}
-                      </p>
-                    </div>
-                    <Badge tono={l.estado === "pagada" ? "ok" : "alerta"}>
-                      {l.estado === "pagada"
-                        ? `Pagada el ${formatFecha(l.pagadaAt ?? l.fecha)}`
-                        : l.estado === "aprobada"
-                          ? "Aprobada, sin pagar"
-                          : "Calculada, sin aprobar"}
-                    </Badge>
-                  </li>
-                ))}
-              </ul>
-            )}
-          </Seccion>
 
           <div className="flex flex-wrap gap-3">
             <BotonLink href="/proyectos">Ver el catálogo</BotonLink>
@@ -347,8 +260,7 @@ function EstadoDelAporte({ aporte }: { aporte: Aporte }) {
       <div className="flex flex-wrap items-center justify-between gap-3">
         <Badge tono={estado.tono}>{estado.label}</Badge>
         <p className="text-sm text-tinta-tenue">
-          Adherido el {formatFecha(aporte.adhesionAt)} ·{" "}
-          {aporte.contratoVersion}
+          Desde el {formatFecha(aporte.adhesionAt)}
         </p>
       </div>
 
@@ -360,7 +272,7 @@ function EstadoDelAporte({ aporte }: { aporte: Aporte }) {
         </p>
       ) : null}
 
-      {aporte.movimientos.length > 0 ? (
+      {aporte.estado === "acreditado_parcial" && aporte.movimientos.length > 0 ? (
         <ul className="mt-3 space-y-2">
           {aporte.movimientos.map((m) => (
             <li key={m.id} className="text-sm">

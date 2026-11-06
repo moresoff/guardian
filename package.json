@@ -9,7 +9,8 @@
     "lint": "eslint",
     "datos:seed": "tsx scripts/generar-seed-sql.ts",
     "datos:comparar": "tsx scripts/comparar-repositorios.ts",
-    "datos:migrar": "tsx scripts/aplicar-migraciones.ts"
+    "datos:migrar": "tsx scripts/aplicar-migraciones.ts",
+    "check:copy": "node scripts/check-public-copy.mjs"
   },
   "dependencies": {
     "lucide-react": "^1.65.0",

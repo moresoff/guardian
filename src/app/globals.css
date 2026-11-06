@@ -13,8 +13,9 @@
   un documento oficial (RENSPA, CUVE, DT-e, caravanas). El mono hace trabajo
   semántico, no decorativo: marca que ese valor salió de un papel, no del formulario.
 
-  La raíz está en 112,5 % para que 1rem sean 18px: esto lo usan productores de
-  sesenta y pico, en el teléfono, a veces con sol de frente.
+  La raíz está en 100 % (1rem = 16px), el tamaño estándar de la web. Estuvo en
+  112,5 % (18px) pensando en productores de sesenta y pico en el teléfono; se
+  bajó el 31/10/2026 porque el sitio se veía demasiado grande.
 */
 
 :root {
@@ -82,9 +83,9 @@
   --font-mono: var(--font-jetbrains);
 }
 
-/* 1rem = 18px. El piso de tamaño de texto de todo el sistema sale de acá. */
+/* 1rem = 16px. El piso de tamaño de texto de todo el sistema sale de acá. */
 html {
-  font-size: 112.5%;
+  font-size: 100%;
   /* El encabezado es pegajoso, así que el navegador tiene que dejarle lugar
      cuando lleva un elemento al foco: sin esto, tabulando hacia abajo el campo
      enfocado queda debajo de la barra y se escribe a ciegas. */

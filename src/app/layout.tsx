@@ -1,9 +1,9 @@
 import type { Metadata, Viewport } from "next";
 import { JetBrains_Mono, Poppins } from "next/font/google";
-import { Nav } from "@/components/nav";
+import { SiteFrame } from "@/components/SiteFrame";
 import { usuarioActual } from "@/lib/sesion";
-import { RecorridoGuiado } from "@/components/recorrido-guiado";
 import "./globals.css";
+import "./website.css";
 
 const poppins = Poppins({
   variable: "--font-poppins",
@@ -39,29 +39,13 @@ export default async function RootLayout({ children }: LayoutProps<"/">) {
       className={`${poppins.variable} ${jetbrains.variable} h-full antialiased`}
     >
       <body className="flex min-h-full flex-col">
-        {/*
-          Con teclado, sin esto hay que pasar por los seis enlaces del encabezado
-          en cada página antes de llegar a lo que se vino a leer. Está oculto
-          hasta que recibe el foco.
-        */}
-        <a
-          href="#contenido"
-          className="sr-only focus:not-sr-only focus:absolute focus:top-3 focus:left-3 focus:z-50 focus:inline-flex focus:min-h-11 focus:items-center focus:rounded-xl focus:border focus:border-borde-fuerte focus:bg-superficie focus:px-4 focus:font-medium"
+        <SiteFrame
+          conSesion={conSesion}
+          nombre={usuario?.nombre ?? null}
+          lado={usuario?.lado ?? null}
         >
-          Saltar al contenido
-        </a>
-        <Nav conSesion={conSesion} nombre={usuario?.nombre ?? null} lado={usuario?.lado ?? null} />
-        <main id="contenido" className="mx-auto w-full max-w-6xl flex-1 px-4 py-6">
           {children}
-        </main>
-        <footer className="border-t border-borde px-4 py-6">
-          <p className="mx-auto max-w-6xl text-sm text-tinta-suave">
-            <span className="font-medium">Guardian</span> — prototipo de la
-            plataforma. Los datos son de prueba y nada de lo que se muestra acá
-            constituye oferta pública.
-          </p>
-        </footer>
-        <RecorridoGuiado />
+        </SiteFrame>
       </body>
     </html>
   );
