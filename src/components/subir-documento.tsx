@@ -36,15 +36,18 @@ export function simularLectura(tipo: TipoDocumento, cabezasDeclaradas: number): 
         ],
       };
     case "dte":
-      // El DT-e de ejemplo ampara 34 cabezas: si el proyecto declara otra cosa, se marca.
+      // Mientras la lectura sea simulada, el DT-e ampara exactamente las cabezas
+      // declaradas: un valor fijo marcaba como error a cualquier proyecto que no
+      // tuviera ese número. Cuando haya lectura real, la diferencia vuelve a
+      // marcarse acá, sin tocar el resto del cruce.
       return {
         campos: [
           { etiqueta: "Nº de DT-e", valor: "032636337-5" },
           { etiqueta: "CUVE", valor: "023 2636 3375" },
           { etiqueta: "Motivo", valor: "Faena" },
-          { etiqueta: "Detalle", valor: "Vaquillona 20 · Novillito 14" },
+          { etiqueta: "Cabezas amparadas", valor: formatNum(cabezasDeclaradas) },
         ],
-        cabezasDetectadas: 34,
+        cabezasDetectadas: cabezasDeclaradas,
         nota: "El CUVE permite contrastar el documento contra SENASA.",
       };
     case "listado_rfid":
@@ -135,6 +138,8 @@ export function SlotDocumento({
             onChange={(e) => {
               const f = e.target.files?.[0];
               if (f) onArchivo(f.name);
+              // Sin esto, volver a elegir el mismo archivo no dispara nada.
+              e.target.value = "";
             }}
           />
           <Boton variante="secundario" onClick={() => input.current?.click()}>
