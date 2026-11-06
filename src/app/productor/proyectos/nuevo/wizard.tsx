@@ -1,7 +1,6 @@
 "use client";
 
 import { useEffect, useMemo, useRef, useState } from "react";
-import { Modal } from "@/components/ui/modal";
 import { EnviadoAValidacion } from "@/components/enviado-a-validacion";
 import {
   SlotDocumento,
@@ -234,7 +233,6 @@ export function WizardPublicacion({
   const [cargas, setCargas] = useState<Record<string, EstadoCarga>>({});
   const [enviado, setEnviado] = useState(false);
   const [huecos, setHuecos] = useState<ClaveFicha[]>([]);
-  const [opciones, setOpciones] = useState(false);
   const [paso, setPaso] = useState(0);
   const titulo = useRef<HTMLHeadingElement>(null);
   const primeraVez = useRef(true);
@@ -421,7 +419,7 @@ export function WizardPublicacion({
               opciones={SISTEMAS_EN_ORDEN.map((k) => ({
                 valor: k,
                 titulo: `${CICLOS[k].nombre} · ${CICLOS[k].plazoDias} días`,
-                descripcion: `Productor ${formatPct(CICLOS[k].productorPct)} · colaboradores ${formatPct(CICLOS[k].colaboradoresPct)}. Rentabilidad anual estimada para el productor: ${formatPct(CICLOS[k].rentabilidadAnualProductorPct)}.`,
+                descripcion: `Te queda el ${formatPct(CICLOS[k].productorPct)} del resultado de la venta. Rentabilidad anual estimada: ${formatPct(CICLOS[k].rentabilidadAnualProductorPct)}.`,
               }))}
             />
 
@@ -490,10 +488,66 @@ export function WizardPublicacion({
               </div>
             ) : null}
 
-            <div className="mt-4">
-              <Boton variante="sutil" onClick={() => setOpciones(true)}>
-                Más opciones
-              </Boton>
+            <div className="mt-8 border-t border-borde pt-6">
+              <h3 className="font-medium">Si querés, contá un poco más</h3>
+              <p className="mt-1 text-sm text-tinta-suave">
+                Nada de esto es obligatorio. Lo podés completar después.
+              </p>
+              <div className="mt-4 grid gap-x-4 gap-y-3 sm:grid-cols-2">
+                {comprando ? (
+                  <>
+                    <Campo
+                      etiqueta="¿Quién te vende la hacienda?"
+                      value={b.vendedor}
+                      onChange={(e) => set("vendedor", e.target.value)}
+                    />
+                    <Campo
+                      etiqueta="¿A qué campo entra el lote?"
+                      value={b.establecimientoReceptor}
+                      onChange={(e) => set("establecimientoReceptor", e.target.value)}
+                    />
+                  </>
+                ) : (
+                  <Campo
+                    etiqueta="¿A quién le comprás ración y sanidad?"
+                    value={b.proveedores}
+                    onChange={(e) => set("proveedores", e.target.value)}
+                  />
+                )}
+                {garantias.length > 0 ? (
+                  <Seleccion
+                    etiqueta="Garantía que ofrecés"
+                    opciones={[
+                      { valor: "", label: "Ninguna por ahora" },
+                      ...garantias.map((g) => ({
+                        valor: g.id,
+                        label: g.disponible ? g.label : `${g.label} — sin cupo`,
+                        disabled: !g.disponible,
+                      })),
+                    ]}
+                    value={b.garantiaId}
+                    onChange={(e) => set("garantiaId", e.target.value)}
+                  />
+                ) : null}
+                <div className="sm:col-span-2">
+                  <CampoLargo
+                    etiqueta="Algo más que quieras contar"
+                    value={b.destinoDetalle}
+                    onChange={(e) => set("destinoDetalle", e.target.value)}
+                  />
+                </div>
+                <label className="flex min-h-11 items-center gap-3 sm:col-span-2">
+                  <input
+                    type="checkbox"
+                    checked={b.tieneSeguro}
+                    onChange={(e) => set("tieneSeguro", e.target.checked)}
+                    className="size-5 accent-[var(--marca)]"
+                  />
+                  <span>
+                    Tengo seguro de mortandad sobre el lote
+                  </span>
+                </label>
+              </div>
             </div>
           </div>
         ) : null}
@@ -524,68 +578,6 @@ export function WizardPublicacion({
         </div>
       </section>
 
-      <Modal
-        abierto={opciones}
-        titulo="Más opciones"
-        onCerrar={() => setOpciones(false)}
-        pie={<Boton onClick={() => setOpciones(false)}>Listo</Boton>}
-      >
-        <div className="grid gap-x-4 gap-y-3 sm:grid-cols-2">
-          {comprando ? (
-            <>
-              <Campo
-                etiqueta="¿Quién te vende la hacienda?"
-                value={b.vendedor}
-                onChange={(e) => set("vendedor", e.target.value)}
-              />
-              <Campo
-                etiqueta="¿A qué campo entra el lote?"
-                value={b.establecimientoReceptor}
-                onChange={(e) => set("establecimientoReceptor", e.target.value)}
-              />
-            </>
-          ) : (
-            <Campo
-              etiqueta="¿A quién le comprás ración y sanidad?"
-              value={b.proveedores}
-              onChange={(e) => set("proveedores", e.target.value)}
-            />
-          )}
-          {garantias.length > 0 ? (
-            <Seleccion
-              etiqueta="Garantía que ofrecés"
-              opciones={[
-                { valor: "", label: "Ninguna por ahora" },
-                ...garantias.map((g) => ({
-                  valor: g.id,
-                  label: g.disponible ? g.label : `${g.label} — sin cupo`,
-                  disabled: !g.disponible,
-                })),
-              ]}
-              value={b.garantiaId}
-              onChange={(e) => set("garantiaId", e.target.value)}
-            />
-          ) : null}
-          <div className="sm:col-span-2">
-            <CampoLargo
-              etiqueta="Algo más que quieras contar"
-              value={b.destinoDetalle}
-              onChange={(e) => set("destinoDetalle", e.target.value)}
-            />
-          </div>
-          <label className="flex items-start gap-3 sm:col-span-2">
-            <input
-              type="checkbox"
-              checked={b.tieneSeguro}
-              onChange={(e) => set("tieneSeguro", e.target.checked)}
-              className="mt-0.5 size-4 accent-[var(--marca)]"
-            />
-            <span className="text-sm">
-              Tengo seguro de mortandad sobre el lote
-            </span>
-          </label>
-        </div>
-      </Modal>
 
       <EnviadoAValidacion
         abierto={enviado}
