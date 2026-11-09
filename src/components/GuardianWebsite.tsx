@@ -2,7 +2,6 @@
 
 import {
   useEffect,
-  useRef,
   useState,
   type ReactNode,
   type MouseEvent,
@@ -12,10 +11,8 @@ import Link from "next/link";
 import {
   ArrowRight,
   ArrowUpRight,
-  ChevronDown,
+  Calculator,
   Menu,
-  Sprout,
-  Tractor,
   X,
 } from "lucide-react";
 import { Logo } from "./layout/Logo";
@@ -101,9 +98,7 @@ export function GuardianWebsite({
   children?: ReactNode;
 }) {
   const [menuOpen, setMenuOpen] = useState(false);
-  const [profileOpen, setProfileOpen] = useState(false);
   const [dirty, setDirty] = useState(false);
-  const profileButton = useRef<HTMLButtonElement>(null);
   useEffect(() => {
     if (!dirty) return;
     const warn = (event: BeforeUnloadEvent) => {
@@ -124,7 +119,6 @@ export function GuardianWebsite({
       return false;
     }
     setDirty(false);
-    setProfileOpen(false);
     setMenuOpen(false);
     return true;
   }
@@ -157,9 +151,7 @@ export function GuardianWebsite({
         className="site-header"
         onKeyDown={(event) => {
           if (event.key === "Escape") {
-            setProfileOpen(false);
             setMenuOpen(false);
-            profileButton.current?.focus();
           }
         }}
       >
@@ -201,44 +193,12 @@ export function GuardianWebsite({
             </Link>
           ))}
         </nav>
+        {/* El simulador está abierto a todos en la demo. */}
         <div className="site-profile">
-          <button
-            ref={profileButton}
-            className="profile-trigger"
-            aria-expanded={profileOpen}
-            aria-controls="profile-options"
-            onClick={() => setProfileOpen((open) => !open)}
-          >
-            <Sprout aria-hidden strokeWidth={1.75} size={17} />
-            Cambiar perfil
-            <ChevronDown aria-hidden strokeWidth={1.75} size={14} />
-          </button>
-          {profileOpen && (
-            <>
-              <button
-                className="profile-backdrop"
-                aria-label="Cerrar selección de perfil"
-                onClick={() => setProfileOpen(false)}
-              />
-              <div className="profile-options" id="profile-options">
-                <span>Elegí tu recorrido</span>
-                <Link href="/como-participar" onClick={mayLeave}>
-                  <Sprout aria-hidden strokeWidth={1.75} size={20} />
-                  <div>
-                    <strong>Quiero colaborar</strong>
-                    <small>Conocé cómo funciona Guardian</small>
-                  </div>
-                </Link>
-                <Link href="/registro?lado=productor" onClick={mayLeave}>
-                  <Tractor aria-hidden strokeWidth={1.75} size={20} />
-                  <div>
-                    <strong>Soy productor</strong>
-                    <small>Publicá tu ciclo con respaldo</small>
-                  </div>
-                </Link>
-              </div>
-            </>
-          )}
+          <Link href="/simulador" className="profile-trigger" onClick={mayLeave}>
+            <Calculator aria-hidden strokeWidth={1.75} size={17} />
+            Simulador
+          </Link>
         </div>
       </header>
       <main id="contenido">
