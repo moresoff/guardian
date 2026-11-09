@@ -13,7 +13,7 @@ export default async function SimuladorPage() {
     <div className="mx-auto max-w-6xl">
       <h1 className="text-3xl font-semibold tracking-tight">Simulador de un ciclo</h1>
       <p className="mt-1 mb-6 max-w-2xl text-tinta-suave">
-        Con el precio del kilo de hoy: elegí de qué lado estás, el ciclo y cuánto, y mirá cuánto
+        Con los números del análisis económico o con el precio del kilo de hoy: elegí de qué lado estás, el ciclo y cuánto, y mirá cuánto
         queda, lo que cobra Guardian y de dónde sale cada número.
         {u ? null : (
           <>

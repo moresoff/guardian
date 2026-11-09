@@ -154,11 +154,9 @@ export function SimuladorCiclo({
   const [sistema, setSistema] = useState<SistemaProductivo>("pastura");
   const [cabezas, setCabezas] = useState(100);
   const [aporte, setAporte] = useState(5_000_000);
-  const [origen, setOrigen] = useState<Origen>("mercado");
-  const [precios, setPrecios] = useState<Precios>({
-    compraKg: mercado.compra.valor,
-    ventaKg: mercado.venta.valor,
-  });
+  // Arranca con los precios del análisis; los de hoy están a un toque.
+  const [origen, setOrigen] = useState<Origen>("analisis");
+  const [precios, setPrecios] = useState<Precios>(PRECIOS_DEL_ANALISIS);
 
   const usar = (o: Exclude<Origen, "propio">) => {
     setOrigen(o);
@@ -206,8 +204,8 @@ export function SimuladorCiclo({
               valor={origen === "analisis" ? "analisis" : "mercado"}
               onCambio={usar}
               opciones={[
-                { valor: "mercado", titulo: "Precios de hoy" },
                 { valor: "analisis", titulo: "Del análisis" },
+                { valor: "mercado", titulo: "Precios de hoy" },
               ]}
             />
           </div>
@@ -233,11 +231,11 @@ export function SimuladorCiclo({
         {origen === "propio" ? (
           <button
             type="button"
-            onClick={() => usar("mercado")}
+            onClick={() => usar("analisis")}
             className="mt-3 inline-flex min-h-11 items-center gap-2 text-sm font-medium text-marca underline underline-offset-4"
           >
             <RotateCcw className="size-4" strokeWidth={1.75} aria-hidden />
-            Volver a los precios de hoy
+            Volver a los precios del análisis
           </button>
         ) : null}
       </section>
