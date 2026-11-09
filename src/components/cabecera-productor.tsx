@@ -1,5 +1,5 @@
 import { notFound } from "next/navigation";
-import { productorDeSesion } from "@/lib/cuentas";
+import { productorDeSesion, productoresDeSesion } from "@/lib/cuentas";
 import { PRODUCTOR_DEMO } from "@/lib/data";
 import { CabeceraPerfil, type DatoCabecera } from "@/components/cabecera-perfil";
 import { Badge, BotonLink } from "@/components/ui/primitivos";
@@ -21,7 +21,9 @@ export async function CabeceraProductor() {
   const productor = await getProductor(productorId);
   if (!productor) notFound();
 
-  const proyectos = await getProyectosDeProductor(productorId);
+  const proyectos = (
+    await Promise.all((await productoresDeSesion()).map(getProyectosDeProductor))
+  ).flat();
   const permanentes = await getDocumentosPermanentes(productorId);
 
   const cerrados = proyectos.filter((p) => p.estado === "cerrado" && p.resultado);

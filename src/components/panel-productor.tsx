@@ -1,4 +1,5 @@
-import { productorDeSesion } from "@/lib/cuentas";
+import { productoresDeSesion } from "@/lib/cuentas";
+import type { Saldos } from "@/lib/data";
 import { Suspense } from "react";
 import { AvisoIdentidad } from "@/components/aviso-identidad";
 import { CabeceraProductor } from "@/components/cabecera-productor";
@@ -21,9 +22,19 @@ import { fotoDelProyecto } from "@/lib/imagenes";
  * (/productor).
  */
 export async function PanelProductor() {
-  const productorId = await productorDeSesion();
-  const proyectos = await getProyectosDeProductor(productorId);
-  const saldos = await getSaldosDeProductor(productorId);
+  // Lo propio y los proyectos de ejemplo de la demo, sumados.
+  const ids = await productoresDeSesion();
+  const proyectos = (await Promise.all(ids.map(getProyectosDeProductor))).flat();
+  const saldos = (await Promise.all(ids.map(getSaldosDeProductor))).reduce<Saldos>(
+    (a, s) => ({
+      pendienteDeRetiro: a.pendienteDeRetiro + s.pendienteDeRetiro,
+      liberadoHistorico: a.liberadoHistorico + s.liberadoHistorico,
+      aLiquidar: a.aLiquidar + s.aLiquidar,
+      recaudadoHistorico: a.recaudadoHistorico + s.recaudadoHistorico,
+      objetivoHistorico: a.objetivoHistorico + s.objetivoHistorico,
+    }),
+    { pendienteDeRetiro: 0, liberadoHistorico: 0, aLiquidar: 0, recaudadoHistorico: 0, objetivoHistorico: 0 },
+  );
 
   /** Lo que cada proyecto le está pidiendo al productor, para la tarjeta. */
   const pendientes = new Map<string, string>();
@@ -70,13 +81,12 @@ export async function PanelProductor() {
     proyecto: p,
     pendiente: pendientes.get(p.id),
     foto: fotoDelProyecto(p.id),
+    ejemplo: ids.length > 1 && p.productorId !== ids[0],
   }));
 
   return (
     <div className="space-y-8">
       <AvisoIdentidad />
-      {/* Con o sin proyectos, el tablero es el mismo: una cuenta nueva lo ve en
-          cero y sabe qué va a encontrar cuando publique. */}
       <CabeceraProductor />
       <SaldosCard saldos={saldos} />
 

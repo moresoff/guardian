@@ -1,5 +1,5 @@
 import { PortadaProyecto } from "@/components/portada-proyecto";
-import { productorDeSesion } from "@/lib/cuentas";
+import { puedeManejar } from "@/lib/cuentas";
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import {
@@ -106,7 +106,7 @@ export default async function FichaProyecto({
   // además sus herramientas. Un borrador solo existe para él, así que no tiene
   // «cómo lo ve el colaborador» todavía.
   const esDueno =
-    usuario.lado === "productor" && proyecto.productorId === (await productorDeSesion());
+    usuario.lado === "productor" && (await puedeManejar(proyecto));
   const pestanasDueno =
     esDueno && proyecto.estado !== "borrador" ? (
       <Pestanas
