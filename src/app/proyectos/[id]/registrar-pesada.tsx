@@ -160,8 +160,8 @@ export function RegistrarPesada({
               />
               <Campo
                 id="pesada-cabezas"
-                etiqueta="Cabezas vivas"
-                ayuda="Cuántas quedan hoy en el lote."
+                etiqueta="Cabezas en el lote"
+                ayuda="Cuántas hay hoy en el lote."
                 inputMode="numeric"
                 className="tabular"
                 value={cabezas}
@@ -195,15 +195,15 @@ export function RegistrarPesada({
 
             <CampoLargo
               etiqueta="Alguna observación"
-              ayuda="Opcional. Si hubo bajas, clima o un cambio de ración, escribilo acá: es lo que después explica un número raro."
+              ayuda="Opcional. Si hubo clima, un problema sanitario o un cambio de ración, escribilo acá: es lo que después explica un número raro."
               value={nota}
               onChange={(e) => setNota(e.target.value)}
             />
 
             <Aviso titulo="Esto lo ve el colaborador">
               El seguimiento es la misma pantalla para los dos. Cargá lo que pasó, incluso
-              cuando no sea la mejor noticia: una baja avisada a tiempo es parte del
-              trato, una baja que aparece recién en el romaneo es un problema.
+              cuando no sea la mejor noticia: un problema avisado a tiempo es parte del
+              trato, uno que aparece recién en el romaneo es otra cosa.
             </Aviso>
           </div>
         )}

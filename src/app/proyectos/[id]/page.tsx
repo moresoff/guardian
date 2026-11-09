@@ -358,7 +358,9 @@ export default async function FichaProyecto({
                 </dl>
                 <p className="mt-3 text-sm font-medium">Sobre qué supuestos</p>
                 <ul className="mt-1 space-y-1 text-sm text-tinta-suave">
-                  {proyecto.condiciones.proyeccion.supuestos.map((s) => (
+                  {proyecto.condiciones.proyeccion.supuestos
+                    .filter((s) => !/mortandad/i.test(s))
+                    .map((s) => (
                     <li key={s}>{s}</li>
                   ))}
                 </ul>
@@ -490,11 +492,12 @@ export default async function FichaProyecto({
               <TituloBloque descripcion="Quién lo soporta, según el contrato.">
                 Qué pasa si algo sale mal
               </TituloBloque>
-              {/* Es la pregunta que el colaborador se hace antes de poner el dinero,
-                  y hasta ahora solo estaba contestada para la mortandad, adentro
-                  del bloque del fideicomiso. */}
+              {/* Es la pregunta que el colaborador se hace antes de poner el dinero.
+                  La mortandad no se muestra: el trabajo no la desarrolla. */}
               <ul className="grid gap-4 sm:grid-cols-2">
-                {proyecto.condiciones.contingencias.map((c) => (
+                {proyecto.condiciones.contingencias
+                  .filter((c) => c.caso !== "mortandad")
+                  .map((c) => (
                   <li
                     key={c.caso}
                     className="rounded-2xl border border-borde bg-superficie p-5 shadow-[var(--sombra-baja)]"

@@ -13,8 +13,8 @@ import type { Garantia, Productor, Proyecto } from "@/lib/types";
  * completo lo redacta el estudio jurídico; esta versión es de demostración.
  */
 
-export const VERSION_ADHESION = "Contrato de adhesión v4 — 2026-11-09";
-export const VERSION_FIDEICOMISO = "Contrato de fideicomiso v2 — 2026-11-09";
+export const VERSION_ADHESION = "Contrato de adhesión v5 — 2026-11-09";
+export const VERSION_FIDEICOMISO = "Contrato de fideicomiso v3 — 2026-11-09";
 
 /** El fiduciario de las series. Dato de demostración: se reemplaza por el real. */
 export const FIDUCIARIO = {
@@ -58,10 +58,6 @@ const plazo = (p: Proyecto) =>
     p.plazoCobroDias ? ` Después de vender, el frigorífico paga en unos ${p.plazoCobroDias} días.` : ""
   }`;
 
-const mortandad = (p: Proyecto) =>
-  p.fideicomiso?.mortandad ??
-  "Hasta el 2 % del lote la absorbe el proyecto; por encima de ese piso responde el productor, salvo caso fortuito acreditado.";
-
 const lote = (p: Proyecto) =>
   `${formatNum(p.cabezas)} ${p.categoria.toLowerCase()}s ${p.raza}, de ${p.pesoEntradaKg} kg de entrada`;
 
@@ -89,7 +85,6 @@ export function contratoDeAdhesion(p: Proyecto, productor: Productor, monto: num
           ? `De la venta, el ${formatPct(r.colaboradores)} es de los colaboradores, en proporción a lo que aportó cada uno, y el ${formatPct(r.productor)} del productor.`
           : "El reparto todavía no está pactado: sin eso no se puede participar.",
       },
-      { titulo: "Si se mueren animales", texto: mortandad(p) },
       { titulo: "Cuánto dura", texto: plazo(p) },
       {
         titulo: "Lo que se cobra",
@@ -145,7 +140,6 @@ export function contratoDeFideicomiso(
           ? `De la venta, el ${formatPct(r.productor)} es tuyo y el ${formatPct(r.colaboradores)} de los colaboradores.`
           : "El reparto se pacta antes de publicar.",
       },
-      { titulo: "Si se mueren animales", texto: mortandad(p) },
       { titulo: "Cuánto dura", texto: plazo(p) },
       {
         titulo: "Lo que te toca hacer",

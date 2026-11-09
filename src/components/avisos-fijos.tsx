@@ -8,7 +8,7 @@ import { Panel, Seccion } from "@/components/ui/primitivos";
 const AVISOS = {
   colaborador: [
     ["La compra de la hacienda", "Cuando el fiduciario le paga al vendedor, con la constancia de en qué se usó tu aporte."],
-    ["El informe del mes", "Peso, sanidad y mortandad del lote, con lo que se desvió de lo proyectado."],
+    ["El informe del mes", "El peso del lote, con lo que se desvió de lo proyectado."],
     ["La liquidación", "Al cierre: lo que se vendió, los gastos, las comisiones y lo que te toca."],
   ],
   productor: [

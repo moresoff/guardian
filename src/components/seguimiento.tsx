@@ -1,4 +1,4 @@
-import { Aviso, Badge, Dato, Panel, Progreso, Vacio } from "@/components/ui/primitivos";
+import { Aviso, Dato, Panel, Progreso, Vacio } from "@/components/ui/primitivos";
 import { formatFecha, formatKg, formatNum, formatPct, formatArs } from "@/lib/format";
 import { resumirSeguimiento } from "@/lib/seguimiento";
 import type { Proyecto, RegistroSeguimiento } from "@/lib/types";
@@ -59,7 +59,7 @@ export function Seguimiento({
           >
             {formatKg(resumen.gananciaDiariaPromedioKg)} kg
           </Dato>
-          <Dato etiqueta="Cabezas vivas">
+          <Dato etiqueta="Cabezas en el lote">
             {formatNum(ultima.cabezas)} de {formatNum(proyecto.cabezas)}
           </Dato>
           <Dato etiqueta="Gasto acumulado">{formatArs(resumen.gastoAcumuladoArs)}</Dato>
@@ -94,14 +94,13 @@ export function Seguimiento({
         {/* La tabla desborda sola en el teléfono en vez de apretar las columnas:
             son cifras que se comparan entre filas y no entran de otra manera. */}
         <div className="overflow-x-auto">
-          <table className="w-full min-w-[42rem] border-collapse text-sm">
+          <table className="w-full min-w-[36rem] border-collapse text-sm">
             <thead>
               <tr className="border-b border-borde text-left">
                 <Encabezado>Fecha</Encabezado>
                 <Encabezado numero>Cabezas</Encabezado>
                 <Encabezado numero>Peso prom.</Encabezado>
                 <Encabezado numero>Ganancia diaria</Encabezado>
-                <Encabezado numero>Bajas</Encabezado>
                 <Encabezado numero>Gasto</Encabezado>
                 <Encabezado>Concepto</Encabezado>
               </tr>
@@ -117,13 +116,6 @@ export function Seguimiento({
                   <Celda numero codigo>
                     {formatKg(gananciaDiariaKg)} kg
                   </Celda>
-                  <Celda numero>
-                    {registro.mortandad > 0 ? (
-                      <Badge tono="alerta">{registro.mortandad}</Badge>
-                    ) : (
-                      <span className="text-tinta-tenue">—</span>
-                    )}
-                  </Celda>
                   <Celda numero>{formatArs(registro.gastoArs)}</Celda>
                   <Celda>{registro.conceptoGasto}</Celda>
                 </tr>
@@ -137,14 +129,6 @@ export function Seguimiento({
         Las pesadas las carga el productor y sirven para seguir el ciclo de cerca. El
         resultado del ciclo sale del romaneo de playa del frigorífico, que es el único
         papel que mide los kilos que se vendieron.
-        {resumen.mortandadTotal > 0 ? (
-          <>
-            {" "}
-            {cerrado ? "En el ciclo hubo" : "Hasta hoy hubo"} {resumen.mortandadTotal}{" "}
-            {resumen.mortandadTotal === 1 ? "baja" : "bajas"} (
-            {formatPct(resumen.mortandadPct)} del lote).
-          </>
-        ) : null}
       </Aviso>
     </div>
   );

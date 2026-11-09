@@ -511,7 +511,7 @@ export function SimuladorCiclo({
           ) : null}
 
           <p className="text-sm text-tinta-suave">
-            Es una estimación, no una promesa. Usa el precio del kilo de arriba, 1 % de mortandad y los
+            Es una estimación, no una promesa. Usa el precio del kilo de arriba y los
             costos del análisis económico del proyecto. El resultado real depende del precio al vender y
             puede ser menor, o negativo.
           </p>

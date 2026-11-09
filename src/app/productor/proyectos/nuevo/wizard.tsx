@@ -517,7 +517,7 @@ export function WizardPublicacion({
                     className="size-5 accent-[var(--marca)]"
                   />
                   <span>
-                    Tengo seguro de mortandad sobre el lote
+                    Tengo seguro sobre el lote
                   </span>
                 </label>
               </div>

@@ -31,8 +31,6 @@ export interface ResumenSeguimiento {
   gastoAcumuladoArs: number;
   /** Cuánto costó cada kilo puesto sobre el lote. */
   costoPorKiloArs: number;
-  mortandadTotal: number;
-  mortandadPct: number;
 }
 
 const DIA = 86_400_000;
@@ -80,10 +78,5 @@ export function resumirSeguimiento(
         : 0,
     gastoAcumuladoArs,
     costoPorKiloArs: kilosGanadosLote > 0 ? gastoAcumuladoArs / kilosGanadosLote : 0,
-    mortandadTotal: registros.reduce((acc, r) => acc + r.mortandad, 0),
-    mortandadPct:
-      proyecto.cabezas > 0
-        ? (registros.reduce((acc, r) => acc + r.mortandad, 0) / proyecto.cabezas) * 100
-        : 0,
   };
 }

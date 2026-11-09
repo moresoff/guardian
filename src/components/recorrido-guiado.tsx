@@ -75,7 +75,7 @@ const PASOS: Record<Lado, Paso[]> = {
     },
     {
       titulo: "Leé la ficha y participá",
-      texto: "Presupuesto, el único pago de la compra y quién soporta la mortandad. Si querés sumarte, aceptás las condiciones y hacés tu aporte: cuenta cuando el banco lo acredita.",
+      texto: "Presupuesto, el único pago de la compra y qué pasa si algo sale mal. Si querés sumarte, aceptás las condiciones y hacés tu aporte: cuenta cuando el banco lo acredita.",
       href: "/proyectos/pry-2",
       objetivo: "main header",
     },
