@@ -22,6 +22,26 @@ const nextConfig: NextConfig = {
    * celular. Cada archivo puede pesar hasta 10 MB (`src/lib/archivos.ts`) y se
    * suben hasta cuatro juntos, más el margen del formulario.
    */
+  /*
+   * Direcciones viejas que pueden estar guardadas o compartidas. Antes cada una
+   * era una página que solo redirigía; acá están todas juntas.
+   */
+  async redirects() {
+    return [
+      { source: "/admin/proyectos/:id", destination: "/admin?proyecto=:id", permanent: false },
+      { source: "/colaborador/perfil", destination: "/colaborador/cartera?tab=datos", permanent: false },
+      { source: "/productor/documentacion", destination: "/productor/establecimiento?tab=documentos", permanent: false },
+      { source: "/productor/perfil", destination: "/productor/establecimiento", permanent: false },
+      { source: "/productor/proyectos", destination: "/productor", permanent: false },
+      { source: "/productor/proyectos/:id((?!nuevo$).+)", destination: "/proyectos/:id", permanent: false },
+      { source: "/como-invertir", destination: "/como-participar", permanent: true },
+      { source: "/investor", destination: "/como-participar", permanent: true },
+      { source: "/simulacion", destination: "/simulador", permanent: true },
+      { source: "/comparison", destination: "/", permanent: false },
+      { source: "/fiduciary", destination: "/", permanent: false },
+    ];
+  },
+
   experimental: {
     serverActions: {
       bodySizeLimit: "45mb",

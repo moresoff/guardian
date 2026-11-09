@@ -49,6 +49,15 @@ colaborador, participar, firmar y acreditar.
 - **Avisos**: la cartera muestra la constancia, el informe y la liquidación
   cuando ocurren.
 
+### Pulido final
+
+- Las 11 rutas viejas que solo redirigían se borraron; las direcciones siguen
+  andando desde `redirects()` en `next.config.ts`.
+- Sin insignias «Prototipo»: queda una línea solo donde algo no se guarda.
+- El recorrido guiado se ofrece después del registro con una tarjeta chica
+  («Empezar el recorrido» / «Ahora no») en vez de abrirse solo.
+- «Mi establecimiento»: el RENSPA y la marca van dentro de «El campo».
+
 ## 1. El circuito de punta a punta
 
 | Etapa | Lo que dice el trabajo | La app hoy | Estado |

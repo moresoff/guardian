@@ -462,11 +462,7 @@ export function FichaTecnica({
           retomarla cuando quieras: el proyecto sigue en borrador y nadie más lo ve.
         </p>
         <p className="mt-4 text-sm text-tinta-suave">
-          <Badge tono="alerta">Prototipo</Badge>{" "}
-          <span className="ml-1">
-            Mientras no esté el backend, lo que completás acá no se guarda al salir de
-            la pantalla.
-          </span>
+          Lo que completás acá todavía no queda guardado al salir de la pantalla.
         </p>
       </Modal>
     </FormularioGuiado>

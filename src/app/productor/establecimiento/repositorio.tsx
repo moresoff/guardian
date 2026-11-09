@@ -395,10 +395,7 @@ function FormularioSubida({
         </Aviso>
 
         <p className="text-sm text-tinta-suave">
-          <Badge tono="alerta">Prototipo</Badge>{" "}
-          <span className="ml-1">
-            Sin backend, el archivo no se guarda al cerrar la pantalla.
-          </span>
+          El archivo todavía no queda guardado al cerrar la pantalla.
         </p>
       </div>
     </Modal>

@@ -4,10 +4,12 @@ import { useState } from "react";
 import { FilaDato } from "@/components/fila-ajuste";
 import { Campo, Seleccion } from "@/components/ui/campos";
 import { Modal } from "@/components/ui/modal";
-import { Aviso, Badge, Boton, Panel, Seccion } from "@/components/ui/primitivos";
+import { Aviso, Boton, Panel, Seccion } from "@/components/ui/primitivos";
 import { SISTEMA_LABEL, formatNum } from "@/lib/format";
 import { PROVINCIAS } from "@/lib/provincias";
 import type { Productor, SistemaProductivo } from "@/lib/types";
+
+const cabezas = (n: number) => `${formatNum(n)} ${n === 1 ? "cabeza" : "cabezas"}`;
 
 const SISTEMAS = Object.keys(SISTEMA_LABEL) as SistemaProductivo[];
 
@@ -78,11 +80,7 @@ export function ConfiguracionPerfil({ productor }: { productor: Productor }) {
       {guardado ? (
         <Aviso tono="marca" titulo="Datos actualizados">
           <span className="text-sm">
-            <Badge tono="alerta">Prototipo</Badge>{" "}
-            <span className="ml-1">
-              El cambio se ve en esta pantalla, pero todavía no se guarda: falta el
-              backend.
-            </span>
+            El cambio se ve en esta pantalla, pero todavía no queda guardado.
           </span>
         </Aviso>
       ) : null}
@@ -111,7 +109,7 @@ export function ConfiguracionPerfil({ productor }: { productor: Productor }) {
 
       <Seccion
         titulo="El campo"
-        descripcion="Los datos productivos, que viajan con cada proyecto que publicás."
+        descripcion="Los datos productivos, que viajan con cada proyecto que publicás. El RENSPA y la marca no se escriben a mano: cambian subiendo la constancia que los prueba."
         accion={
           <Boton variante="secundario" onClick={() => abrir("campo")}>
             Editar
@@ -126,41 +124,25 @@ export function ConfiguracionPerfil({ productor }: { productor: Productor }) {
             </FilaDato>
             <FilaDato etiqueta="Sistema productivo">{datos.sistemaProductivo}</FilaDato>
             <FilaDato etiqueta="Capacidad instalada">
-              {formatNum(Number(datos.capacidadInstalada) || 0)} cabezas
+              {cabezas(Number(datos.capacidadInstalada) || 0)}
             </FilaDato>
             <FilaDato
               etiqueta="Ocupación actual"
-              ayuda={`Corral sin llenar: ${formatNum(Math.max(libre, 0))} cabezas`}
+              ayuda={`Corral sin llenar: ${cabezas(Math.max(libre, 0))}`}
             >
-              {formatNum(Number(datos.ocupacionActual) || 0)} cabezas
+              {cabezas(Number(datos.ocupacionActual) || 0)}
             </FilaDato>
-          </dl>
-        </Panel>
-      </Seccion>
-
-      <Seccion
-        titulo="Identidad verificable"
-        descripcion="Estos dos no se escriben a mano: Guardian los muestra como verificados, así que solo cambian subiendo la constancia que los prueba."
-      >
-        <Panel className="p-5 sm:p-6">
-          <dl>
             <FilaDato
               etiqueta="RENSPA"
-              ayuda="Registro Nacional Sanitario de Productores Agropecuarios"
-              codigo
+              ayuda={productor.renspa ? "Sale de la constancia que subiste." : "Se carga subiendo la constancia en «Mis papeles»."}
+              codigo={!!productor.renspa}
             >
-              {productor.renspa}
+              {productor.renspa || "Sin cargar"}
             </FilaDato>
-            <FilaDato etiqueta="Marca registrada" codigo>
-              {productor.marcaRegistrada}
+            <FilaDato etiqueta="Marca registrada" codigo={!!productor.marcaRegistrada}>
+              {productor.marcaRegistrada || "Sin cargar"}
             </FilaDato>
           </dl>
-          <div className="mt-5">
-            <Aviso tono="neutro">
-              Para corregir cualquiera de los dos hace falta volver a subir la constancia.
-              Guardian no edita a mano un dato que después muestra como verificado.
-            </Aviso>
-          </div>
         </Panel>
       </Seccion>
 
