@@ -332,8 +332,8 @@ export function FichaTecnica({
                   tipo={tipo}
                   estado={cargas[tipo] ?? { fase: "vacio" }}
                   cabezas={cabezas}
-                  onArchivo={(nombre) =>
-                    leerArchivo(tipo, nombre, cabezas, (e) => {
+                  onArchivo={(archivo) =>
+                    leerArchivo(tipo, archivo, cabezas, (e) => {
                       setCargas((prev) => ({ ...prev, [tipo]: e }));
                       // La lectura termina sola, unos segundos después de soltar
                       // el archivo: si el resultado quedara abajo, el productor

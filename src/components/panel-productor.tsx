@@ -1,12 +1,13 @@
 import Link from "next/link";
+import { productorDeSesion } from "@/lib/cuentas";
 import { Suspense } from "react";
+import { AvisoIdentidad } from "@/components/aviso-identidad";
 import { CabeceraProductor } from "@/components/cabecera-productor";
 import { ListaProyectos } from "@/components/lista-proyectos";
 import { SaldosCard } from "@/components/saldos-card";
 import type { ItemProyecto } from "@/components/tarjeta-proyecto";
 import { BotonLink, Vacio } from "@/components/ui/primitivos";
 import {
-  PRODUCTOR_DEMO,
   getDiscrepanciasDeProyecto,
   getDocumentosVigentesDeProyecto,
   getProyectosDeProductor,
@@ -22,8 +23,9 @@ import { fotoDelProyecto } from "@/lib/imagenes";
  * (/productor).
  */
 export async function PanelProductor({ base }: { base: string }) {
-  const proyectos = await getProyectosDeProductor(PRODUCTOR_DEMO);
-  const saldos = await getSaldosDeProductor(PRODUCTOR_DEMO);
+  const productorId = await productorDeSesion();
+  const proyectos = await getProyectosDeProductor(productorId);
+  const saldos = await getSaldosDeProductor(productorId);
 
   /** Lo que cada proyecto le está pidiendo al productor, para la tarjeta. */
   const pendientes = new Map<string, string>();
@@ -84,6 +86,7 @@ export async function PanelProductor({ base }: { base: string }) {
 
   return (
     <div className="space-y-8">
+      <AvisoIdentidad />
       <CabeceraProductor />
 
       <section className="grid gap-6 lg:grid-cols-12">

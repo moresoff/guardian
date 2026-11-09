@@ -1,11 +1,9 @@
 "use client";
 
 import { useState } from "react";
-import {
-  SlotDocumento,
-  leerArchivo,
-  type EstadoCarga,
-} from "@/components/subir-documento";
+import { SlotDocumento, type EstadoCarga } from "@/components/subir-documento";
+import { revisarArchivo } from "@/lib/archivos";
+import { subirDocumento } from "./acciones";
 import { Aviso, Boton, TituloBloque } from "@/components/ui/primitivos";
 import { Seleccion } from "@/components/ui/campos";
 import { DOCUMENTO_LABEL } from "@/lib/format";
@@ -33,9 +31,11 @@ const OPCIONALES: TipoDocumento[] = [
  *   tendría que esperar a que alguien se lo pida.
  */
 export function SubirRespaldo({
+  proyectoId,
   faltantes,
   cabezas,
 }: {
+  proyectoId: string;
   faltantes: TipoDocumento[];
   cabezas: number;
 }) {
@@ -43,10 +43,28 @@ export function SubirRespaldo({
   const [extra, setExtra] = useState<TipoDocumento[]>([]);
   const [eligiendo, setEligiendo] = useState<TipoDocumento>("poliza_seguro");
 
-  const subir = (tipo: TipoDocumento) => (nombre: string) =>
-    leerArchivo(tipo, nombre, cabezas, (e) =>
-      setCargas((prev) => ({ ...prev, [tipo]: e })),
-    );
+  const poner = (tipo: TipoDocumento, e: EstadoCarga) =>
+    setCargas((prev) => ({ ...prev, [tipo]: e }));
+
+  // Acá el papel se guarda apenas se elige: el proyecto ya existe, no hay un
+  // «enviar» al final que lo junte con otros.
+  const subir = (tipo: TipoDocumento) => async (archivo: File) => {
+    const motivo = revisarArchivo(archivo);
+    if (motivo) return poner(tipo, { fase: "rechazado", archivo: archivo.name, motivo });
+    poner(tipo, { fase: "procesando", archivo: archivo.name });
+    const f = new FormData();
+    f.set("proyectoId", proyectoId);
+    f.set("tipo", tipo);
+    f.set("archivo", archivo);
+    const r = await subirDocumento(f).catch(() => null);
+    if (!r || !r.ok)
+      return poner(tipo, {
+        fase: "rechazado",
+        archivo: archivo.name,
+        motivo: r?.error ?? "No pudimos guardar el archivo. Probá de nuevo.",
+      });
+    poner(tipo, { fase: "listo", archivo: archivo.name, lectura: r.lectura });
+  };
 
   const disponibles = OPCIONALES.filter(
     (t) => !faltantes.includes(t) && !extra.includes(t),

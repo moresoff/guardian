@@ -1,7 +1,8 @@
 import { notFound } from "next/navigation";
+import { productorDeSesion } from "@/lib/cuentas";
 import { CabeceraProductor } from "@/components/cabecera-productor";
 import { Pestanas } from "@/components/pestanas";
-import { PRODUCTOR_DEMO, getProductor } from "@/lib/data";
+import { getProductor } from "@/lib/data";
 import { AjustesCuenta } from "./ajustes";
 import { ConfiguracionPerfil } from "./configuracion";
 import { Documentos } from "./documentos";
@@ -30,7 +31,8 @@ export default async function EstablecimientoPage({
 }) {
   const { tab } = await searchParams;
   const activa = tab === "documentos" ? tab : "datos";
-  const productor = await getProductor(PRODUCTOR_DEMO);
+  const productorId = await productorDeSesion();
+  const productor = await getProductor(productorId);
   if (!productor) notFound();
 
   return (

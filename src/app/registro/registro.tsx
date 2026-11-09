@@ -149,6 +149,8 @@ export function Registro({ ladoInicial }: { ladoInicial?: Lado }) {
               telefono: datos.telefono,
               cuit: datos.cuit,
               clave: datos.clave,
+              establecimiento: datos.establecimiento,
+              provincia: datos.provincia,
             });
             if (!r.ok) {
               setEnviando(false);

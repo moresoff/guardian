@@ -2,6 +2,7 @@
 
 import { cookies } from "next/headers";
 import { COOKIE_SESION, crearToken, type LadoSesion } from "@/lib/sesion";
+import { crearFicha } from "@/lib/cuentas";
 import { crearUsuario, verificarUsuario, type DatosAlta } from "@/lib/usuarios";
 
 const SIETE_DIAS = 7 * 24 * 60 * 60;
@@ -24,8 +25,13 @@ export async function registrar(
     return { ok: false, error: "Elegí de qué lado entrás." };
   if (!d.nombre.trim() || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(d.correo.trim()) || d.clave.length < 8)
     return { ok: false, error: "Revisá los datos: falta el nombre, el correo o la contraseña." };
+  if (d.cuit.replace(/\D/g, "").length !== 11)
+    return { ok: false, error: "El CUIT tiene 11 números." };
   const r = await crearUsuario(d);
   if (!r.ok) return r;
+  // La ficha de productor o de colaborador, vinculada a la cuenta: lo que esta
+  // persona presente después queda a su nombre.
+  await crearFicha(r.usuario, d);
   await abrir(r.usuario.id, d.lado);
   return { ok: true };
 }

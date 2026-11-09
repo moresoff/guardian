@@ -48,6 +48,8 @@ function areaDe(pathname: string, lado: "productor" | "colaborador" | null): Are
   if (pathname.startsWith("/colaborador") || pathname.startsWith("/proyectos"))
     return "colaborador";
   if (pathname.startsWith("/admin")) return "admin";
+  // La validación de identidad es de los dos lados: se queda en el menú de quien entró.
+  if (pathname.startsWith("/identidad")) return lado;
   return null;
 }
 

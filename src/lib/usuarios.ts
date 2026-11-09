@@ -27,6 +27,9 @@ export interface DatosAlta {
   telefono: string;
   cuit: string;
   clave: string;
+  /** Solo del lado productor: el campo y la provincia, para su ficha. */
+  establecimiento?: string;
+  provincia?: string;
 }
 
 interface Guardado extends Usuario {

@@ -19,24 +19,34 @@ export function EnviadoAValidacion({
   cabezas,
   documentos,
   etiquetaCerrar = "Seguir editando",
+  proyectoId,
   onCerrar,
 }: {
   abierto: boolean;
   cabezas: number;
   documentos: number;
   etiquetaCerrar?: string;
+  /** Si viene, el proyecto quedó guardado y se puede abrir. */
+  proyectoId?: string;
   onCerrar: () => void;
 }) {
+  const guardado = Boolean(proyectoId);
   return (
     <Modal
       abierto={abierto}
-      titulo="El proyecto entró en revisión"
+      titulo={guardado ? "Tu proyecto quedó presentado" : "El proyecto entró en revisión"}
       onCerrar={onCerrar}
       pie={
         <>
-          <Boton variante="secundario" onClick={onCerrar}>
-            {etiquetaCerrar}
-          </Boton>
+          {guardado ? (
+            <BotonLink variante="secundario" href={`/proyectos/${proyectoId}`}>
+              Ver el proyecto
+            </BotonLink>
+          ) : (
+            <Boton variante="secundario" onClick={onCerrar}>
+              {etiquetaCerrar}
+            </Boton>
+          )}
           <BotonLink href="/productor">Ver mis proyectos</BotonLink>
         </>
       }
@@ -50,8 +60,8 @@ export function EnviadoAValidacion({
           : `${formatNum(cabezas)} cabezas y ${documentos} ${
               documentos === 1 ? "comprobante" : "comprobantes"
             }: las cifras cierran.`}{" "}
-        El proyecto pasa de borrador a{" "}
-        <strong className="font-medium text-tinta">En revisión</strong>.
+        Quedó en{" "}
+        <strong className="font-medium text-tinta">Pendiente de validación</strong>.
       </p>
       <ol className="mt-4 list-decimal space-y-1.5 pl-5 text-sm text-tinta-suave marker:text-tinta-tenue">
         <li>
@@ -70,10 +80,16 @@ export function EnviadoAValidacion({
           catálogo. Si algo no cierra, vuelve con la observación escrita.
         </li>
       </ol>
-      <p className="mt-5 text-sm text-tinta-suave">
-        <Badge tono="alerta">Prototipo</Badge>{" "}
-        <span className="ml-1">Sin backend, el proyecto no queda guardado.</span>
-      </p>
+      {guardado ? (
+        <p className="mt-5 text-sm text-tinta-suave">
+          Quedó guardado con tus papeles. Lo seguís desde Mis proyectos mientras lo revisamos.
+        </p>
+      ) : (
+        <p className="mt-5 text-sm text-tinta-suave">
+          <Badge tono="alerta">Prototipo</Badge>{" "}
+          <span className="ml-1">Desde esta pantalla el cambio todavía no queda guardado.</span>
+        </p>
+      )}
     </Modal>
   );
 }

@@ -60,3 +60,26 @@ export const consultar: Consultar = async <T = Record<string, unknown>>(
   const { rows } = await pool().query(sql, params);
   return rows as T[];
 };
+
+/**
+ * Corre varias escrituras como una sola: o quedan todas o no queda ninguna. Un
+ * proyecto presentado sin sus documentos, o un documento sin su proyecto, es
+ * peor que un error.
+ */
+export async function enTransaccion<T>(fn: (consultar: Consultar) => Promise<T>): Promise<T> {
+  const cliente = await pool().connect();
+  try {
+    await cliente.query("begin");
+    const resultado = await fn(async <R = Record<string, unknown>>(sql: string, params: unknown[] = []) => {
+      const { rows } = await cliente.query(sql, params);
+      return rows as R[];
+    });
+    await cliente.query("commit");
+    return resultado;
+  } catch (e) {
+    await cliente.query("rollback");
+    throw e;
+  } finally {
+    cliente.release();
+  }
+}

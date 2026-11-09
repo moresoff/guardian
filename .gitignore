@@ -45,3 +45,6 @@ next-env.d.ts
 # cada versión nueva queda para siempre en el historial. El código de la skill sí
 # se versiona; el ejecutable se baja aparte.
 .claude/skills/*/scripts/bin/
+
+# archivos subidos cuando no hay Supabase Storage configurado
+/.almacen

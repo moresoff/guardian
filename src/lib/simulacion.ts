@@ -1,5 +1,4 @@
-import type { Lectura } from "@/components/subir-documento";
-import { simularLectura } from "@/components/subir-documento";
+import { simularLectura, type Lectura } from "@/lib/lectura";
 import type { SistemaProductivo, TipoDocumento } from "@/lib/types";
 
 /**

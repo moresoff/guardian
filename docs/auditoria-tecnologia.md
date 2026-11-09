@@ -8,11 +8,11 @@ corrió la base en un Postgres 16 local; no se tocó ningún servicio externo.
 
 | # | Tecnología que pide el trabajo | Estado | Lo que hay | Lo que falta |
 |---|---|---|---|---|
-| 1 | Base de datos relacional | **Hecha, sin conectar** | Esquema de 22 tablas con RLS, 3 migraciones, seed, repositorio Postgres con las mismas 24 consultas que el de memoria (comparadas y coinciden), cuentas guardadas en `perfiles` | Una base real conectada (`DATABASE_URL`) y escritura: hoy solo el alta de cuenta guarda algo |
-| 2 | IA para procesar documentos | **Simulada** | Tablas `extracciones` y `discrepancias`, pantallas de lectura y de diferencias | Una llamada real a un modelo de visión: `simularLectura` devuelve valores fijos |
-| 3 | Motor de reglas y flujos de aprobación | **Reglas sí, flujo no** | `puedePublicarse`, `puedeAdherirse`, `puedeLiquidarse`, estados del proyecto en la base | Ninguna transición se guarda; «Publicar» y «Rechazar» son botones sin acción; falta separar revisión, aprobación y ejecución |
-| 4 | Gestión documental y firma | **Parcial** | Repositorio de documentos por productor y por proyecto, metadatos en `documentos` | Los archivos no se guardan en ningún lado, no hay versiones de documento ni firma |
-| 5 | Validación de identidad | **Solo un dato** | Campo de método y fecha de identidad y un sello en la cartera | Ningún flujo: el registro pide CUIT sin verificarlo |
+| 1 | Base de datos relacional | **Hecha y conectada** | Proyecto de Supabase con las 4 migraciones y el seed (comparado tabla por tabla contra el local), 23 tablas con RLS, cuentas vinculadas con su ficha de productor o colaborador, escrituras en transacción con asiento en `auditoria` | Que cada persona del equipo ponga la contraseña de la base en su `.env.local` |
+| 2 | IA para procesar documentos | **Simulada (a propósito)** | La lectura simulada ahora se guarda: cada papel presentado deja sus campos en `extracciones` y, si no cierra, una fila en `discrepancias` | Una llamada real a un modelo de visión |
+| 3 | Motor de reglas y flujos de aprobación | **Presentar, sí; aprobar, todavía no** | «Enviar a validación» guarda el proyecto en *Pendiente de validación* y aparece en `/admin`; el servidor revalida todo antes de escribir | Publicar y rechazar desde `/admin` (sin rol de administrador, a propósito para la demo) |
+| 4 | Gestión documental y firma | **Almacenamiento hecho; firma no** | Los papeles se guardan en el bucket privado `documentos` (o en `.almacen/` sin Supabase), con ruta, tipo y peso en `documentos`; el servidor revisa el contenido real del archivo | Versiones de documento y firma electrónica |
+| 5 | Validación de identidad | **Simulada, con datos reales** | `/identidad`: datos del DNI, fotos del DNI y selfie guardadas, declaración PEP y sujeto obligado, origen de fondos y CBU; queda en `verificaciones_identidad` | Un proveedor real de lectura de DNI, prueba de vida y comparación facial |
 
 ## 1. Base de datos relacional
 
@@ -25,28 +25,22 @@ Existe y funciona. Se comprobó:
 - `npx tsx scripts/comparar-repositorios.ts`: las 24 consultas devuelven lo
   mismo en memoria y en Postgres.
 
-Lo que falta no es el diseño sino conectarla y escribir en ella:
-
-- **No hay base conectada.** `.env.example` trae `DATABASE_URL` vacío, así que la
-  app corre con el seed en memoria y todo se pierde al reiniciar.
-- **Casi todo es de lectura.** El único `insert` del código es el alta de
-  cuenta. «Enviar a validación» solo cambia un estado en la pantalla.
-- **Las cuentas no están vinculadas con `productores`.** Las pantallas del
-  productor usan `PRODUCTOR_DEMO` (`prod-1`) para todos.
+En la primera revisión faltaba conectarla y escribir en ella. Las dos cosas
+quedaron hechas (ver «Qué cambió» más abajo).
 
 ### Conectarla a Supabase
 
-1. En Supabase: Project Settings → Database → Connection string.
-2. Copiar `.env.example` a `.env.local` y completar `DATABASE_URL` (pooler,
-   puerto 6543) y `DIRECT_URL` (sesión, puerto 5432).
-3. Correr:
+El proyecto `guardian` ya tiene el esquema y los datos. Para usarlo desde una
+computadora:
 
-   ```bash
-   npm run datos:migrar -- seed
-   npm run dev
-   ```
-
-   El script no imprime la cadena de conexión, solo el host.
+1. En Supabase, proyecto `guardian`: botón **Connect** → copiar la cadena del
+   *Transaction pooler* (puerto 6543) y la del *Session pooler* (5432). Si no
+   sabés la contraseña de la base, se cambia en Project Settings → Database.
+2. Copiar `.env.example` a `.env.local` y completar `DATABASE_URL` (6543),
+   `DIRECT_URL` (5432), `NEXT_PUBLIC_SUPABASE_URL` y `SUPABASE_SECRET_KEY`
+   (Project Settings → API Keys).
+3. `npm run dev`. Correr `npm run datos:migrar -- seed` no hace falta, pero no
+   rompe nada: saltea lo que ya está.
 
 ## 2. IA para procesamiento documental
 
@@ -93,7 +87,26 @@ El código tiene `identidad_metodo` e `identidad_fecha` en el colaborador del
 seed (por ejemplo, «DNI contra RENAPER») y un sello en la cartera, pero ningún
 flujo que lo produzca: el registro toma el CUIT como texto.
 
-## Lo que se agregó en esta rama
+## Qué cambió después de la primera auditoría
+
+- **Base conectada.** Se creó el proyecto `guardian` en Supabase (São Paulo) y
+  se le aplicaron las migraciones y los datos de demostración. Las 18 tablas
+  con datos se compararon contra el Postgres local con una huella por tabla y
+  coinciden. El script de migraciones ahora lleva registro (`_migraciones`), así
+  se puede correr de nuevo sin romper nada.
+- **Presentar.** El asistente para publicar guarda el proyecto en *Pendiente de
+  validación*, con sus papeles, lo leído de cada uno y un asiento de auditoría.
+  Cada cuenta nueva tiene su propia ficha de productor o colaborador, y lo que
+  presenta queda a su nombre.
+- **Archivos.** Se aceptan PDF, JPG, PNG y WEBP de hasta 10 MB. El navegador
+  avisa antes de subir y el servidor vuelve a mirar los primeros bytes: un
+  archivo renombrado a `.pdf` se rechaza.
+- **Identidad (KYC).** Cuatro pasos: datos del DNI, foto del DNI, selfie y
+  declaraciones (PEP, sujeto obligado ante la UIF, origen de fondos, CBU). Las
+  pruebas están simuladas y el método guardado lo dice. Una persona expuesta
+  políticamente queda en revisión, no se aprueba sola.
+
+## Lo que se agregó en la rama de la simulación
 
 - `/simulacion`: un recorrido de ejemplo para el productor, sin cuenta, con papeles
   ya cargados. Cuatro pasos: elegir el ciclo, ver los papeles leídos, ver los
@@ -105,11 +118,7 @@ flujo que lo produzca: el registro toma el CUIT como texto.
 
 ## Orden sugerido para lo que falta
 
-1. Conectar Supabase (sin código, 10 minutos).
-2. Definir el rol de administrador; sin eso no se puede escribir el flujo de
-   aprobación sin abrir un hueco.
-3. Escritura: enviar proyecto, decidir proyecto (con auditoría), vincular cuentas
-   con `productores`.
-4. Repositorio de archivos privado y versiones.
-5. Lectura real con modelo de visión.
-6. Identidad y firma, que dependen de proveedores externos.
+1. Rol de administrador, y recién con él publicar y rechazar desde `/admin`.
+2. Versiones de documento (el original sin pisar).
+3. Lectura real con modelo de visión.
+4. Identidad y firma con proveedores externos.

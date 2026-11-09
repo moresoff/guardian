@@ -118,7 +118,7 @@ export default async function AdminPage({
                       </Link>
                     </h2>
                     <p className="mt-1 text-sm text-tinta-suave">
-                      {productor?.razonSocial} · RENSPA <span className="codigo">{productor?.renspa}</span>
+                      {productor?.razonSocial} · RENSPA <span className="codigo">{productor?.renspa || "sin cargar"}</span>
                     </p>
                     <p className="mt-0.5 text-sm text-tinta-tenue">
                       {formatNum(proyecto.cabezas)} cabezas ·{" "}

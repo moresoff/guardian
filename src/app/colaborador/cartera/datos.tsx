@@ -1,9 +1,9 @@
 import { notFound } from "next/navigation";
+import { colaboradorDeSesion } from "@/lib/cuentas";
 import { CabeceraPerfil } from "@/components/cabecera-perfil";
 import { FilaDato } from "@/components/fila-ajuste";
 import { Badge, Panel, Seccion } from "@/components/ui/primitivos";
 import {
-  COLABORADOR_DEMO,
   getAportesDeColaborador,
   getColaborador,
 } from "@/lib/data";
@@ -16,7 +16,8 @@ import { AjustesColaborador } from "./ajustes";
  * le devuelve el capital, y los contratos que firmó.
  */
 export async function DatosColaborador() {
-  const colaborador = await getColaborador(COLABORADOR_DEMO);
+  const colaboradorId = await colaboradorDeSesion();
+  const colaborador = await getColaborador(colaboradorId);
   if (!colaborador) notFound();
 
   const aportes = await getAportesDeColaborador(colaborador.id);

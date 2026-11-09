@@ -58,7 +58,7 @@ export function formatFecha(iso: string) {
 
 export const ESTADO_LABEL: Record<EstadoProyecto, string> = {
   borrador: "Borrador",
-  en_validacion: "En validación",
+  en_validacion: "Pendiente de validación",
   abierto: "Abierto a participación",
   fondeado: "Fondeado",
   en_curso: "Ciclo en curso",

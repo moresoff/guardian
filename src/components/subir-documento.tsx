@@ -2,7 +2,9 @@
 
 import { useRef } from "react";
 import { Badge, Boton } from "@/components/ui/primitivos";
-import { DOCUMENTO_LABEL, formatNum } from "@/lib/format";
+import { DOCUMENTO_LABEL } from "@/lib/format";
+import { ACCEPT, revisarArchivo } from "@/lib/archivos";
+import { simularLectura, type Lectura } from "@/lib/lectura";
 import type { TipoDocumento } from "@/lib/types";
 
 /**
@@ -14,75 +16,39 @@ import type { TipoDocumento } from "@/lib/types";
  * intermedio existe igual porque la lectura real va a demorar y la pantalla
  * tiene que saber decirlo.
  */
-export interface Lectura {
-  campos: { etiqueta: string; valor: string }[];
-  cabezasDetectadas?: number;
-  nota?: string;
-}
+export type { Lectura } from "@/lib/lectura";
+export { simularLectura } from "@/lib/lectura";
 
 export type EstadoCarga =
   | { fase: "vacio" }
-  | { fase: "procesando"; archivo: string }
-  | { fase: "listo"; archivo: string; lectura: Lectura };
+  | { fase: "procesando"; archivo: string; file?: File }
+  | { fase: "listo"; archivo: string; lectura: Lectura; file?: File }
+  | { fase: "rechazado"; archivo: string; motivo: string };
 
-export function simularLectura(tipo: TipoDocumento, cabezasDeclaradas: number): Lectura {
-  switch (tipo) {
-    case "renspa":
-      return {
-        campos: [
-          { etiqueta: "RENSPA", valor: "01.036.0.01532/04" },
-          { etiqueta: "Titular", valor: "TROPA AGROGANADERA S.A." },
-          { etiqueta: "CUIT", valor: "30-71903430-2" },
-        ],
-      };
-    case "dte":
-      // Mientras la lectura sea simulada, el DT-e ampara exactamente las cabezas
-      // declaradas: un valor fijo marcaba como error a cualquier proyecto que no
-      // tuviera ese número. Cuando haya lectura real, la diferencia vuelve a
-      // marcarse acá, sin tocar el resto del cruce.
-      return {
-        campos: [
-          { etiqueta: "Nº de DT-e", valor: "032636337-5" },
-          { etiqueta: "CUVE", valor: "023 2636 3375" },
-          { etiqueta: "Motivo", valor: "Faena" },
-          { etiqueta: "Cabezas amparadas", valor: formatNum(cabezasDeclaradas) },
-        ],
-        cabezasDetectadas: cabezasDeclaradas,
-        nota: "El CUVE permite contrastar el documento contra SENASA.",
-      };
-    case "listado_rfid":
-      return {
-        campos: [
-          { etiqueta: "Identificadores leídos", valor: formatNum(cabezasDeclaradas) },
-          { etiqueta: "Duplicados internos", valor: "0" },
-          { etiqueta: "Ya usados en otro proyecto", valor: "0" },
-        ],
-        cabezasDetectadas: cabezasDeclaradas,
-      };
-    case "boleto_compraventa":
-      return {
-        campos: [
-          { etiqueta: "Vendedor", valor: "Consignataria del Centro S.A." },
-          { etiqueta: "Cantidad", valor: formatNum(cabezasDeclaradas) },
-          { etiqueta: "Fecha", valor: "15/09/2026" },
-        ],
-        cabezasDetectadas: cabezasDeclaradas,
-      };
-    default:
-      return { campos: [{ etiqueta: "Documento", valor: "Leído" }] };
-  }
-}
-
-/** Arranca la carga simulada y avisa cuando termina de leer. */
+/**
+ * Revisa el archivo, arranca la lectura simulada y avisa cuando termina. Un
+ * archivo que no sirve (vacío, muy pesado o de otro tipo) no se lee: se dice por
+ * qué, y se puede elegir otro. El servidor vuelve a revisarlo al presentar.
+ */
 export function leerArchivo(
   tipo: TipoDocumento,
-  nombre: string,
+  file: File,
   cabezas: number,
   onEstado: (e: EstadoCarga) => void,
 ) {
-  onEstado({ fase: "procesando", archivo: nombre });
+  const motivo = revisarArchivo(file);
+  if (motivo) {
+    onEstado({ fase: "rechazado", archivo: file.name, motivo });
+    return;
+  }
+  onEstado({ fase: "procesando", archivo: file.name, file });
   setTimeout(() => {
-    onEstado({ fase: "listo", archivo: nombre, lectura: simularLectura(tipo, cabezas) });
+    onEstado({
+      fase: "listo",
+      archivo: file.name,
+      file,
+      lectura: simularLectura(tipo, cabezas),
+    });
   }, 900);
 }
 
@@ -96,7 +62,7 @@ export function SlotDocumento({
   tipo: TipoDocumento;
   estado: EstadoCarga;
   cabezas: number;
-  onArchivo: (nombre: string) => void;
+  onArchivo: (archivo: File) => void;
   obligatorio?: boolean;
 }) {
   const input = useRef<HTMLInputElement>(null);
@@ -108,7 +74,9 @@ export function SlotDocumento({
   return (
     <div
       className={`rounded-xl border p-4 ${
-        discrepa ? "border-alerta/30 bg-alerta-suave" : "border-borde"
+        discrepa || estado.fase === "rechazado"
+          ? "border-alerta/30 bg-alerta-suave"
+          : "border-borde"
       }`}
     >
       <div className="flex flex-wrap items-center justify-between gap-3">
@@ -125,6 +93,7 @@ export function SlotDocumento({
 
         <div className="flex items-center gap-2">
           {estado.fase === "procesando" ? <Badge tono="neutro">Leyendo…</Badge> : null}
+          {estado.fase === "rechazado" ? <Badge tono="alerta">No sirve</Badge> : null}
           {estado.fase === "listo" ? (
             <Badge tono={discrepa ? "alerta" : "ok"}>
               {discrepa ? "Revisar" : "Leído"}
@@ -133,20 +102,26 @@ export function SlotDocumento({
           <input
             ref={input}
             type="file"
-            accept="application/pdf,image/*"
+            accept={ACCEPT}
             className="hidden"
             onChange={(e) => {
               const f = e.target.files?.[0];
-              if (f) onArchivo(f.name);
+              if (f) onArchivo(f);
               // Sin esto, volver a elegir el mismo archivo no dispara nada.
               e.target.value = "";
             }}
           />
           <Boton variante="secundario" onClick={() => input.current?.click()}>
-            {estado.fase === "vacio" ? "Subir" : "Reemplazar"}
+            {estado.fase === "vacio" ? "Subir" : estado.fase === "rechazado" ? "Elegir otro" : "Reemplazar"}
           </Boton>
         </div>
       </div>
+
+      {estado.fase === "rechazado" ? (
+        <p className="mt-3 text-sm text-alerta" role="alert">
+          {estado.motivo}
+        </p>
+      ) : null}
 
       {estado.fase === "listo" ? (
         <div className="mt-4 border-t border-borde pt-3">

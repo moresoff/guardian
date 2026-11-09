@@ -208,7 +208,11 @@ export async function GestionProyecto({
           ) : null}
 
           <div className={documentos.length > 0 ? "mt-6 border-t border-borde pt-6" : ""}>
-            <SubirRespaldo faltantes={faltantes} cabezas={proyecto.cabezas} />
+            <SubirRespaldo
+              proyectoId={proyecto.id}
+              faltantes={faltantes}
+              cabezas={proyecto.cabezas}
+            />
           </div>
         </section>
 

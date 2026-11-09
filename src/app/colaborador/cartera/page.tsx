@@ -1,4 +1,6 @@
 import Link from "next/link";
+import { colaboradorDeSesion } from "@/lib/cuentas";
+import { AvisoIdentidad } from "@/components/aviso-identidad";
 import { Pestanas } from "@/components/pestanas";
 import { DatosColaborador } from "./datos";
 import { EstadoProyectoBadge } from "@/components/estados";
@@ -12,7 +14,6 @@ import {
   Vacio,
 } from "@/components/ui/primitivos";
 import {
-  COLABORADOR_DEMO,
   getAportesDeProyecto,
   getCarteraDeColaborador,
 } from "@/lib/data";
@@ -56,7 +57,8 @@ export default async function CarteraPage({
 }) {
   const { tab } = await searchParams;
   const activa = tab === "datos" ? "datos" : "aportes";
-  const cartera = await getCarteraDeColaborador(COLABORADOR_DEMO);
+  const colaboradorId = await colaboradorDeSesion();
+  const cartera = await getCarteraDeColaborador(colaboradorId);
 
   const posiciones = await Promise.all(
     cartera.posiciones.map(async (p) => ({
@@ -80,6 +82,7 @@ export default async function CarteraPage({
 
   return (
     <div className="space-y-10">
+      <AvisoIdentidad />
       <div>
         <h1 className="text-2xl font-semibold tracking-tight">Mi cartera</h1>
         <p className="mt-1.5 text-sm text-tinta-suave">

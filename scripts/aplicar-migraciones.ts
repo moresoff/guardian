@@ -70,13 +70,47 @@ async function main() {
     .filter((n) => n.endsWith(".sql"))
     .sort();
 
+  // Qué migraciones ya corrieron. Sin esto, correr el script dos veces fallaba en
+  // la primera sentencia (`create type rol` ya existe) y no había forma de sumar
+  // una migración nueva a una base ya creada.
+  await client.query(
+    `create table if not exists _migraciones (
+       nombre text primary key,
+       aplicada_at timestamptz not null default now()
+     )`,
+  );
+  await client.query("alter table _migraciones enable row level security");
+  const { rows: hechas } = await client.query<{ nombre: string }>(
+    "select nombre from _migraciones",
+  );
+  const aplicadas = new Set(hechas.map((r) => r.nombre));
+
+  // Una base migrada antes de que existiera el registro: tiene el esquema pero
+  // no la lista. Las tres primeras migraciones son las que había entonces.
+  if (aplicadas.size === 0) {
+    const { rows: previa } = await client.query(
+      "select 1 from pg_tables where schemaname = 'public' and tablename = 'perfiles'",
+    );
+    if (previa.length > 0) {
+      for (const m of ["0001_esquema.sql", "0002_solo_engorde.sql", "0003_usuarios.sql"]) {
+        await client.query("insert into _migraciones (nombre) values ($1) on conflict do nothing", [m]);
+        aplicadas.add(m);
+      }
+    }
+  }
+
   for (const m of migraciones) {
+    if (aplicadas.has(m)) {
+      console.log(`  ${m} ya estaba`);
+      continue;
+    }
     process.stdout.write(`  aplicando ${m} … `);
     // Cada migración va en su propia transacción: si falla a la mitad, no deja
     // media base creada.
     await client.query("begin");
     try {
       await client.query(readFileSync(join(dir, m), "utf8"));
+      await client.query("insert into _migraciones (nombre) values ($1)", [m]);
       await client.query("commit");
       console.log("ok");
     } catch (e) {
@@ -88,7 +122,11 @@ async function main() {
     }
   }
 
-  if (conSeed) {
+  // El seed solo entra en una base vacía: cargarlo dos veces duplicaría claves.
+  const { rows: conDatos } = await client.query("select 1 from proyectos limit 1");
+  if (conSeed && conDatos.length > 0) {
+    console.log("  supabase/seed.sql: la base ya tiene datos, no se carga de nuevo");
+  } else if (conSeed) {
     process.stdout.write("  cargando supabase/seed.sql … ");
     await client.query("begin");
     try {
@@ -105,7 +143,7 @@ async function main() {
   }
 
   const { rows } = await client.query(
-    `select count(*)::int tablas from pg_tables where schemaname = 'public'`,
+    `select count(*)::int tablas from pg_tables where schemaname = 'public' and tablename <> '_migraciones'`,
   );
   const { rows: sinRls } = await client.query(
     `select count(*)::int n from pg_tables where schemaname = 'public' and not rowsecurity`,

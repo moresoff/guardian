@@ -28,6 +28,7 @@ import {
   formatPct,
 } from "@/lib/format";
 import { CICLOS, SISTEMAS_EN_ORDEN } from "@/lib/ciclos";
+import { presentar } from "./acciones";
 import type {
   Modalidad,
   SistemaProductivo,
@@ -232,6 +233,9 @@ export function WizardPublicacion({
   const [b, setB] = useState<Borrador>(INICIAL);
   const [cargas, setCargas] = useState<Record<string, EstadoCarga>>({});
   const [enviado, setEnviado] = useState(false);
+  const [enviando, setEnviando] = useState(false);
+  const [errorEnvio, setErrorEnvio] = useState<string | null>(null);
+  const [presentado, setPresentado] = useState<{ id: string; documentos: number } | null>(null);
   const [huecos, setHuecos] = useState<ClaveFicha[]>([]);
   const [paso, setPaso] = useState(0);
   const titulo = useRef<HTMLHeadingElement>(null);
@@ -291,8 +295,12 @@ export function WizardPublicacion({
   /**
    * Los papeles no frenan el envío: se pueden subir ahora o después, desde el
    * proyecto. Lo único obligatorio son los datos del primer paso.
+   *
+   * Presentar guarda el proyecto en «Pendiente de validación», con los papeles
+   * en el almacenamiento privado. El servidor vuelve a validar todo.
    */
-  const enviar = () => {
+  const enviar = async () => {
+    if (enviando || presentado) return;
     const pendientes = OBLIGATORIOS.filter(
       (c) => b[c].trim() === "" || Number(b[c]) === 0,
     );
@@ -301,6 +309,27 @@ export function WizardPublicacion({
       irA(0);
       return;
     }
+    const f = new FormData();
+    for (const [k, v] of Object.entries(b)) {
+      if (k === "usos") (v as string[]).forEach((u) => f.append("usos", u));
+      else if (k === "tieneSeguro") f.set(k, v ? "si" : "no");
+      else f.set(k, String(v));
+    }
+    for (const tipo of requeridos) {
+      const carga = cargas[tipo];
+      if (carga?.fase === "listo" && carga.file) f.set(`doc_${tipo}`, carga.file);
+    }
+    setErrorEnvio(null);
+    setEnviando(true);
+    const r = await presentar(f).catch(() => null);
+    setEnviando(false);
+    if (!r || !r.ok) {
+      setErrorEnvio(
+        r?.error ?? "No pudimos guardar el proyecto. Revisá tu conexión y probá de nuevo.",
+      );
+      return;
+    }
+    setPresentado({ id: r.id, documentos: r.documentos });
     setEnviado(true);
   };
 
@@ -463,8 +492,8 @@ export function WizardPublicacion({
                   tipo={tipo}
                   estado={cargas[tipo] ?? { fase: "vacio" }}
                   cabezas={cabezasNum}
-                  onArchivo={(nombre) =>
-                    leerArchivo(tipo, nombre, cabezasNum, (e) =>
+                  onArchivo={(archivo) =>
+                    leerArchivo(tipo, archivo, cabezasNum, (e) =>
                       setCargas((prev) => ({ ...prev, [tipo]: e })),
                     )
                   }
@@ -553,13 +582,14 @@ export function WizardPublicacion({
         ) : null}
 
         <p className="mt-5 min-h-5 text-sm text-alerta" role="alert">
-          {huecos.length > 0
+          {errorEnvio ??
+            (huecos.length > 0
             ? `${huecos.length === 1 ? "Falta un dato: " : `Faltan ${huecos.length} datos: `}${huecos
                 .map(
                   (c) => CAMPOS_FICHA.find((x) => x.clave === c)?.etiqueta ?? c,
                 )
                 .join(", ")}.`
-            : ""}
+            : "")}
         </p>
 
         <div className="mt-3 flex items-center justify-between gap-3 border-t border-borde pt-5">
@@ -573,7 +603,9 @@ export function WizardPublicacion({
           {paso < PASOS.length - 1 ? (
             <Boton onClick={siguiente}>Siguiente</Boton>
           ) : (
-            <Boton onClick={enviar}>Enviar a validación</Boton>
+            <Boton onClick={enviar} disabled={enviando || Boolean(presentado)}>
+              {enviando ? "Guardando…" : presentado ? "Presentado" : "Enviar a validación"}
+            </Boton>
           )}
         </div>
       </section>
@@ -582,7 +614,8 @@ export function WizardPublicacion({
       <EnviadoAValidacion
         abierto={enviado}
         cabezas={cabezasNum}
-        documentos={completos}
+        documentos={presentado?.documentos ?? completos}
+        proyectoId={presentado?.id}
         onCerrar={() => setEnviado(false)}
       />
     </div>
