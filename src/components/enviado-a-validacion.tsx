@@ -1,7 +1,7 @@
 "use client";
 
 import { Modal } from "@/components/ui/modal";
-import { Badge, Boton, BotonLink } from "@/components/ui/primitivos";
+import { Boton, BotonLink } from "@/components/ui/primitivos";
 import { formatNum } from "@/lib/format";
 
 /**
@@ -86,8 +86,7 @@ export function EnviadoAValidacion({
         </p>
       ) : (
         <p className="mt-5 text-sm text-tinta-suave">
-          <Badge tono="alerta">Prototipo</Badge>{" "}
-          <span className="ml-1">Desde esta pantalla el cambio todavía no queda guardado.</span>
+          Este cambio todavía no queda guardado.
         </p>
       )}
     </Modal>

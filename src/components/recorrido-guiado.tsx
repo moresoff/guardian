@@ -10,6 +10,7 @@ import {
   useState,
   useSyncExternalStore,
 } from "react";
+import { Boton } from "@/components/ui/primitivos";
 
 type Lado = "productor" | "colaborador";
 
@@ -74,7 +75,7 @@ const PASOS: Record<Lado, Paso[]> = {
     },
     {
       titulo: "Leé la ficha y participá",
-      texto: "Presupuesto, cronograma y quién soporta la mortandad. Si querés sumarte, aceptás las condiciones y hacés tu aporte: cuenta cuando el banco lo acredita.",
+      texto: "Presupuesto, el único pago de la compra y quién soporta la mortandad. Si querés sumarte, aceptás las condiciones y hacés tu aporte: cuenta cuando el banco lo acredita.",
       href: "/proyectos/pry-2",
       objetivo: "main header",
     },
@@ -169,11 +170,16 @@ function Guia() {
   const [alto, setAlto] = useState(0);
   const [ventana, setVentana] = useState({ w: 0, h: 0 });
 
-  // Arranca con el aviso del registro (?recorrido=lado); si no, sigue donde quedó.
+  // Después del registro (?recorrido=lado) el recorrido se ofrece, no se abre
+  // solo: una tarjeta chica abajo, que no tapa la pantalla.
   const aviso = parametros.get("recorrido");
-  useEffect(() => {
-    if (aviso === "productor" || aviso === "colaborador") guardar({ lado: aviso, paso: 0 });
-  }, [aviso]);
+  const [ofertaCerrada, setOfertaCerrada] = useState(false);
+  const ofrecido: Lado | null =
+    (aviso === "productor" || aviso === "colaborador") && !ofertaCerrada ? aviso : null;
+  const sacarAviso = () => {
+    setOfertaCerrada(true);
+    router.replace(pathname, { scroll: false });
+  };
 
   useEffect(() => {
     const abrir = () => {
@@ -293,6 +299,35 @@ function Guia() {
     window.addEventListener("keydown", alTeclado);
     return () => window.removeEventListener("keydown", alTeclado);
   }, [estado, cerrar]);
+
+  if (!estado && ofrecido) {
+    return (
+      <div
+        role="region"
+        aria-label="Recorrido"
+        className="fixed inset-x-4 bottom-[max(1rem,env(safe-area-inset-bottom))] z-40 mx-auto max-w-md rounded-2xl border border-borde bg-superficie p-4 shadow-[var(--sombra-alta)]"
+      >
+        <p className="font-semibold">¿Querés un recorrido de un minuto?</p>
+        <p className="mt-1 text-sm text-tinta-suave">
+          Te mostramos dónde está cada cosa. Lo podés abrir cuando quieras desde tu perfil.
+        </p>
+        <div className="mt-3 flex flex-wrap justify-end gap-2">
+          <Boton type="button" variante="secundario" onClick={sacarAviso}>
+            Ahora no
+          </Boton>
+          <Boton
+            type="button"
+            onClick={() => {
+              guardar({ lado: ofrecido, paso: 0 });
+              sacarAviso();
+            }}
+          >
+            Empezar el recorrido
+          </Boton>
+        </div>
+      </div>
+    );
+  }
 
   if (!estado || !paso) return null;
 

@@ -196,10 +196,7 @@ export function Garantias({ garantias }: { garantias: GarantiaEnPantalla[] }) {
               </Aviso>
             </div>
             <p className="mt-4 text-sm text-tinta-suave">
-              <Badge tono="alerta">Prototipo</Badge>{" "}
-              <span className="ml-1">
-                Sin backend, la garantía vuelve a aparecer al recargar.
-              </span>
+              La garantía todavía no queda guardada: vuelve a aparecer al recargar.
             </p>
           </>
         ) : null}
@@ -304,10 +301,7 @@ function FormularioGarantia({
         </Aviso>
 
         <p className="text-sm text-tinta-suave">
-          <Badge tono="alerta">Prototipo</Badge>{" "}
-          <span className="ml-1">
-            Sin backend, la garantía no queda guardada al cerrar la pantalla.
-          </span>
+          La garantía todavía no queda guardada al cerrar la pantalla.
         </p>
       </div>
     </Modal>
