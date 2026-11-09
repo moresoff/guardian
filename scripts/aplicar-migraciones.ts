@@ -4,7 +4,7 @@
  *   npm run datos:migrar          solo el esquema
  *   npm run datos:migrar -- seed  el esquema y después el seed
  *
- * Lee `DATABASE_URL` de `.env.local`. La cadena no se imprime nunca: de la base
+ * Lee `DATABASE_URL` de `.env.local` (o de `.env`). La cadena no se imprime nunca: de la base
  * se dice a qué host se conectó y nada más, para que el log se pueda pegar en
  * cualquier lado sin filtrar la contraseña.
  */
@@ -12,36 +12,62 @@ import { readFileSync, readdirSync } from "node:fs";
 import { join } from "node:path";
 import { Client } from "pg";
 
-function cargarEnvLocal() {
-  let contenido: string;
-  try {
-    contenido = readFileSync(".env.local", "utf8");
-  } catch {
-    return;
+/** Lee `.env.local` y, si no está, `.env`. Devuelve qué archivos encontró. */
+function cargarEnv(): string[] {
+  const leidos: string[] = [];
+  for (const archivo of [".env.local", ".env"]) {
+    let contenido: string;
+    try {
+      contenido = readFileSync(archivo, "utf8");
+    } catch {
+      continue;
+    }
+    leidos.push(archivo);
+    for (const linea of contenido.split(/\r?\n/)) {
+      const limpia = linea.trim();
+      if (!limpia || limpia.startsWith("#")) continue;
+      const i = limpia.indexOf("=");
+      if (i === -1) continue;
+      const clave = limpia.slice(0, i).trim();
+      const valor = limpia.slice(i + 1).trim().replace(/^["']|["']$/g, "");
+      if (valor && !process.env[clave]) process.env[clave] = valor;
+    }
   }
-  for (const linea of contenido.split("\n")) {
-    const limpia = linea.trim();
-    if (!limpia || limpia.startsWith("#")) continue;
-    const i = limpia.indexOf("=");
-    if (i === -1) continue;
-    const clave = limpia.slice(0, i).trim();
-    const valor = limpia.slice(i + 1).trim();
-    if (valor && !process.env[clave]) process.env[clave] = valor;
+  return leidos;
+}
+
+/** La rama en la que está la carpeta, para saber si es la correcta. */
+function ramaActual(): string {
+  try {
+    const head = readFileSync(join(".git", "HEAD"), "utf8").trim();
+    return head.startsWith("ref: refs/heads/") ? head.slice(16) : head.slice(0, 7);
+  } catch {
+    return "(no es una carpeta de git)";
   }
 }
 
 async function main() {
-  cargarEnvLocal();
+  const leidos = cargarEnv();
+  console.log(`carpeta: ${process.cwd()}`);
+  console.log(`rama:    ${ramaActual()}`);
+  console.log(`leí:     ${leidos.length ? leidos.join(" y ") : "ningún archivo .env"}`);
 
   // Las migraciones van por la conexión en modo sesión: el pooler en modo
   // transacción devuelve una conexión distinta entre sentencias, y una
   // migración necesita una sola para correr entera o no correr.
   const url = process.env.DIRECT_URL || process.env.DATABASE_URL;
-  if (!url || url.includes("[YOUR-PASSWORD]")) {
+  if (!url) {
     console.error(
-      "Falta la contraseña de la base en .env.local.\n" +
-        "Sale de Supabase → Project Settings → Database, y reemplaza\n" +
-        "[YOUR-PASSWORD] en DATABASE_URL y en DIRECT_URL.",
+      leidos.length
+        ? `\nEn ${leidos.join(" ni en ")} no hay una línea DATABASE_URL=… con valor.`
+        : "\nEn esta carpeta no hay .env.local ni .env. Fijate si es la carpeta del proyecto.",
+    );
+    process.exit(1);
+  }
+  if (url.includes("[YOUR-PASSWORD]")) {
+    console.error(
+      "\nDATABASE_URL todavía dice [YOUR-PASSWORD]. Reemplazalo por la contraseña de la base\n" +
+        "(Supabase → Project Settings → Database), sin los corchetes. Lo mismo en DIRECT_URL.",
     );
     process.exit(1);
   }
