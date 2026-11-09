@@ -21,6 +21,7 @@ const MENUS = {
       // activa en ella y en la ficha o el alta de un proyecto.
       { href: "/productor", label: "Mis proyectos", exacta: true, tambien: ["/productor/proyectos", "/proyectos/"] },
       { href: "/productor/establecimiento", label: "Mi establecimiento" },
+      { href: "/simulador", label: "Simulador" },
     ],
   },
   colaborador: {
@@ -29,6 +30,7 @@ const MENUS = {
     items: [
       { href: "/proyectos", label: "Catálogo" },
       { href: "/colaborador/cartera", label: "Mi cartera" },
+      { href: "/simulador", label: "Simulador" },
     ],
   },
   admin: {
@@ -48,31 +50,15 @@ function areaDe(pathname: string, lado: "productor" | "colaborador" | null): Are
   if (pathname.startsWith("/colaborador") || pathname.startsWith("/proyectos"))
     return "colaborador";
   if (pathname.startsWith("/admin")) return "admin";
-  // La validación de identidad es de los dos lados: se queda en el menú de quien entró.
-  if (pathname.startsWith("/identidad")) return lado;
+  // La validación de identidad y el simulador son de los dos lados: se quedan
+  // en el menú de quien entró.
+  if (pathname.startsWith("/identidad") || pathname.startsWith("/simulador")) return lado;
   return null;
 }
 
 /**
- * Las dos vistas son de la misma cuenta: quien engorda hacienda también puede
- * poner capital en el ciclo de otro. Cambiar de vista no es cambiar de usuario.
- */
-const VISTAS = [
-  {
-    href: "/productor",
-    titulo: "Productor",
-    texto: "Publicar un ciclo y sumar colaboradores",
-  },
-  {
-    href: "/proyectos",
-    titulo: "Colaborador",
-    texto: "Ver proyectos y participar en un ciclo",
-  },
-] as const;
-
-/**
  * El perfil en un círculo: ahí viven el nombre, mi perfil, el recorrido y el
- * cambio de vista, para que la barra quede solo con el logo, las secciones y
+ * simulador, para que la barra quede solo con el logo, las secciones y
  * «Salir». Decir a dónde vas es la mitad del trabajo del enlace.
  */
 function MenuPerfil({ area, nombre }: { area: Area; nombre: string | null }) {
@@ -145,21 +131,17 @@ function MenuPerfil({ area, nombre }: { area: Area; nombre: string | null }) {
             className="flex min-h-11 w-full items-center px-4 text-left text-sm transition-colors hover:bg-superficie-2"
             alAbrir={() => setAbierto(false)}
           />
-          <p className="border-y border-borde px-4 py-3 text-sm text-tinta-tenue">
-            Las dos vistas son de la misma cuenta.
-          </p>
-          {VISTAS.map((v) => (
-            <Link
-              key={v.href}
-              href={v.href}
-              role="menuitem"
-              onClick={() => setAbierto(false)}
-              className="block px-4 py-3.5 transition-colors hover:bg-marca-suave"
-            >
-              <span className="font-semibold">{v.titulo}</span>
-              <span className="mt-0.5 block text-sm text-tinta-suave">{v.texto}</span>
-            </Link>
-          ))}
+          <Link
+            href="/simulador"
+            role="menuitem"
+            onClick={() => setAbierto(false)}
+            className="block border-t border-borde px-4 py-3.5 transition-colors hover:bg-marca-suave"
+          >
+            <span className="font-semibold">Simulador</span>
+            <span className="mt-0.5 block text-sm text-tinta-suave">
+              Cuánto queda en un ciclo, con las comisiones
+            </span>
+          </Link>
           <Link
             href="/"
             role="menuitem"
@@ -233,9 +215,8 @@ export function Nav({
 
         {/*
           Dos encabezados según de qué lado del ingreso estés. Afuera: entrar y
-          registrarse. Adentro: cambiar de vista, que se hace con la misma cuenta
-          —un productor también puede participar en ciclos ajenos—. El selector no tiene sentido
-          antes de entrar: la sesión ya sabe a qué lado va cada uno.
+          registrarse. Adentro: el menú del perfil, con el simulador. La sesión ya
+          sabe a qué lado va cada uno.
         */}
         <div className="ml-auto flex flex-wrap items-center gap-2">
           {area ? (
