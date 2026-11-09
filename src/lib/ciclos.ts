@@ -1,3 +1,4 @@
+import { MODELOS, simularProductor } from "@/lib/simulador";
 import type { SistemaProductivo } from "@/lib/types";
 
 /**
@@ -24,32 +25,37 @@ export interface TipoDeCiclo {
   rentabilidadAnualProductorPct: number;
 }
 
-export const CICLOS: Record<SistemaProductivo, TipoDeCiclo> = {
-  corral: {
-    nombre: "Feedlot puro",
-    descripcion: "Encierre a corral con ración durante todo el ciclo.",
-    plazoDias: 131,
-    productorPct: 32.01,
-    colaboradoresPct: 67.99,
-    rentabilidadAnualProductorPct: 6.59,
-  },
-  mixto: {
-    nombre: "Mixto",
-    descripcion: "Una etapa a pastura y la terminación a corral.",
-    plazoDias: 180,
-    productorPct: 30.55,
-    colaboradoresPct: 69.45,
-    rentabilidadAnualProductorPct: 7.46,
-  },
-  pastura: {
-    nombre: "Pastura pura",
-    descripcion: "Todo el ciclo sobre pastura, sin encierre.",
-    plazoDias: 240,
-    productorPct: 26.33,
-    colaboradoresPct: 73.67,
-    rentabilidadAnualProductorPct: 41.35,
-  },
+const DESCRIPCION: Record<SistemaProductivo, { nombre: string; descripcion: string }> = {
+  corral: { nombre: "Feedlot puro", descripcion: "Encierre a corral con ración durante todo el ciclo." },
+  mixto: { nombre: "Mixto", descripcion: "Una etapa a pastura y la terminación a corral." },
+  pastura: { nombre: "Pastura pura", descripcion: "Todo el ciclo sobre pastura, sin encierre." },
 };
+
+const redondear = (n: number) => Math.round(n * 100) / 100;
+
+/**
+ * Plazo, reparto y rentabilidad salen del mismo modelo que el simulador
+ * (`src/lib/simulador.ts`), que sigue el análisis económico del trabajo final:
+ * feedlot de 90 días con reparto 31,78 / 68,22, mixto de 180 y pastura de 240.
+ * Así la ficha, el alta, el contrato y el simulador no pueden decir cosas
+ * distintas.
+ */
+export const CICLOS: Record<SistemaProductivo, TipoDeCiclo> = Object.fromEntries(
+  (["corral", "mixto", "pastura"] as const).map((k) => {
+    const m = MODELOS[k];
+    const colaboradoresPct = redondear(m.parteColaboradores * 100);
+    return [
+      k,
+      {
+        ...DESCRIPCION[k],
+        plazoDias: m.dias,
+        colaboradoresPct,
+        productorPct: redondear(100 - colaboradoresPct),
+        rentabilidadAnualProductorPct: redondear(simularProductor(k, 100).anual * 100),
+      },
+    ];
+  }),
+) as Record<SistemaProductivo, TipoDeCiclo>;
 
 /** El orden en que se muestran: del ciclo más corto al más largo. */
 export const SISTEMAS_EN_ORDEN: SistemaProductivo[] = ["corral", "mixto", "pastura"];

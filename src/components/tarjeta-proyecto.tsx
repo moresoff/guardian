@@ -16,6 +16,8 @@ export interface ItemProyecto {
   /** Lo que ese proyecto le está pidiendo al productor, en una línea. */
   pendiente?: string;
   foto: string | null;
+  /** Proyecto de ejemplo de la demo, no de esta cuenta. */
+  ejemplo?: boolean;
 }
 
 /**
@@ -46,6 +48,7 @@ export function TarjetaProyecto({
         <div className="flex min-w-0 flex-1 flex-col p-4">
           <div className="flex flex-wrap items-center gap-x-2 gap-y-1">
             <EstadoProyectoBadge estado={p.estado} />
+            {item.ejemplo ? <span className="text-sm font-medium text-tinta-suave">Ejemplo</span> : null}
             <span className="text-sm text-tinta-tenue">{formatFecha(p.creadoAt)}</span>
           </div>
           <h3 className="mt-2 font-semibold leading-snug tracking-tight">
@@ -92,6 +95,7 @@ export function TarjetaProyecto({
 
       <div className="flex flex-1 flex-col p-5">
         <p className="text-sm text-tinta-tenue">
+          {item.ejemplo ? "Ejemplo · " : ""}
           {modalidadLabel(p.modalidad)} · creado el {formatFecha(p.creadoAt)}
         </p>
         <h3 className="mt-1.5 text-lg font-semibold tracking-tight">

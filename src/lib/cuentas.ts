@@ -122,3 +122,24 @@ export async function colaboradorDeSesion(): Promise<string> {
   const u = await usuarioActual();
   return (u && (await fichaDe(u.id, "colaboradores"))) ?? COLABORADOR_DEMO;
 }
+
+/**
+ * Es una demo: una cuenta nueva no arranca vacía. Además de lo suyo, ve los
+ * proyectos del productor de ejemplo —uno en cada estado: borrador, en
+ * revisión, abierto, en curso y cerrados— y los puede manejar como propios.
+ */
+export async function productoresDeSesion(): Promise<string[]> {
+  const propio = await productorDeSesion();
+  return propio === PRODUCTOR_DEMO ? [propio] : [propio, PRODUCTOR_DEMO];
+}
+
+/** Lo mismo del lado del colaborador: su cartera suma los aportes de ejemplo. */
+export async function colaboradoresDeSesion(): Promise<string[]> {
+  const propio = await colaboradorDeSesion();
+  return propio === COLABORADOR_DEMO ? [propio] : [propio, COLABORADOR_DEMO];
+}
+
+/** Si el productor de la sesión puede manejar este proyecto (suyo o de ejemplo). */
+export async function puedeManejar(proyecto: { productorId: string }): Promise<boolean> {
+  return (await productoresDeSesion()).includes(proyecto.productorId);
+}

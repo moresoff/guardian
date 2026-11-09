@@ -10,6 +10,7 @@ import { FichaTecnica } from "./ficha-tecnica";
 import { RegistrarPesada } from "./registrar-pesada";
 import { SubirRespaldo } from "./subir-respaldo";
 import { getFirmaFideicomiso } from "@/lib/firmas";
+import { getMotivoRechazo } from "@/lib/validacion";
 import { getVerificacion } from "@/lib/identidad";
 import { usuarioActual } from "@/lib/sesion";
 import {
@@ -78,6 +79,7 @@ export async function GestionProyecto({
   const usuario = await usuarioActual();
   const identidad = usuario ? await getVerificacion(usuario.id) : null;
   const firma = proyecto.estado === "en_validacion" ? await getFirmaFideicomiso(proyecto.id) : null;
+  const motivoRechazo = proyecto.estado === "rechazado" ? await getMotivoRechazo(proyecto.id) : null;
 
   return (
     <div>
@@ -108,6 +110,15 @@ export async function GestionProyecto({
           >
             Guardian no publica el proyecto hasta que estén resueltas. Revisá cada una más
             abajo: podés corregir el dato del proyecto o subir el documento que corresponda.
+          </Aviso>
+        </div>
+      ) : null}
+
+      {proyecto.estado === "rechazado" ? (
+        <div className="mt-5">
+          <Aviso tono="error" titulo="Guardian rechazó el proyecto">
+            {motivoRechazo ?? "Escribinos para saber el motivo."} Podés presentar uno nuevo con lo
+            corregido.
           </Aviso>
         </div>
       ) : null}

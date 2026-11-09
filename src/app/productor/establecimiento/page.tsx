@@ -2,7 +2,7 @@ import { notFound } from "next/navigation";
 import { productorDeSesion } from "@/lib/cuentas";
 import { Pestanas } from "@/components/pestanas";
 import { getProductor } from "@/lib/data";
-import { AjustesCuenta } from "./ajustes";
+import { AvisosFijos } from "@/components/avisos-fijos";
 import { ConfiguracionPerfil } from "./configuracion";
 import { Documentos } from "./documentos";
 
@@ -52,7 +52,7 @@ export default async function EstablecimientoPage({
         <div className="space-y-12">
           <ConfiguracionPerfil productor={productor} />
 
-          <AjustesCuenta />
+          <AvisosFijos lado="productor" />
         </div>
       ) : null}
 

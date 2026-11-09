@@ -48,6 +48,11 @@ export interface Verificacion {
   nombre: string;
   apellido: string;
   coincidenciaFacial: number;
+  /** Lo que declaró, para mostrarlo en «Mis datos» sin volver a pedirlo. */
+  dni: string;
+  cuit: string;
+  domicilio: string;
+  cbu: string | null;
 }
 
 const global_ = globalThis as unknown as { identidadesGuardian?: Map<string, Verificacion> };
@@ -62,8 +67,15 @@ export async function getVerificacion(perfilId: string): Promise<Verificacion | 
     nombre: string;
     apellido: string;
     coincidencia_facial: string;
+    dni: string;
+    cuit: string;
+    domicilio: string;
+    localidad: string;
+    provincia: string;
+    cbu: string | null;
   }>(
-    `select estado, metodo, verificada_at, nombre, apellido, coincidencia_facial
+    `select estado, metodo, verificada_at, nombre, apellido, coincidencia_facial,
+            dni, cuit, domicilio, localidad, provincia, cbu
        from verificaciones_identidad where perfil_id = $1
       order by verificada_at desc limit 1`,
     [perfilId],
@@ -77,6 +89,10 @@ export async function getVerificacion(perfilId: string): Promise<Verificacion | 
         nombre: f.nombre,
         apellido: f.apellido,
         coincidenciaFacial: Number(f.coincidencia_facial),
+        dni: f.dni,
+        cuit: f.cuit,
+        domicilio: [f.domicilio, f.localidad, f.provincia].filter(Boolean).join(", "),
+        cbu: f.cbu,
       }
     : null;
 }
@@ -111,6 +127,10 @@ export async function guardarVerificacion(
     nombre: d.nombre,
     apellido: d.apellido,
     coincidenciaFacial,
+    dni: d.dni,
+    cuit: d.cuit,
+    domicilio: `${d.domicilio}, ${d.localidad}, ${d.provincia}`,
+    cbu: d.cbu,
   };
 
   if (!hayBaseConfigurada()) {

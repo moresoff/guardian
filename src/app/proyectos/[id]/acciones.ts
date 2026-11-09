@@ -2,7 +2,7 @@
 
 import { revalidatePath } from "next/cache";
 import { validarArchivo } from "@/lib/almacen";
-import { colaboradorDeSesion, productorDeSesion } from "@/lib/cuentas";
+import { colaboradorDeSesion, puedeManejar } from "@/lib/cuentas";
 import { contratoDeAdhesion, contratoDeFideicomiso } from "@/lib/contrato";
 import { getAportesDeProyecto, getGarantia, getProductor, getProyecto } from "@/lib/data";
 import { firmarAdhesion, firmarFideicomiso, getFirmaFideicomiso } from "@/lib/firmas";
@@ -42,10 +42,14 @@ export async function subirDocumento(
   const archivo = await validarArchivo(f.get("archivo"));
   if ("error" in archivo) return { ok: false, error: archivo.error };
 
+  const proyecto = await getProyecto(proyectoId);
+  if (!proyecto || !(await puedeManejar(proyecto)))
+    return { ok: false, error: "Solo el productor del proyecto puede subir papeles." };
+
   try {
     const r = await agregarDocumento(
       usuario.id,
-      await productorDeSesion(),
+      proyecto.productorId,
       proyectoId,
       tipo,
       archivo,
@@ -122,7 +126,7 @@ export async function firmarFideicomisoDelProyecto(
   const a = await antesDeFirmar(f);
   if ("error" in a) return { ok: false, error: a.error! };
   const { usuario, proyecto, productor } = a;
-  if (usuario.lado !== "productor" || proyecto.productorId !== (await productorDeSesion()))
+  if (usuario.lado !== "productor" || !(await puedeManejar(proyecto)))
     return { ok: false, error: "Solo el productor del proyecto puede firmarlo." };
   if (proyecto.estado !== "en_validacion")
     return { ok: false, error: "El contrato se firma mientras el proyecto está en validación." };

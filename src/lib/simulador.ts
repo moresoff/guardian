@@ -27,6 +27,12 @@ export const SUPUESTOS = {
 /** Lo que cobra Guardian, sobre el valor de la hacienda comprada. */
 export const COMISIONES = { productor: 0.035, colaborador: 0.01 } as const;
 
+/**
+ * La del productor, partida como dice el trabajo: 2 % al ejecutar el proyecto y
+ * 1,5 % de éxito si se junta al menos el 80 %. Si desiste, paga un piso de 0,5 %.
+ */
+export const COMISION_PRODUCTOR = { ejecucion: 0.02, exito: 0.015, desistimiento: 0.005 } as const;
+
 /** Lo que se lleva el fiduciario: 2 kg de carne por cabeza vendida. */
 export const FIDUCIARIO_KG_POR_CABEZA = 2;
 
@@ -255,7 +261,16 @@ export function simularProductor(
       { concepto: "Alimentación, sanidad y personal", monto: -red(crianza), detalle: "Incluye mantenimiento del campo" },
       { concepto: "Flete y gastos de venta", monto: -red(flete) },
       { concepto: "Lugar reservado para el lote", monto: -red(capacidad), detalle: "Capacidad del campo que queda comprometida" },
-      { concepto: "Comisión de Guardian", monto: -red(comision), detalle: `${pct(COMISIONES.productor)} del valor de la hacienda` },
+      {
+        concepto: "Comisión de Guardian al ejecutar",
+        monto: -red(compra * COMISION_PRODUCTOR.ejecucion),
+        detalle: `${pct(COMISION_PRODUCTOR.ejecucion)} del valor de la hacienda`,
+      },
+      {
+        concepto: "Comisión de éxito",
+        monto: -red(compra * COMISION_PRODUCTOR.exito),
+        detalle: `${pct(COMISION_PRODUCTOR.exito)} más, si se junta al menos el 80 %`,
+      },
       { concepto: "Fiduciario", monto: -red(fiduciario), detalle: "2 kg por cabeza vendida, en tu proporción" },
       { concepto: "Impuesto a los débitos y créditos", monto: -red(debitos + creditos), detalle: "0,6 % al pagar y al cobrar" },
       { concepto: "Impuesto a las ganancias", monto: -red(ganancias), detalle: `${pct(m.gananciasProductor)} de lo que se gana` },

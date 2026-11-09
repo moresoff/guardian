@@ -1,5 +1,6 @@
 import { notFound } from "next/navigation";
-import { productorDeSesion } from "@/lib/cuentas";
+import { productorDeSesion, productoresDeSesion } from "@/lib/cuentas";
+import { PRODUCTOR_DEMO } from "@/lib/data";
 import { CabeceraPerfil, type DatoCabecera } from "@/components/cabecera-perfil";
 import { Badge, BotonLink } from "@/components/ui/primitivos";
 import {
@@ -20,7 +21,9 @@ export async function CabeceraProductor() {
   const productor = await getProductor(productorId);
   if (!productor) notFound();
 
-  const proyectos = await getProyectosDeProductor(productorId);
+  const proyectos = (
+    await Promise.all((await productoresDeSesion()).map(getProyectosDeProductor))
+  ).flat();
   const permanentes = await getDocumentosPermanentes(productorId);
 
   const cerrados = proyectos.filter((p) => p.estado === "cerrado" && p.resultado);
@@ -39,8 +42,12 @@ export async function CabeceraProductor() {
     (d) => d.tipo === "renspa" && d.estadoAutenticidad === "verificada",
   );
 
-  // Las fotos las carga el equipo en `public/imagenes/fotos`; sin ellas van las iniciales.
-  const retrato = buscarImagen("fotos", "ganadero") ?? buscarImagen("fotos", "productor");
+  // El retrato de la demo es del productor de ejemplo: una cuenta nueva no tiene
+  // foto y va con sus iniciales, en vez de la cara de otro.
+  const retrato =
+    productorId === PRODUCTOR_DEMO
+      ? (buscarImagen("fotos", "ganadero") ?? buscarImagen("fotos", "productor"))
+      : null;
 
   // El primer proyecto publicado sirve para mirarse con los ojos del colaborador.
   const publicado = proyectos.find((p) =>

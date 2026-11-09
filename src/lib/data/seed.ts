@@ -185,8 +185,8 @@ const proyectosDeclarados: ProyectoDeclarado[] = [
       monedaAporte: "ARS",
       monedaDevolucion: "ARS",
       participacion: {
-        colaboradoresPct: 67.99,
-        productorPct: 32.01,
+        colaboradoresPct: 68.22,
+        productorPct: 31.78,
         base: "Sobre el resultado neto de la venta, una vez cubiertos los gastos reconocidos del ciclo",
         fuente: "demostrativo",
       },
@@ -205,8 +205,8 @@ const proyectosDeclarados: ProyectoDeclarado[] = [
     montoRecaudadoArs: 52_950_000,
     montoLiberadoArs: 20_700_000,
     montoRetiradoArs: 20_700_000,
-    plazoDias: 131,
-    rendimientoEsperadoPct: 6.59,
+    plazoDias: 90,
+    rendimientoEsperadoPct: 7.87,
     garantiaId: "gar-1",
     tieneSeguro: true,
     estado: "abierto",
@@ -223,7 +223,7 @@ const proyectosDeclarados: ProyectoDeclarado[] = [
       objeto:
         "Engordar el lote durante el ciclo, venderlo a faena y repartir el producido entre los participantes",
       repartoResultado:
-        "El resultado de la venta se reparte 67,99 % para los colaboradores y 32,01 % para el productor, sobre los kilos ganados en el ciclo",
+        "El resultado de la venta se reparte 68,22 % para los colaboradores y 31,78 % para el productor, sobre los kilos ganados en el ciclo",
       mortandad:
         "Hasta el 2 % de mortandad la absorbe el proyecto; por encima de ese piso responde el productor, salvo caso fortuito acreditado",
       inicioAt: "2026-08-21",
@@ -390,8 +390,8 @@ const proyectosDeclarados: ProyectoDeclarado[] = [
       monedaAporte: "ARS",
       monedaDevolucion: "ARS",
       participacion: {
-        colaboradoresPct: 67.99,
-        productorPct: 32.01,
+        colaboradoresPct: 68.22,
+        productorPct: 31.78,
         base: "Sobre el resultado neto de la venta, una vez cubiertos los gastos reconocidos del ciclo",
         fuente: "demostrativo",
       },
@@ -410,8 +410,8 @@ const proyectosDeclarados: ProyectoDeclarado[] = [
     montoRecaudadoArs: 0,
     montoLiberadoArs: 0,
     montoRetiradoArs: 0,
-    plazoDias: 131,
-    rendimientoEsperadoPct: 6.59,
+    plazoDias: 90,
+    rendimientoEsperadoPct: 7.87,
     garantiaId: "gar-2",
     tieneSeguro: true,
     estado: "en_validacion",
@@ -448,8 +448,8 @@ const proyectosDeclarados: ProyectoDeclarado[] = [
     montoRecaudadoArs: 0,
     montoLiberadoArs: 0,
     montoRetiradoArs: 0,
-    plazoDias: 131,
-    rendimientoEsperadoPct: 6.59,
+    plazoDias: 90,
+    rendimientoEsperadoPct: 7.87,
     garantiaId: "gar-4",
     tieneSeguro: true,
     estado: "en_validacion",
@@ -466,8 +466,8 @@ const proyectosDeclarados: ProyectoDeclarado[] = [
       monedaAporte: "ARS",
       monedaDevolucion: "ARS",
       participacion: {
-        colaboradoresPct: 67.99,
-        productorPct: 32.01,
+        colaboradoresPct: 68.22,
+        productorPct: 31.78,
         base: "Sobre el resultado neto de la venta, una vez cubiertos los gastos reconocidos del ciclo",
         fuente: "demostrativo",
       },
@@ -486,8 +486,8 @@ const proyectosDeclarados: ProyectoDeclarado[] = [
     montoRecaudadoArs: 13_500_000,
     montoLiberadoArs: 13_500_000,
     montoRetiradoArs: 9_300_000,
-    plazoDias: 131,
-    rendimientoEsperadoPct: 6.59,
+    plazoDias: 90,
+    rendimientoEsperadoPct: 7.87,
     garantiaId: "gar-3",
     tieneSeguro: true,
     estado: "cerrado",
@@ -504,7 +504,7 @@ const proyectosDeclarados: ProyectoDeclarado[] = [
       objeto:
         "Engordar el lote durante el ciclo, venderlo a faena y repartir el producido entre los participantes",
       repartoResultado:
-        "El resultado de la venta se reparte 67,99 % para los colaboradores y 32,01 % para el productor, sobre los kilos ganados en el ciclo",
+        "El resultado de la venta se reparte 68,22 % para los colaboradores y 31,78 % para el productor, sobre los kilos ganados en el ciclo",
       mortandad:
         "Hasta el 2 % de mortandad la absorbe el proyecto; por encima de ese piso responde el productor, salvo caso fortuito acreditado",
       inicioAt: "2026-06-04",
@@ -596,8 +596,8 @@ const proyectosDeclarados: ProyectoDeclarado[] = [
     montoRecaudadoArs: 0,
     montoLiberadoArs: 0,
     montoRetiradoArs: 0,
-    plazoDias: 131,
-    rendimientoEsperadoPct: 6.59,
+    plazoDias: 90,
+    rendimientoEsperadoPct: 7.87,
     garantiaId: "",
     tieneSeguro: false,
     estado: "borrador",
@@ -636,8 +636,8 @@ const proyectosDeclarados: ProyectoDeclarado[] = [
     montoRecaudadoArs: 0,
     montoLiberadoArs: 0,
     montoRetiradoArs: 0,
-    plazoDias: 131,
-    rendimientoEsperadoPct: 6.59,
+    plazoDias: 90,
+    rendimientoEsperadoPct: 7.87,
     garantiaId: "",
     tieneSeguro: false,
     estado: "borrador",
@@ -656,8 +656,8 @@ const proyectosDeclarados: ProyectoDeclarado[] = [
       monedaAporte: "ARS",
       monedaDevolucion: "ARS",
       participacion: {
-        colaboradoresPct: 67.99,
-        productorPct: 32.01,
+        colaboradoresPct: 68.22,
+        productorPct: 31.78,
         base: "Sobre el resultado neto de la venta, una vez cubiertos los gastos reconocidos del ciclo",
         fuente: "demostrativo",
       },
@@ -676,8 +676,8 @@ const proyectosDeclarados: ProyectoDeclarado[] = [
     montoRecaudadoArs: 64_500_000,
     montoLiberadoArs: 43_050_000,
     montoRetiradoArs: 32_100_000,
-    plazoDias: 131,
-    rendimientoEsperadoPct: 6.59,
+    plazoDias: 90,
+    rendimientoEsperadoPct: 7.87,
     garantiaId: "gar-2",
     tieneSeguro: true,
     estado: "en_curso",
@@ -694,7 +694,7 @@ const proyectosDeclarados: ProyectoDeclarado[] = [
       objeto:
         "Engordar el lote durante el ciclo, venderlo a faena y repartir el producido entre los participantes",
       repartoResultado:
-        "El resultado de la venta se reparte 67,99 % para los colaboradores y 32,01 % para el productor, sobre los kilos ganados en el ciclo",
+        "El resultado de la venta se reparte 68,22 % para los colaboradores y 31,78 % para el productor, sobre los kilos ganados en el ciclo",
       mortandad:
         "Hasta el 2 % de mortandad la absorbe el proyecto; por encima de ese piso responde el productor, salvo caso fortuito acreditado",
       inicioAt: "2026-07-09",
@@ -719,8 +719,8 @@ const proyectosDeclarados: ProyectoDeclarado[] = [
       monedaAporte: "ARS",
       monedaDevolucion: "ARS",
       participacion: {
-        colaboradoresPct: 67.99,
-        productorPct: 32.01,
+        colaboradoresPct: 68.22,
+        productorPct: 31.78,
         base: "Sobre el resultado neto de la venta, una vez cubiertos los gastos reconocidos del ciclo",
         fuente: "demostrativo",
       },
@@ -739,8 +739,8 @@ const proyectosDeclarados: ProyectoDeclarado[] = [
     montoRecaudadoArs: 71_400_000,
     montoLiberadoArs: 71_400_000,
     montoRetiradoArs: 71_400_000,
-    plazoDias: 131,
-    rendimientoEsperadoPct: 6.59,
+    plazoDias: 90,
+    rendimientoEsperadoPct: 7.87,
     garantiaId: "gar-3",
     tieneSeguro: true,
     estado: "cerrado",
@@ -757,7 +757,7 @@ const proyectosDeclarados: ProyectoDeclarado[] = [
       objeto:
         "Engordar el lote durante el ciclo, venderlo a faena y repartir el producido entre los participantes",
       repartoResultado:
-        "El resultado de la venta se reparte 67,99 % para los colaboradores y 32,01 % para el productor, sobre los kilos ganados en el ciclo",
+        "El resultado de la venta se reparte 68,22 % para los colaboradores y 31,78 % para el productor, sobre los kilos ganados en el ciclo",
       mortandad:
         "Hasta el 2 % de mortandad la absorbe el proyecto; por encima de ese piso responde el productor, salvo caso fortuito acreditado",
       inicioAt: "2026-01-23",
@@ -788,8 +788,8 @@ const proyectosDeclarados: ProyectoDeclarado[] = [
       monedaAporte: "ARS",
       monedaDevolucion: "ARS",
       participacion: {
-        colaboradoresPct: 67.99,
-        productorPct: 32.01,
+        colaboradoresPct: 68.22,
+        productorPct: 31.78,
         base: "Sobre el resultado neto de la venta, una vez cubiertos los gastos reconocidos del ciclo",
         fuente: "demostrativo",
       },
@@ -808,8 +808,8 @@ const proyectosDeclarados: ProyectoDeclarado[] = [
     montoRecaudadoArs: 39_300_000,
     montoLiberadoArs: 39_300_000,
     montoRetiradoArs: 39_300_000,
-    plazoDias: 131,
-    rendimientoEsperadoPct: 6.59,
+    plazoDias: 90,
+    rendimientoEsperadoPct: 7.87,
     garantiaId: "gar-1",
     tieneSeguro: true,
     estado: "cerrado",
@@ -826,7 +826,7 @@ const proyectosDeclarados: ProyectoDeclarado[] = [
       objeto:
         "Engordar el lote durante el ciclo, venderlo a faena y repartir el producido entre los participantes",
       repartoResultado:
-        "El resultado de la venta se reparte 67,99 % para los colaboradores y 32,01 % para el productor, sobre los kilos ganados en el ciclo",
+        "El resultado de la venta se reparte 68,22 % para los colaboradores y 31,78 % para el productor, sobre los kilos ganados en el ciclo",
       mortandad:
         "Hasta el 2 % de mortandad la absorbe el proyecto; por encima de ese piso responde el productor, salvo caso fortuito acreditado",
       inicioAt: "2025-07-11",
@@ -857,8 +857,8 @@ const proyectosDeclarados: ProyectoDeclarado[] = [
       monedaAporte: "ARS",
       monedaDevolucion: "ARS",
       participacion: {
-        colaboradoresPct: 67.99,
-        productorPct: 32.01,
+        colaboradoresPct: 68.22,
+        productorPct: 31.78,
         base: "Sobre el resultado neto de la venta, una vez cubiertos los gastos reconocidos del ciclo",
         fuente: "demostrativo",
       },
@@ -877,8 +877,8 @@ const proyectosDeclarados: ProyectoDeclarado[] = [
     montoRecaudadoArs: 25_500_000,
     montoLiberadoArs: 25_500_000,
     montoRetiradoArs: 25_500_000,
-    plazoDias: 131,
-    rendimientoEsperadoPct: 6.59,
+    plazoDias: 90,
+    rendimientoEsperadoPct: 7.87,
     garantiaId: "gar-2",
     tieneSeguro: true,
     estado: "cerrado",
@@ -895,7 +895,7 @@ const proyectosDeclarados: ProyectoDeclarado[] = [
       objeto:
         "Engordar el lote durante el ciclo, venderlo a faena y repartir el producido entre los participantes",
       repartoResultado:
-        "El resultado de la venta se reparte 67,99 % para los colaboradores y 32,01 % para el productor, sobre los kilos ganados en el ciclo",
+        "El resultado de la venta se reparte 68,22 % para los colaboradores y 31,78 % para el productor, sobre los kilos ganados en el ciclo",
       mortandad:
         "Hasta el 2 % de mortandad la absorbe el proyecto; por encima de ese piso responde el productor, salvo caso fortuito acreditado",
       inicioAt: "2025-02-18",
@@ -926,8 +926,8 @@ const proyectosDeclarados: ProyectoDeclarado[] = [
       monedaAporte: "ARS",
       monedaDevolucion: "ARS",
       participacion: {
-        colaboradoresPct: 67.99,
-        productorPct: 32.01,
+        colaboradoresPct: 68.22,
+        productorPct: 31.78,
         base: "Sobre el resultado neto de la venta, una vez cubiertos los gastos reconocidos del ciclo",
         fuente: "demostrativo",
       },
@@ -946,8 +946,8 @@ const proyectosDeclarados: ProyectoDeclarado[] = [
     montoRecaudadoArs: 18_600_000,
     montoLiberadoArs: 0,
     montoRetiradoArs: 0,
-    plazoDias: 131,
-    rendimientoEsperadoPct: 6.59,
+    plazoDias: 90,
+    rendimientoEsperadoPct: 7.87,
     garantiaId: "gar-1",
     tieneSeguro: false,
     estado: "abierto",
@@ -964,7 +964,7 @@ const proyectosDeclarados: ProyectoDeclarado[] = [
       objeto:
         "Financiar los insumos del encierre, engordar el lote, venderlo a faena y repartir el producido entre los participantes",
       repartoResultado:
-        "El resultado de la venta se reparte 67,99 % para los colaboradores y 32,01 % para el productor, sobre los kilos ganados en el ciclo",
+        "El resultado de la venta se reparte 68,22 % para los colaboradores y 31,78 % para el productor, sobre los kilos ganados en el ciclo",
       mortandad:
         "Hasta el 2 % de mortandad la absorbe el proyecto; por encima de ese piso responde el productor, salvo caso fortuito acreditado",
       inicioAt: "2026-09-20",

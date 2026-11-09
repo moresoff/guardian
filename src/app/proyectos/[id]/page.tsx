@@ -1,5 +1,5 @@
 import { PortadaProyecto } from "@/components/portada-proyecto";
-import { productorDeSesion } from "@/lib/cuentas";
+import { puedeManejar } from "@/lib/cuentas";
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import {
@@ -106,7 +106,7 @@ export default async function FichaProyecto({
   // además sus herramientas. Un borrador solo existe para él, así que no tiene
   // «cómo lo ve el colaborador» todavía.
   const esDueno =
-    usuario.lado === "productor" && proyecto.productorId === (await productorDeSesion());
+    usuario.lado === "productor" && (await puedeManejar(proyecto));
   const pestanasDueno =
     esDueno && proyecto.estado !== "borrador" ? (
       <Pestanas
@@ -385,8 +385,8 @@ export default async function FichaProyecto({
 
           {proyecto.presupuesto.length > 0 ? (
             <section className="border-t border-borde pt-7">
-              <TituloBloque descripcion="Cada tramo se paga contra la documentación que pide la condición.">
-                Presupuesto y desembolsos
+              <TituloBloque descripcion="En qué se usa lo que se junta.">
+                Presupuesto
               </TituloBloque>
 
               <div className="overflow-x-auto">
@@ -423,26 +423,16 @@ export default async function FichaProyecto({
                 </table>
               </div>
 
-              <ol className="mt-6 space-y-3">
-                {proyecto.cronograma.map((h, i) => (
-                  <li
-                    key={h.hito}
-                    className="rounded-xl border border-borde bg-superficie-2 p-4"
-                  >
-                    <div className="flex flex-wrap items-baseline justify-between gap-x-4 gap-y-1">
-                      <p className="font-medium">
-                        <span className="codigo text-marca">
-                          {String(i + 1).padStart(2, "0")}
-                        </span>{" "}
-                        {h.hito}
-                      </p>
-                      <p className="tabular text-sm font-medium">{formatArs(h.montoArs)}</p>
-                    </div>
-                    <p className="mt-1 text-sm text-tinta-suave">{h.momento}</p>
-                    <p className="mt-1 text-sm text-tinta-tenue">{h.condicion}</p>
-                  </li>
-                ))}
-              </ol>
+              {/* El trabajo no prevé tramos: el fiduciario hace un único pago, el de la
+                  compra, directo al vendedor. Lo demás lo pone el productor. */}
+              <div className="mt-6 rounded-xl border border-borde bg-superficie-2 p-4">
+                <p className="font-medium">Un solo pago: la compra de la hacienda</p>
+                <p className="mt-1 text-sm text-tinta-suave">
+                  Con al menos el 80 % juntado, el fiduciario verifica al vendedor, el precio y el
+                  campo donde entra el lote, y le paga directo al vendedor. La plata no pasa por el
+                  productor. Recibís la constancia cuando se hace el pago.
+                </p>
+              </div>
             </section>
           ) : null}
 

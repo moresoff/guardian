@@ -1,5 +1,6 @@
 import Link from "next/link";
-import { colaboradorDeSesion } from "@/lib/cuentas";
+import { colaboradoresDeSesion } from "@/lib/cuentas";
+import type { Cartera } from "@/lib/data";
 import { AvisoIdentidad } from "@/components/aviso-identidad";
 import { Pestanas } from "@/components/pestanas";
 import { DatosColaborador } from "./datos";
@@ -57,8 +58,19 @@ export default async function CarteraPage({
 }) {
   const { tab } = await searchParams;
   const activa = tab === "datos" ? "datos" : "aportes";
-  const colaboradorId = await colaboradorDeSesion();
-  const cartera = await getCarteraDeColaborador(colaboradorId);
+  // Lo propio y los aportes de ejemplo de la demo, sumados.
+  const carteras = await Promise.all(
+    (await colaboradoresDeSesion()).map(getCarteraDeColaborador),
+  );
+  const cartera = carteras.slice(1).reduce<Cartera>((a, c) => ({
+    posiciones: [...a.posiciones, ...c.posiciones],
+    liquidaciones: [...a.liquidaciones, ...c.liquidaciones],
+    comprometidoArs: a.comprometidoArs + c.comprometidoArs,
+    acreditadoArs: a.acreditadoArs + c.acreditadoArs,
+    pendienteDeAcreditarArs: a.pendienteDeAcreditarArs + c.pendienteDeAcreditarArs,
+    liquidadoPagadoArs: a.liquidadoPagadoArs + c.liquidadoPagadoArs,
+    liquidadoPendienteArs: a.liquidadoPendienteArs + c.liquidadoPendienteArs,
+  }), carteras[0]);
 
   const posiciones = await Promise.all(
     cartera.posiciones.map(async (p) => ({

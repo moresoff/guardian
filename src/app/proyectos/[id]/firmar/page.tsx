@@ -1,7 +1,7 @@
 import { notFound, redirect } from "next/navigation";
 import { FaltaIdentidad } from "@/components/falta-identidad";
 import { FirmaContrato } from "@/components/firma-contrato";
-import { productorDeSesion } from "@/lib/cuentas";
+import { puedeManejar } from "@/lib/cuentas";
 import { getGarantia, getProductor, getProyecto } from "@/lib/data";
 import { getFirmaFideicomiso } from "@/lib/firmas";
 import { formatFecha } from "@/lib/format";
@@ -15,7 +15,7 @@ export default async function FirmarPage({ params }: { params: Promise<{ id: str
   const u = await usuarioActual();
   if (!u) redirect("/ingresar");
   const proyecto = await getProyecto(id);
-  if (!proyecto || u.lado !== "productor" || proyecto.productorId !== (await productorDeSesion()))
+  if (!proyecto || u.lado !== "productor" || !(await puedeManejar(proyecto)))
     notFound();
   const productor = await getProductor(proyecto.productorId);
   if (!productor) notFound();
