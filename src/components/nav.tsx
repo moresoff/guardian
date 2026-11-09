@@ -219,8 +219,8 @@ export function Nav({
         ) : null}
 
         {/*
-          Dos encabezados según de qué lado del ingreso estés. Afuera: entrar y
-          registrarse. Adentro: el menú del perfil, con el simulador. La sesión ya
+          Dos encabezados según de qué lado del ingreso estés. Afuera: el simulador,
+          entrar y registrarse. Adentro: el menú del perfil, con el simulador. La sesión ya
           sabe a qué lado va cada uno.
         */}
         <div className="ml-auto flex items-center gap-1 sm:gap-2">
@@ -241,6 +241,13 @@ export function Nav({
             </>
           ) : (
             <>
+              <Link
+                href="/simulador"
+                aria-current={pathname.startsWith("/simulador") ? "page" : undefined}
+                className="flex min-h-11 items-center rounded-full px-3 py-2 text-sm font-medium text-tinta-suave transition-colors hover:bg-superficie-2 hover:text-tinta aria-[current=page]:bg-marca-suave aria-[current=page]:text-marca"
+              >
+                Simulador
+              </Link>
               <Link
                 href="/ingresar"
                 className="flex min-h-11 items-center rounded-full px-3 py-2 text-sm font-medium text-tinta-suave transition-colors hover:bg-superficie-2 hover:text-tinta"
