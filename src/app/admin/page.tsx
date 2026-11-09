@@ -5,11 +5,13 @@ import { RevisionProyecto } from "./revision";
 import { accionAcreditar } from "./acciones";
 import { BotonAccion } from "./controles";
 import { getTransferenciasPendientes } from "@/lib/validacion";
+import { getLiquidacionesDeProyecto, getPagoCompra } from "@/lib/ciclo";
 import {
   getDiscrepanciasDeProyecto,
   getDocumentosVigentesDeProyecto,
   getProductor,
   getProyectosEnValidacion,
+  getProyectosPublicos,
 } from "@/lib/data";
 import {
   POSESION_LABEL,
@@ -34,6 +36,30 @@ export default async function AdminPage({
   const { proyecto: elegido } = await searchParams;
   const proyectos = await getProyectosEnValidacion();
   const transferencias = await getTransferenciasPendientes();
+
+  // Los ciclos con algo para hacer, y qué es.
+  const ciclos = (
+    await Promise.all(
+      (await getProyectosPublicos()).map(async (p) => {
+        let paso: string | null = null;
+        if (p.estado === "abierto") paso = "Cerrar la participación";
+        else if (p.estado === "fondeado") {
+          const pago = await getPagoCompra(p.id);
+          paso = !pago
+            ? "Verificar los requisitos de la compra"
+            : !pago.aprobadoAt
+              ? "Aprobar el pago de la compra"
+              : "Pagar al vendedor";
+        } else if (p.estado === "en_curso") paso = "Cargar la venta y liquidar";
+        else if (p.estado === "cerrado") {
+          const ls = await getLiquidacionesDeProyecto(p.id);
+          if (ls.some((l) => l.estado === "calculada")) paso = "Aprobar la liquidación";
+          else if (ls.some((l) => l.estado === "aprobada")) paso = "Pagar a los colaboradores";
+        }
+        return paso ? { proyecto: p, paso } : null;
+      }),
+    )
+  ).filter((x) => x !== null);
 
   const filas = await Promise.all(
     proyectos.map(async (p) => {
@@ -124,6 +150,36 @@ export default async function AdminPage({
                 >
                   El banco la acreditó
                 </BotonAccion>
+              </li>
+            ))}
+          </ul>
+        )}
+      </section>
+
+      <section aria-labelledby="titulo-ciclos" className="mb-8">
+        <h2 id="titulo-ciclos" className="text-lg font-semibold tracking-tight">
+          Ciclos en marcha
+        </h2>
+        <p className="mt-1 max-w-2xl text-sm text-tinta-suave">
+          Proyectos publicados y lo que sigue en cada uno: cerrar la participación, pagar la
+          compra o liquidar.
+        </p>
+        {ciclos.length === 0 ? (
+          <p className="mt-3 text-sm text-tinta-suave">No hay ciclos con pasos pendientes.</p>
+        ) : (
+          <ul className="mt-3 divide-y divide-borde rounded-2xl border border-borde bg-superficie">
+            {ciclos.map(({ proyecto, paso }) => (
+              <li key={proyecto.id} className="relative flex flex-wrap items-center justify-between gap-3 p-4">
+                <div className="min-w-0">
+                  <p className="font-medium">
+                    <Link href={`/admin/ciclo/${proyecto.id}`} className="hover:text-marca">
+                      <span className="absolute inset-0" aria-hidden />
+                      {proyecto.titulo}
+                    </Link>
+                  </p>
+                  <p className="text-sm text-tinta-suave">Sigue: {paso}</p>
+                </div>
+                <EstadoProyectoBadge estado={proyecto.estado} />
               </li>
             ))}
           </ul>

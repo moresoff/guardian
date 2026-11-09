@@ -21,6 +21,7 @@ const TONO_ESTADO: Record<EstadoProyecto, Tono> = {
   en_curso: "marca",
   cerrado: "neutro",
   rechazado: "error",
+  desierto: "neutro",
 };
 
 export function EstadoProyectoBadge({ estado }: { estado: EstadoProyecto }) {

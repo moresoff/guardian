@@ -64,6 +64,7 @@ export const ESTADO_LABEL: Record<EstadoProyecto, string> = {
   en_curso: "Ciclo en curso",
   cerrado: "Cerrado",
   rechazado: "Rechazado",
+  desierto: "No llegó al mínimo",
 };
 
 /**

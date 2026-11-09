@@ -123,6 +123,16 @@ export async function GestionProyecto({
         </div>
       ) : null}
 
+      {proyecto.estado === "desierto" ? (
+        <div className="mt-5">
+          <Aviso titulo="No llegó al mínimo">
+            La participación cerró sin juntar el 80 % de lo pedido, así que el ciclo no
+            arranca y a cada colaborador se le devuelve su aporte. Podés presentar el proyecto
+            de nuevo.
+          </Aviso>
+        </div>
+      ) : null}
+
       {proyecto.estado === "en_validacion" ? (
         <QueFalta
           proyectoId={proyecto.id}
@@ -174,8 +184,9 @@ export async function GestionProyecto({
               />
             </div>
             <p className="tabular mt-3 text-tinta-suave">
-              Ya liberado a tu favor: {formatArs(proyecto.montoLiberadoArs)}. El resto
-              queda en la cuenta del proyecto y sale contra los papeles de cada etapa.
+              {proyecto.montoLiberadoArs > 0
+                ? `Pagado al vendedor por la compra: ${formatArs(proyecto.montoLiberadoArs)}. Es el único pago del ciclo; lo demás queda en la cuenta del proyecto hasta la liquidación.`
+                : "La compra se paga en un solo pago, del fideicomiso directo al vendedor, cuando cierre la participación."}
             </p>
           </section>
         ) : null}
@@ -185,8 +196,9 @@ export async function GestionProyecto({
             <TituloBloque
               descripcion="Las pesadas del lote. El colaborador ve exactamente lo mismo."
               accion={
-                proyecto.estado === "cerrado" ? undefined : (
+                proyecto.estado !== "en_curso" ? undefined : (
                   <RegistrarPesada
+                    proyectoId={proyecto.id}
                     cabezasVivas={ultima?.cabezas ?? proyecto.cabezas}
                     pesoAnteriorKg={ultima?.pesoPromedioKg ?? proyecto.pesoEntradaKg}
                   />

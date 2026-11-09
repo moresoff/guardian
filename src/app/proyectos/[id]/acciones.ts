@@ -10,6 +10,7 @@ import { formatArs } from "@/lib/format";
 import { getVerificacion } from "@/lib/identidad";
 import { calcularFondeo, puedeAdherirse } from "@/lib/proyecto";
 import { agregarDocumento } from "@/lib/escrituras";
+import { TOPE_COLABORADORES, hayLugarPara, registrarPesada } from "@/lib/ciclo";
 import type { Lectura } from "@/lib/lectura";
 import { usuarioActual } from "@/lib/sesion";
 import type { TipoDocumento } from "@/lib/types";
@@ -102,10 +103,14 @@ export async function participar(
   const lugar = proyecto.montoObjetivoArs - fondeo.acreditadoArs - fondeo.comprometidoSinAcreditarArs;
   if (monto > lugar) return { ok: false, error: `Quedan ${formatArs(Math.max(0, lugar))} por cubrir.` };
 
+  const colaboradorId = await colaboradorDeSesion();
+  if (!(await hayLugarPara(proyecto.id, colaboradorId)))
+    return { ok: false, error: `El proyecto ya tiene ${TOPE_COLABORADORES} colaboradores, que es el tope.` };
+
   try {
     const { orden } = await firmarAdhesion(
       usuario.id,
-      await colaboradorDeSesion(),
+      colaboradorId,
       proyecto.id,
       monto,
       contratoDeAdhesion(proyecto, productor, monto),
@@ -142,4 +147,40 @@ export async function firmarFideicomisoDelProyecto(
     console.error("No se pudo firmar el fideicomiso:", e);
     return { ok: false, error: "No pudimos guardar la firma. Probá de nuevo." };
   }
+}
+
+/** El productor carga una pesada del lote. Queda guardada y la ve el colaborador. */
+export async function guardarPesada(
+  f: FormData,
+): Promise<{ ok: true } | { ok: false; error: string }> {
+  const usuario = await usuarioActual();
+  if (!usuario || usuario.lado !== "productor")
+    return { ok: false, error: "Tu sesión se cerró. Volvé a ingresar." };
+  const proyecto = await getProyecto(String(f.get("proyectoId") ?? ""));
+  if (!proyecto || !(await puedeManejar(proyecto)))
+    return { ok: false, error: "Solo el productor del proyecto puede cargar pesadas." };
+
+  const n = (k: string) => Number(String(f.get(k) ?? "").replace(/\./g, "").replace(",", ".")) || 0;
+  const fecha = String(f.get("fecha") ?? "");
+  if (!/^\d{4}-\d{2}-\d{2}$/.test(fecha)) return { ok: false, error: "Falta la fecha." };
+  if (fecha > new Date().toISOString().slice(0, 10))
+    return { ok: false, error: "La fecha no puede ser futura." };
+  const d = {
+    fecha,
+    cabezas: n("cabezas"),
+    pesoPromedioKg: n("peso"),
+    gastoArs: n("gasto"),
+    conceptoGasto: String(f.get("concepto") ?? ""),
+    nota: String(f.get("nota") ?? "").trim() || undefined,
+  };
+  if (d.pesoPromedioKg <= 0 || d.cabezas <= 0)
+    return { ok: false, error: "Faltan el peso y las cabezas." };
+  try {
+    await registrarPesada(usuario.id, proyecto.id, d);
+  } catch (e) {
+    return { ok: false, error: e instanceof Error ? e.message : "No se pudo guardar." };
+  }
+  revalidatePath(`/proyectos/${proyecto.id}`);
+  revalidatePath("/colaborador/cartera");
+  return { ok: true };
 }
