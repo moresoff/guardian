@@ -20,11 +20,12 @@ import {
 } from "lucide-react";
 import { Logo } from "./layout/Logo";
 
-type Section = "home" | "about" | "participate";
+type Section = "home" | "about" | "participate" | "simulation";
 const nav = [
   ["home", "/", "Inicio"],
   ["about", "/quienes-somos", "Quiénes somos"],
   ["participate", "/como-participar", "Cómo participar"],
+  ["simulation", "/simulacion", "Probá un ciclo"],
   ["contact", "/#consultas", "Contacto"],
 ];
 const contactEmail =

@@ -22,6 +22,7 @@ export function SiteFrame({
     [
       "/quienes-somos",
       "/como-participar",
+      "/simulacion",
       "/como-invertir",
       "/investor",
       "/fiduciary",

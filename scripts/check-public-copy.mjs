@@ -7,6 +7,7 @@ const pages = [
   "/",
   "/quienes-somos",
   "/como-participar",
+  "/simulacion",
   "/proyectos",
   "/proyectos/pry-13",
   "/proyectos/pry-2",
