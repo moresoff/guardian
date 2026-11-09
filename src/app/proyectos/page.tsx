@@ -23,6 +23,8 @@ export default async function CatalogoPage({
   });
 
   const provincias = ["Buenos Aires", "Córdoba", "Santa Fe", "La Pampa"];
+  const abiertos = proyectos.filter((p) => p.estado === "abierto");
+  const otros = proyectos.filter((p) => p.estado !== "abierto");
 
   return (
     <div>
@@ -52,24 +54,41 @@ export default async function CatalogoPage({
       ) : (
         <>
           {/*
-            El encabezado de la grilla no es decorativo: sin él la página saltaba
-            de h1 al h3 de cada tarjeta, y de paso dice cuántos resultados dieron
-            los filtros.
+            Primero los que se pueden sumar, que es para lo que se entra. Los
+            ciclos en marcha y cerrados sirven de antecedente y van plegados:
+            antes ocupaban seis pantallas de teléfono y el título decía
+            «abiertos» aunque la mayoría no lo estaba.
           */}
           <h2 className="mb-4 text-base font-semibold tracking-tight">
-            {proyectos.length}{" "}
-            {proyectos.length === 1 ? "proyecto abierto" : "proyectos abiertos"}
+            {abiertos.length === 0
+              ? "Ahora no hay proyectos abiertos"
+              : `${abiertos.length} ${abiertos.length === 1 ? "proyecto abierto" : "proyectos abiertos"}`}
           </h2>
           <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
-            {proyectos.map((p) => (
-              <ProyectoCard
-                key={p.id}
-                proyecto={p}
-                foto={fotoDelProyecto(p.id)}
-                resumida={!conSesion}
-              />
+            {abiertos.map((p) => (
+              <ProyectoCard key={p.id} proyecto={p} foto={fotoDelProyecto(p.id)} resumida={!conSesion} />
             ))}
           </div>
+          {otros.length > 0 ? (
+            <details className="group mt-8 border-t border-borde pt-4">
+              <summary className="flex min-h-12 cursor-pointer list-none items-center justify-between gap-3 text-base font-semibold">
+                <span>
+                  Ciclos en marcha y cerrados ({otros.length})
+                  <span className="block text-sm font-normal text-tinta-suave">
+                    Para ver cómo les fue a otros proyectos.
+                  </span>
+                </span>
+                <span aria-hidden="true" className="text-tinta-suave transition-transform group-open:rotate-180">
+                  ▾
+                </span>
+              </summary>
+              <div className="mt-4 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+                {otros.map((p) => (
+                  <ProyectoCard key={p.id} proyecto={p} foto={fotoDelProyecto(p.id)} resumida={!conSesion} />
+                ))}
+              </div>
+            </details>
+          ) : null}
         </>
       )}
     </div>

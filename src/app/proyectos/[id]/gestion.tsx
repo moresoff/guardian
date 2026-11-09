@@ -9,9 +9,11 @@ import { Seguimiento } from "@/components/seguimiento";
 import { FichaTecnica } from "./ficha-tecnica";
 import { RegistrarPesada } from "./registrar-pesada";
 import { SubirRespaldo } from "./subir-respaldo";
+import { getFirmaFideicomiso } from "@/lib/firmas";
+import { getVerificacion } from "@/lib/identidad";
+import { usuarioActual } from "@/lib/sesion";
 import {
   Aviso,
-  Badge,
   Dato,
   Progreso,
   TituloBloque,
@@ -24,7 +26,7 @@ import {
   getSeguimientoDeProyecto,
 } from "@/lib/data";
 import {
-  DOCUMENTO_LABEL,
+  formatFecha,
   modalidadLabel,
   GARANTIA_LABEL,
   POSESION_LABEL,
@@ -73,6 +75,9 @@ export async function GestionProyecto({
   const cargados = new Set(documentos.map((d) => d.tipo));
   const faltantes = requeridos.filter((t) => !cargados.has(t));
   const sinResolver = discrepancias.filter((d) => !d.resuelta);
+  const usuario = await usuarioActual();
+  const identidad = usuario ? await getVerificacion(usuario.id) : null;
+  const firma = proyecto.estado === "en_validacion" ? await getFirmaFideicomiso(proyecto.id) : null;
 
   return (
     <div>
@@ -105,6 +110,15 @@ export async function GestionProyecto({
             abajo: podés corregir el dato del proyecto o subir el documento que corresponda.
           </Aviso>
         </div>
+      ) : null}
+
+      {proyecto.estado === "en_validacion" ? (
+        <QueFalta
+          proyectoId={proyecto.id}
+          papelesFaltantes={faltantes.length}
+          identidad={identidad?.estado === "aprobada"}
+          firma={firma ? formatFecha(firma.fecha) : null}
+        />
       ) : null}
 
       {proyecto.estado === "borrador" ? (
@@ -174,26 +188,10 @@ export async function GestionProyecto({
           </section>
         ) : null}
 
-        <section className="border-t border-borde pt-8">
+        <section id="papeles" className="scroll-mt-20 border-t border-borde pt-8">
           <TituloBloque descripcion="Guardian lee cada papel al subirlo y lo compara con lo que cargaste.">
             Tus papeles
           </TituloBloque>
-
-          <ul className="mb-6 space-y-2.5">
-            {requeridos.map((t) => {
-              const listo = cargados.has(t);
-              return (
-                <li key={t} className="flex items-center justify-between gap-3">
-                  <span className={listo ? "" : "text-tinta-suave"}>
-                    {DOCUMENTO_LABEL[t]}
-                  </span>
-                  <Badge tono={listo ? "ok" : "neutro"}>
-                    {listo ? "Subido" : "Falta"}
-                  </Badge>
-                </li>
-              );
-            })}
-          </ul>
 
           {documentos.length > 0 ? (
             <div className="space-y-4">
@@ -210,6 +208,7 @@ export async function GestionProyecto({
           <div className={documentos.length > 0 ? "mt-6 border-t border-borde pt-6" : ""}>
             <SubirRespaldo
               proyectoId={proyecto.id}
+              publicado={proyecto.estado !== "en_validacion"}
               faltantes={faltantes}
               cabezas={proyecto.cabezas}
             />
@@ -244,5 +243,75 @@ export async function GestionProyecto({
       </div>
       )}
     </div>
+  );
+}
+
+/**
+ * Lo que falta para que el proyecto se publique, en tres renglones. Cada uno
+ * dice si está y, si no, lleva directo a resolverlo.
+ */
+function QueFalta({
+  proyectoId,
+  papelesFaltantes,
+  identidad,
+  firma,
+}: {
+  proyectoId: string;
+  papelesFaltantes: number;
+  identidad: boolean;
+  firma: string | null;
+}) {
+  const items = [
+    {
+      hecho: papelesFaltantes === 0,
+      texto: papelesFaltantes === 0 ? "Papeles completos" : `Faltan ${papelesFaltantes} papeles`,
+      accion: { href: "#papeles", label: "Subirlos" },
+    },
+    {
+      hecho: identidad,
+      texto: identidad ? "Identidad validada" : "Falta validar tu identidad",
+      accion: { href: `/identidad?volver=/proyectos/${proyectoId}`, label: "Validar" },
+    },
+    {
+      hecho: Boolean(firma),
+      texto: firma ? `Contrato firmado el ${firma}` : "Falta firmar el contrato del fideicomiso",
+      accion: { href: `/proyectos/${proyectoId}/firmar`, label: firma ? "Ver" : "Firmar" },
+    },
+  ];
+  const pendientes = items.filter((i) => !i.hecho).length;
+  return (
+    <section className="mt-5 max-w-3xl rounded-2xl border border-borde bg-superficie p-5">
+      <h2 className="text-lg font-semibold">
+        {pendientes === 0 ? "Listo de tu lado: Guardian lo está revisando" : "Qué falta para publicarlo"}
+      </h2>
+      <ul className="mt-3 divide-y divide-borde">
+        {items.map((i) => (
+          <li key={i.texto} className="flex min-h-12 items-center justify-between gap-3 py-2">
+            <span className="flex items-center gap-2.5 text-base">
+              <span
+                aria-hidden="true"
+                className={`grid size-6 shrink-0 place-items-center rounded-full text-sm font-semibold ${
+                  i.hecho ? "bg-marca text-marca-contraste" : "border-2 border-borde-fuerte"
+                }`}
+              >
+                {i.hecho ? "✓" : ""}
+              </span>
+              <span>
+                <span className="sr-only">{i.hecho ? "Hecho: " : "Pendiente: "}</span>
+                {i.texto}
+              </span>
+            </span>
+            {!i.hecho || i.accion.label === "Ver" ? (
+              <Link
+                href={i.accion.href}
+                className="inline-flex min-h-11 shrink-0 items-center rounded-full border border-borde-fuerte px-4 text-sm font-medium hover:border-marca hover:text-marca"
+              >
+                {i.accion.label}
+              </Link>
+            ) : null}
+          </li>
+        ))}
+      </ul>
+    </section>
   );
 }

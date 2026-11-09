@@ -635,8 +635,6 @@ export default async function FichaProyecto({
             <div className="mt-5 border-t border-borde pt-4">
               <Adherir
                 proyectoId={proyecto.id}
-                titulo={proyecto.titulo}
-                contratoVersion="Contrato de adhesión v3 — 2026-08-01"
                 habilitado={adhesion.puede}
                 motivoBloqueo={adhesion.motivo}
               />

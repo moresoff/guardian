@@ -8,9 +8,21 @@ import { ValidarIdentidad } from "./validar";
 
 export const metadata = { title: "Validá tu identidad — Guardian" };
 
-export default async function IdentidadPage() {
+/** Solo direcciones de la propia app: nada de mandar a otro sitio. */
+const destinoSeguro = (v: string | undefined) =>
+  v && v.startsWith("/") && !v.startsWith("//") ? v : null;
+
+export default async function IdentidadPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ alta?: string; volver?: string }>;
+}) {
   const u = await usuarioActual();
   if (!u) redirect("/ingresar");
+  const sp = await searchParams;
+  const alta = sp.alta === "1";
+  const volver =
+    destinoSeguro(sp.volver) ?? (u.lado === "productor" ? "/productor" : "/colaborador/cartera");
 
   const v = await getVerificacion(u.id);
 
@@ -28,6 +40,9 @@ export default async function IdentidadPage() {
 
   return (
     <div className="mx-auto max-w-2xl">
+      {alta && !v ? (
+        <p className="text-sm font-medium text-marca">Tu cuenta ya está creada · Último paso</p>
+      ) : null}
       <h1 className="text-2xl font-semibold tracking-tight">
         {v ? "Tu identidad" : "Validá tu identidad"}
       </h1>
@@ -37,13 +52,21 @@ export default async function IdentidadPage() {
           foto del DNI y una selfie. Se hace una sola vez.
         </p>
       )}
-      <div className="mt-6">
+      <div className="mt-5">
         <ValidarIdentidad
+          volver={volver}
           lado={u.lado}
           inicial={{ nombre: u.nombre, cuit, provincia }}
           ya={v ? { ...v, fecha: formatFecha(v.fecha) } : null}
         />
       </div>
+      {alta && !v ? (
+        <p className="mt-4 text-center">
+          <a href={volver} className="inline-flex min-h-11 items-center text-base text-tinta-suave underline underline-offset-4 hover:text-marca">
+            Lo hago después
+          </a>
+        </p>
+      ) : null}
     </div>
   );
 }

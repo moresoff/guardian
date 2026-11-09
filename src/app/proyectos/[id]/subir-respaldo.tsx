@@ -19,7 +19,7 @@ const OPCIONALES: TipoDocumento[] = [
 ];
 
 /**
- * Subir documentación en un proyecto ya publicado, que son dos cosas distintas y
+ * Subir documentación en un proyecto ya presentado, que son dos cosas distintas y
  * por eso están separadas:
  *
  * - **Lo que falta**: un documento obligatorio que no está. Hasta que entre, el
@@ -34,8 +34,11 @@ export function SubirRespaldo({
   proyectoId,
   faltantes,
   cabezas,
+  publicado,
 }: {
   proyectoId: string;
+  /** Si los colaboradores ya lo ven: cambia por qué urge lo que falta. */
+  publicado: boolean;
   faltantes: TipoDocumento[];
   cabezas: number;
 }) {
@@ -76,10 +79,11 @@ export function SubirRespaldo({
         <div>
           <Aviso
             tono="alerta"
-            titulo={`${faltantes.length === 1 ? "Falta un documento obligatorio" : `Faltan ${faltantes.length} documentos obligatorios`}`}
+            titulo={`${faltantes.length === 1 ? "Falta un papel obligatorio" : `Faltan ${faltantes.length} papeles obligatorios`}`}
           >
-            El proyecto está publicado y los colaboradores lo están viendo sin este respaldo.
-            Subilo cuanto antes: Guardian no libera fondos de un lote que no está documentado.
+            {publicado
+              ? "Los colaboradores ven el proyecto sin este respaldo, y Guardian no libera fondos de un lote que no está documentado."
+              : "Sin ellos Guardian no puede terminar de revisar el proyecto."}
           </Aviso>
           <div className="mt-4 space-y-4">
             {faltantes.map((tipo) => (
@@ -145,10 +149,6 @@ export function SubirRespaldo({
         ) : null}
       </div>
 
-      <Aviso tono="alerta" titulo="Prototipo">
-        Los archivos se leen en el navegador para mostrar el flujo. Todavía no se guardan
-        en ningún lado: eso entra con el backend.
-      </Aviso>
     </div>
   );
 }

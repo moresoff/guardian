@@ -152,7 +152,10 @@ export function ValidarIdentidad({
   lado,
   inicial,
   ya,
+  volver,
 }: {
+  /** A dónde se sigue al terminar. */
+  volver: string;
   lado: Lado;
   inicial: { nombre: string; cuit: string; provincia: string };
   /** La validación que ya existe, si la hay. */
@@ -289,7 +292,6 @@ export function ValidarIdentidad({
     setPaso(4);
   };
 
-  const volver = lado === "productor" ? "/productor" : "/colaborador/cartera";
 
   // Ya validada antes de entrar a esta pantalla: se muestra el resultado, no el
   // formulario. Si se acaba de validar, manda la pantalla de «listo» de abajo,
@@ -328,7 +330,7 @@ export function ValidarIdentidad({
             href={volver}
             className="min-h-12 w-full sm:w-auto"
           >
-            {lado === "productor" ? "Volver a mis proyectos" : "Volver a mi cartera"}
+            Seguir
           </BotonLink>
         </div>
       </section>

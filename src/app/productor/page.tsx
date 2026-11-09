@@ -21,7 +21,7 @@ export default async function ResumenProductor() {
         </h1>
         <BotonLink href="/productor/proyectos/nuevo">Publicar un proyecto</BotonLink>
       </div>
-      <PanelProductor base="/productor" />
+      <PanelProductor />
     </div>
   );
 }

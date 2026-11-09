@@ -1,6 +1,5 @@
 import { notFound } from "next/navigation";
 import { productorDeSesion } from "@/lib/cuentas";
-import { CabeceraProductor } from "@/components/cabecera-productor";
 import { Pestanas } from "@/components/pestanas";
 import { getProductor } from "@/lib/data";
 import { AjustesCuenta } from "./ajustes";
@@ -36,9 +35,13 @@ export default async function EstablecimientoPage({
   if (!productor) notFound();
 
   return (
-    <div className="space-y-8">
-      <CabeceraProductor />
-
+    <div className="space-y-6">
+      <div>
+        <h1 className="text-2xl font-semibold tracking-tight">Mi establecimiento</h1>
+        <p className="mt-1 text-base text-tinta-suave">
+          {[productor.establecimiento, productor.localidad, productor.provincia].filter(Boolean).join(" · ")}
+        </p>
+      </div>
       <Pestanas
         pestanas={PESTANAS}
         activa={activa}

@@ -173,7 +173,9 @@ export function Nav({
 
   return (
     <header className="sticky top-0 z-20 border-b border-borde bg-papel/90 backdrop-blur">
-      <div className="mx-auto flex max-w-6xl flex-wrap items-center gap-x-5 gap-y-2 px-4 py-3">
+      {/* En el teléfono: logo, perfil y «Salir» en un renglón, y las secciones
+          en el de abajo, sin cortarse. En pantalla ancha, todo en uno. */}
+      <div className="mx-auto flex max-w-6xl flex-wrap items-center gap-x-5 gap-y-1 px-4 py-2 sm:py-3">
         <Link href={menu?.inicio ?? "/"} className="flex items-center gap-2.5">
           <Image
             src="/imagenes/marca/logo-guardian-limpio.png"
@@ -189,7 +191,10 @@ export function Nav({
         </Link>
 
         {menu ? (
-          <nav className="flex flex-wrap items-center gap-1" aria-label="Secciones">
+          <nav
+            className="order-last -mx-1 flex w-full items-center gap-0.5 overflow-x-auto sm:gap-1 sm:order-none sm:mx-0 sm:w-auto"
+            aria-label="Secciones"
+          >
             {menu.items.map((s) => {
               const activa =
                 "exacta" in s
@@ -200,7 +205,7 @@ export function Nav({
                   key={s.href}
                   href={s.href}
                   aria-current={activa ? "page" : undefined}
-                  className={`rounded-full px-3 py-2 text-sm transition-colors ${
+                  className={`inline-flex min-h-11 shrink-0 items-center whitespace-nowrap rounded-full px-2.5 text-sm transition-colors sm:px-3 ${
                     activa
                       ? "bg-marca-suave font-medium text-marca"
                       : "text-tinta-suave hover:bg-superficie-2"
@@ -218,7 +223,7 @@ export function Nav({
           registrarse. Adentro: el menú del perfil, con el simulador. La sesión ya
           sabe a qué lado va cada uno.
         */}
-        <div className="ml-auto flex flex-wrap items-center gap-2">
+        <div className="ml-auto flex items-center gap-1 sm:gap-2">
           {area ? (
             <>
               <MenuPerfil area={area} nombre={nombre} />

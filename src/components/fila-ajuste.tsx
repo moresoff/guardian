@@ -51,7 +51,9 @@ export function FilaDato({
           <span className="mt-0.5 block text-sm text-tinta-tenue">{ayuda}</span>
         ) : null}
       </dt>
-      <dd className={`font-medium ${codigo ? "codigo" : "tabular"}`}>{children}</dd>
+      <dd className={`min-w-0 break-words font-medium [overflow-wrap:anywhere] ${codigo ? "codigo" : "tabular"}`}>
+        {children}
+      </dd>
     </div>
   );
 }

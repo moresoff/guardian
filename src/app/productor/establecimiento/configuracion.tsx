@@ -122,7 +122,7 @@ export function ConfiguracionPerfil({ productor }: { productor: Productor }) {
           <dl>
             <FilaDato etiqueta="Establecimiento">{datos.establecimiento}</FilaDato>
             <FilaDato etiqueta="Dónde queda">
-              {datos.localidad}, {datos.provincia}
+              {[datos.localidad, datos.provincia].filter(Boolean).join(", ")}
             </FilaDato>
             <FilaDato etiqueta="Sistema productivo">{datos.sistemaProductivo}</FilaDato>
             <FilaDato etiqueta="Capacidad instalada">

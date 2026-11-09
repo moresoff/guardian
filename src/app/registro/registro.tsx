@@ -157,11 +157,12 @@ export function Registro({ ladoInicial }: { ladoInicial?: Lado }) {
               setErrorGeneral(r.error);
               return;
             }
-            // La cuenta se abre y se entra directo a la aplicación: el recorrido
-            // explica cada pantalla ahí, donde se ve lo que hay que cargar.
-            router.push(
-              lado === "productor" ? "/productor?recorrido=productor" : "/proyectos?recorrido=colaborador",
-            );
+            // La cuenta se abre y el último paso del alta es validar la
+            // identidad. Después se entra a la aplicación, donde el recorrido
+            // explica cada pantalla.
+            const despues =
+              lado === "productor" ? "/productor?recorrido=productor" : "/proyectos?recorrido=colaborador";
+            router.push(`/identidad?alta=1&volver=${encodeURIComponent(despues)}`);
           }}
         >
           <h2 className="text-xl font-semibold tracking-tight">Tus datos</h2>
