@@ -30,6 +30,25 @@ Probado de punta a punta en el teléfono, en memoria y contra Postgres: alta del
 productor, identidad, presentar con papeles, firmar, validar, publicar, alta del
 colaborador, participar, firmar y acreditar.
 
+### Después: el ciclo completo
+
+- **Cerrar la participación** (`src/lib/ciclo.ts`, `/admin/ciclo/[id]`): con el
+  80 % acreditado el proyecto pasa a fondeado y se anulan las adhesiones sin
+  transferir; sin el mínimo queda «desierto» y se devuelven todos los aportes.
+  Tope de 25 colaboradores al participar.
+- **Pago único de la compra** en tres instancias (requisitos verificados, pago
+  aprobado, pagado al vendedor), tabla `pagos_compra` (migración `0007`). Al
+  pagar, el ciclo pasa a en curso y cada colaborador ve su constancia.
+- **Seguimiento que se guarda**: «Registrar pesada» escribe en `seguimiento`; las
+  bajas salen de las cabezas que faltan. El colaborador ve el informe del ciclo
+  con el desvío contra el peso esperado.
+- **Cierre y liquidación**: con el romaneo de la venta se reparte lo pactado, se
+  descuenta el fiduciario y el impuesto, vuelve lo no usado en la compra y se
+  calcula la liquidación de cada colaborador, también si da pérdida. Después se
+  aprueba y se paga.
+- **Avisos**: la cartera muestra la constancia, el informe y la liquidación
+  cuando ocurren.
+
 ## 1. El circuito de punta a punta
 
 | Etapa | Lo que dice el trabajo | La app hoy | Estado |

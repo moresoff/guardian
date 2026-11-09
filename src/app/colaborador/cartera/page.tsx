@@ -17,9 +17,13 @@ import {
 import {
   getAportesDeProyecto,
   getCarteraDeColaborador,
+  getSeguimientoDeProyecto,
 } from "@/lib/data";
+import { getPagoCompra, pesoEsperado, type PagoCompra } from "@/lib/ciclo";
+import type { Proyecto, RegistroSeguimiento } from "@/lib/types";
 import {
   formatFecha,
+  formatNum,
   formatPct,
   formatArs,
   modalidadLabel,
@@ -28,6 +32,8 @@ import { calcularFondeo, retornoDelProyecto } from "@/lib/proyecto";
 import type { Aporte, EstadoAporte } from "@/lib/types";
 
 export const metadata = { title: "Mi cartera — Guardian" };
+
+const haceDias = (n: number) => new Date(Date.now() - n * 86_400_000).toISOString().slice(0, 10);
 
 const ESTADO_APORTE: Record<
   EstadoAporte,
@@ -73,17 +79,54 @@ export default async function CarteraPage({
   }), carteras[0]);
 
   const posiciones = await Promise.all(
-    cartera.posiciones.map(async (p) => ({
-      ...p,
-      fondeo: calcularFondeo(
-        p.proyecto,
-        await getAportesDeProyecto(p.proyecto.id),
-      ),
-    })),
+    cartera.posiciones.map(async (p) => {
+      const aportes = await getAportesDeProyecto(p.proyecto.id);
+      return {
+        ...p,
+        fondeo: calcularFondeo(p.proyecto, aportes),
+        totalAcreditado: aportes.reduce((a, x) => a + x.montoAcreditadoArs, 0),
+        pago: await getPagoCompra(p.proyecto.id),
+        registros: await getSeguimientoDeProyecto(p.proyecto.id),
+      };
+    }),
   );
 
-  const enCurso = posiciones.filter((p) => p.proyecto.estado !== "cerrado");
-  const cerradas = posiciones.filter((p) => p.proyecto.estado === "cerrado");
+  const devueltos = posiciones.filter((p) => p.aporte.estado === "devuelto");
+  const vivas = posiciones.filter((p) => p.aporte.estado !== "devuelto");
+  const enCurso = vivas.filter((p) => p.proyecto.estado !== "cerrado");
+  const cerradas = vivas.filter((p) => p.proyecto.estado === "cerrado");
+  const faltaTransferir = vivas.reduce(
+    (a, p) => a + Math.max(0, p.aporte.montoComprometidoArs - p.aporte.montoAcreditadoArs),
+    0,
+  );
+
+  // Los tres avisos fijos del trabajo: constancia de compra, informe mensual y
+  // liquidación. Se muestran cuando ocurre cada cosa, del último mes.
+  const haceUnMes = haceDias(31);
+  const avisos: { clave: string; texto: string; href: string }[] = [];
+  for (const p of vivas) {
+    if (p.pago?.pagadoAt && p.pago.pagadoAt >= haceUnMes)
+      avisos.push({
+        clave: `c-${p.aporte.id}`,
+        texto: `Constancia de compra de «${p.proyecto.titulo}»: se pagó la hacienda al vendedor.`,
+        href: `#aporte-${p.aporte.id}`,
+      });
+    const ultima = p.registros[p.registros.length - 1];
+    if (p.proyecto.estado === "en_curso" && ultima && ultima.fecha >= haceUnMes)
+      avisos.push({
+        clave: `i-${p.aporte.id}`,
+        texto: `Informe del ciclo de «${p.proyecto.titulo}»: pesada del ${formatFecha(ultima.fecha)}.`,
+        href: `#aporte-${p.aporte.id}`,
+      });
+  }
+  for (const l of cartera.liquidaciones.filter((l) => l.fecha >= haceUnMes))
+    avisos.push({
+      clave: `l-${l.id}`,
+      texto: `${l.concepto}: ${
+        l.estado === "pagada" ? "ya se pagó" : l.estado === "aprobada" ? "aprobada, por pagar" : "calculada"
+      }.`,
+      href: "#terminados",
+    });
 
   // Lo que está puesto en ciclos que todavía no cerraron. No es un saldo: vuelve
   // cuando cada uno se liquide, y por el monto que dé la liquidación.
@@ -134,13 +177,33 @@ export default async function CarteraPage({
                 </Dato>
               ) : null}
             </dl>
-            {cartera.pendienteDeAcreditarArs > 0 ? (
+            {faltaTransferir > 0 ? (
               <p className="tabular mt-4 border-t border-borde pt-4 text-alerta">
-                Te falta transferir {formatArs(cartera.pendienteDeAcreditarArs)}. Abajo, en
+                Te falta transferir {formatArs(faltaTransferir)}. Abajo, en
                 cada proyecto, está la referencia para hacerlo.
               </p>
             ) : null}
           </Panel>
+
+          {avisos.length > 0 ? (
+            <section aria-labelledby="titulo-avisos">
+              <h2 id="titulo-avisos" className="text-lg font-semibold tracking-tight">
+                Avisos
+              </h2>
+              <ul className="mt-3 space-y-2">
+                {avisos.map((a) => (
+                  <li key={a.clave}>
+                    <a
+                      href={a.href}
+                      className="flex min-h-11 items-center rounded-xl border border-borde bg-superficie px-4 py-2 text-sm hover:border-marca"
+                    >
+                      {a.texto}
+                    </a>
+                  </li>
+                ))}
+              </ul>
+            </section>
+          ) : null}
 
           <Seccion
             titulo="En marcha"
@@ -152,8 +215,8 @@ export default async function CarteraPage({
               </Vacio>
             ) : (
               <ul className="space-y-4">
-                {enCurso.map(({ proyecto, aporte, fondeo }) => (
-                  <li key={aporte.id}>
+                {enCurso.map(({ proyecto, aporte, fondeo, pago, registros, totalAcreditado }) => (
+                  <li key={aporte.id} id={`aporte-${aporte.id}`} className="scroll-mt-20">
                     <Panel className="p-5">
                       <div className="flex flex-wrap items-start justify-between gap-3">
                         <div>
@@ -200,6 +263,15 @@ export default async function CarteraPage({
                       </div>
 
                       <EstadoDelAporte aporte={aporte} />
+                      {pago?.pagadoAt ? (
+                        <Constancia
+                          pago={pago}
+                          parte={totalAcreditado > 0 ? aporte.montoAcreditadoArs / totalAcreditado : 0}
+                        />
+                      ) : null}
+                      {proyecto.estado === "en_curso" ? (
+                        <Informe proyecto={proyecto} registros={registros} inicio={pago?.pagadoAt} />
+                      ) : null}
                     </Panel>
                   </li>
                 ))}
@@ -208,7 +280,8 @@ export default async function CarteraPage({
           </Seccion>
 
           {cerradas.length > 0 ? (
-            <Seccion titulo="Terminados" descripcion="Ciclos cerrados y lo que te tocó.">
+            <Seccion titulo="Terminados" descripcion="Ciclos cerrados y lo que te tocó, también cuando el resultado fue malo.">
+              <span id="terminados" className="block scroll-mt-20" aria-hidden />
               <ul className="space-y-3">
                 {cerradas.map(({ proyecto, aporte }) => (
                   <li key={aporte.id}>
@@ -245,7 +318,40 @@ export default async function CarteraPage({
                               {formatArs(l.resultadoArs)}
                             </Dato>
                           ))}
+                        {cartera.liquidaciones
+                          .filter((l) => l.proyectoId === proyecto.id)
+                          .map((l) => (
+                            <Dato
+                              key={`v-${l.id}`}
+                              etiqueta="Te vuelve"
+                              ayuda={l.resultadoArs < 0 ? "Menos de lo que pusiste: el ciclo dio pérdida." : "Tu aporte más el resultado."}
+                            >
+                              {formatArs(l.capitalArs + l.resultadoArs)}
+                            </Dato>
+                          ))}
                       </dl>
+                    </Panel>
+                  </li>
+                ))}
+              </ul>
+            </Seccion>
+          ) : null}
+
+          {devueltos.length > 0 ? (
+            <Seccion titulo="Devueltos" descripcion="Proyectos que no llegaron al mínimo: tu aporte vuelve a tu cuenta.">
+              <ul className="space-y-3">
+                {devueltos.map(({ proyecto, aporte }) => (
+                  <li key={aporte.id}>
+                    <Panel className="flex flex-wrap items-center justify-between gap-3 p-5">
+                      <div>
+                        <h3 className="font-semibold">{proyecto.titulo}</h3>
+                        <p className="tabular text-sm text-tinta-suave">
+                          {aporte.montoAcreditadoArs > 0
+                            ? `Se te devuelven ${formatArs(aporte.montoAcreditadoArs)}.`
+                            : "No llegaste a transferir: la adhesión quedó anulada."}
+                        </p>
+                      </div>
+                      <Badge>Devuelto</Badge>
                     </Panel>
                   </li>
                 ))}
@@ -307,6 +413,67 @@ function EstadoDelAporte({ aporte }: { aporte: Aporte }) {
           ))}
         </ul>
       ) : null}
+    </div>
+  );
+}
+
+/** La constancia de la compra: qué se compró, a quién, y cuánto es tuyo. */
+function Constancia({ pago, parte }: { pago: PagoCompra; parte: number }) {
+  return (
+    <div className="mt-4 rounded-xl bg-marca-suave p-4">
+      <p className="rotulo text-marca">Constancia de compra</p>
+      <p className="tabular mt-1.5 text-sm">
+        El {formatFecha(pago.pagadoAt!)} el fideicomiso le pagó {formatArs(pago.montoArs)} a{" "}
+        {pago.vendedor} (CUIT <span className="codigo">{pago.vendedorCuit}</span>) por{" "}
+        {formatNum(pago.cabezas)} cabezas y {formatNum(pago.kilos)} kg, a{" "}
+        {formatArs(pago.precioKgArs)} el kilo. La hacienda entró al campo con RENSPA{" "}
+        <span className="codigo">{pago.renspaReceptor}</span>.
+      </p>
+      <p className="tabular mt-1.5 text-sm font-medium">
+        Tu parte: {formatPct(parte * 100)} del lote, unas {formatNum(Math.round(pago.cabezas * parte))} cabezas.
+      </p>
+    </div>
+  );
+}
+
+/** El informe del ciclo: la última pesada contra lo que se esperaba a esa altura. */
+function Informe({
+  proyecto,
+  registros,
+  inicio,
+}: {
+  proyecto: Proyecto;
+  registros: RegistroSeguimiento[];
+  inicio?: string | null;
+}) {
+  const ultima = registros[registros.length - 1];
+  if (!ultima)
+    return (
+      <p className="mt-4 border-t border-borde pt-4 text-sm text-tinta-suave">
+        Todavía no hay pesadas. El informe aparece con la primera.
+      </p>
+    );
+  const esperado = pesoEsperado(proyecto, inicio ?? proyecto.publicadoAt ?? proyecto.creadoAt, ultima.fecha);
+  const desvio = ultima.pesoPromedioKg - esperado;
+  const bajas = registros.reduce((a, r) => a + r.mortandad, 0);
+  return (
+    <div className="mt-4 border-t border-borde pt-4">
+      <p className="rotulo text-tinta-tenue">Informe del ciclo · {formatFecha(ultima.fecha)}</p>
+      <dl className="tabular mt-3 grid grid-cols-2 gap-x-6 gap-y-4 sm:grid-cols-4">
+        <Dato etiqueta="Peso promedio">{formatNum(ultima.pesoPromedioKg)} kg</Dato>
+        <Dato etiqueta="Se esperaba">{formatNum(esperado)} kg</Dato>
+        <Dato etiqueta="Desvío">
+          <span className={desvio < 0 ? "text-alerta" : ""}>
+            {desvio >= 0 ? "+" : ""}
+            {formatNum(desvio)} kg
+          </span>
+        </Dato>
+        <Dato etiqueta="Cabezas vivas">
+          {formatNum(ultima.cabezas)}
+          {bajas > 0 ? ` (${bajas} ${bajas === 1 ? "baja" : "bajas"})` : ""}
+        </Dato>
+      </dl>
+      {ultima.nota ? <p className="mt-3 text-sm text-tinta-suave">«{ultima.nota}»</p> : null}
     </div>
   );
 }

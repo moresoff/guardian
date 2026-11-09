@@ -1,9 +1,10 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useTransition } from "react";
+import { guardarPesada } from "./acciones";
 import { Campo, CampoLargo } from "@/components/ui/campos";
 import { Modal } from "@/components/ui/modal";
-import { Aviso, Badge, Boton } from "@/components/ui/primitivos";
+import { Aviso, Boton } from "@/components/ui/primitivos";
 import { formatNum } from "@/lib/format";
 
 /**
@@ -17,9 +18,11 @@ import { formatNum } from "@/lib/format";
  * ciento veinte novillos de a uno.
  */
 export function RegistrarPesada({
+  proyectoId,
   cabezasVivas,
   pesoAnteriorKg,
 }: {
+  proyectoId: string;
   cabezasVivas: number;
   pesoAnteriorKg: number;
 }) {
@@ -33,6 +36,8 @@ export function RegistrarPesada({
   const [guardada, setGuardada] = useState(false);
   /** Si ya se intentó guardar. Hasta entonces, ningún campo se pinta de rojo. */
   const [intentado, setIntentado] = useState(false);
+  const [pendiente, empezar] = useTransition();
+  const [error, setError] = useState<string | null>(null);
 
   const pesoNum = Number(peso) || 0;
   const cabezasNum = Number(cabezas) || 0;
@@ -53,7 +58,21 @@ export function RegistrarPesada({
    */
   const intentarGuardar = () => {
     if (huecos.length === 0) {
-      setGuardada(true);
+      const f = new FormData();
+      f.set("proyectoId", proyectoId);
+      f.set("fecha", fecha);
+      f.set("peso", peso);
+      f.set("cabezas", cabezas);
+      f.set("gasto", gasto);
+      f.set("concepto", concepto);
+      f.set("nota", nota);
+      empezar(async () => {
+        const r = await guardarPesada(f);
+        if (r.ok) {
+          setGuardada(true);
+          setError(null);
+        } else setError(r.error);
+      });
       return;
     }
     setIntentado(true);
@@ -64,6 +83,12 @@ export function RegistrarPesada({
     setAbierto(false);
     setGuardada(false);
     setIntentado(false);
+    setError(null);
+    setFecha("");
+    setPeso("");
+    setGasto("");
+    setConcepto("");
+    setNota("");
   };
 
   return (
@@ -84,7 +109,9 @@ export function RegistrarPesada({
               <Boton variante="secundario" onClick={cerrar}>
                 Cancelar
               </Boton>
-              <Boton onClick={intentarGuardar}>Guardar pesada</Boton>
+              <Boton onClick={intentarGuardar} disabled={pendiente}>
+                {pendiente ? "Guardando…" : "Guardar pesada"}
+              </Boton>
             </>
           )
         }
@@ -92,18 +119,17 @@ export function RegistrarPesada({
         {guardada ? (
           <>
             <p className="text-tinta-suave">
-              Queda en el seguimiento del proyecto y el colaborador la ve enseguida: es la
-              misma pantalla para los dos.
-            </p>
-            <p className="mt-4 text-sm text-tinta-suave">
-              <Badge tono="alerta">Prototipo</Badge>{" "}
-              <span className="ml-1">
-                Sin backend, la pesada no queda guardada al salir de la pantalla.
-              </span>
+              Quedó guardada en el seguimiento del proyecto. El colaborador la ve en su informe
+              del ciclo, comparada con lo que se esperaba pesar a esta altura.
             </p>
           </>
         ) : (
           <div className="space-y-5">
+            {error ? (
+              <p role="alert" className="text-sm font-medium text-error">
+                {error}
+              </p>
+            ) : null}
             <div className="grid gap-5 sm:grid-cols-2">
               <Campo
                 id="pesada-fecha"

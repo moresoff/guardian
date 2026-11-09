@@ -1,6 +1,7 @@
 "use client";
 
 import { useId, useState, useTransition } from "react";
+import { Campo } from "@/components/ui/campos";
 import { Boton } from "@/components/ui/primitivos";
 import type { Resultado } from "./acciones";
 
@@ -127,6 +128,71 @@ export function AccionConTexto({
           {pendiente ? "Guardando…" : confirmar}
         </Boton>
       </div>
+    </form>
+  );
+}
+
+export interface CampoFormulario {
+  nombre: string;
+  etiqueta: string;
+  ayuda?: string;
+  numerico?: boolean;
+  defecto?: string;
+}
+
+/**
+ * Un formulario corto que manda varios datos a una acción del servidor: los
+ * requisitos de la compra, la venta del ciclo. El error vuelve del servidor y
+ * se muestra debajo del botón.
+ */
+export function FormularioAccion({
+  accion,
+  datos,
+  campos,
+  boton,
+}: {
+  accion: Accion;
+  datos: Record<string, string>;
+  campos: CampoFormulario[];
+  boton: string;
+}) {
+  const [pendiente, empezar] = useTransition();
+  const [error, setError] = useState<string | null>(null);
+  return (
+    <form
+      onSubmit={(e) => {
+        e.preventDefault();
+        const f = new FormData(e.currentTarget);
+        for (const [k, v] of Object.entries(datos)) f.set(k, v);
+        empezar(async () => {
+          const r = await accion(f);
+          setError(r.ok ? null : r.error);
+        });
+      }}
+    >
+      <div className="grid gap-4 sm:grid-cols-2">
+        {campos.map((c) => (
+          <Campo
+            key={c.nombre}
+            name={c.nombre}
+            etiqueta={c.etiqueta}
+            ayuda={c.ayuda}
+            defaultValue={c.defecto}
+            inputMode={c.numerico ? "decimal" : undefined}
+            className={c.numerico ? "tabular" : ""}
+            autoComplete="off"
+            required
+          />
+        ))}
+      </div>
+      {error ? (
+        <p role="alert" className="mt-3 text-sm font-medium text-error">
+          {error}
+        </p>
+      ) : null}
+      <Boton type="submit" className="mt-4 w-full sm:w-auto" disabled={pendiente}>
+        {pendiente ? "Guardando…" : boton}
+      </Boton>
     </form>
   );
 }

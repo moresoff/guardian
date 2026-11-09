@@ -128,7 +128,9 @@ export type EstadoProyecto =
   | "fondeado"
   | "en_curso"
   | "cerrado"
-  | "rechazado";
+  | "rechazado"
+  /** Cerró la participación sin llegar al mínimo: no arranca y se devuelve todo. */
+  | "desierto";
 
 export type TipoDocumento =
   | "renspa"
