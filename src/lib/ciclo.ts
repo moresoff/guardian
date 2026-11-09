@@ -233,32 +233,30 @@ export interface DatosPesada {
   nota?: string;
 }
 
-/** Guarda una pesada. Las bajas salen solas: las cabezas que faltan desde la anterior. */
+/** Guarda una pesada del lote. */
 export async function registrarPesada(actor: string, proyectoId: string, d: DatosPesada) {
   const p = await getProyecto(proyectoId);
   if (!p || p.estado !== "en_curso") throw new Error("Las pesadas se cargan con el ciclo en curso.");
   const previas = await getSeguimientoDeProyecto(proyectoId);
   if (previas.some((r) => r.fecha === d.fecha)) throw new Error("Ya hay una pesada cargada ese día.");
-  const anterior = [...previas].reverse().find((r) => r.fecha < d.fecha);
-  const mortandad = Math.max(0, (anterior?.cabezas ?? p.cabezas) - d.cabezas);
   const concepto = d.conceptoGasto.trim() || "Sin gastos en el período";
 
   if (!hayBaseConfigurada()) {
-    seguimiento.push({ id: randomUUID(), proyectoId, ...d, conceptoGasto: concepto, mortandad });
+    seguimiento.push({ id: randomUUID(), proyectoId, ...d, conceptoGasto: concepto, mortandad: 0 });
     seguimiento.sort((a, b) => a.fecha.localeCompare(b.fecha));
     return;
   }
   await enTransaccion(async (q) => {
     await q(
-      `insert into seguimiento (proyecto_id, fecha, cabezas, peso_promedio_kg, mortandad, gasto_ars,
+      `insert into seguimiento (proyecto_id, fecha, cabezas, peso_promedio_kg, gasto_ars,
          concepto_gasto, nota)
-       values ($1, $2, $3, $4, $5, $6, $7, $8)`,
-      [proyectoId, d.fecha, d.cabezas, d.pesoPromedioKg, mortandad, d.gastoArs, concepto, d.nota || null],
+       values ($1, $2, $3, $4, $5, $6, $7)`,
+      [proyectoId, d.fecha, d.cabezas, d.pesoPromedioKg, d.gastoArs, concepto, d.nota || null],
     );
     await q(
       `insert into auditoria (actor, accion, entidad, entidad_id, cambios)
        values ($1, 'registrar_pesada', 'proyecto', $2, $3)`,
-      [actor, proyectoId, JSON.stringify({ ...d, mortandad })],
+      [actor, proyectoId, JSON.stringify(d)],
     );
   });
 }

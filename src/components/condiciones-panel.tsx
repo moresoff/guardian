@@ -33,9 +33,6 @@ export function CondicionesPanel({
         </Dato>
         <Dato etiqueta="Para qué">{f.objeto}</Dato>
         <Dato etiqueta="Reparto del resultado">{f.repartoResultado}</Dato>
-        <Dato etiqueta="Mortandad" ayuda="Quién soporta la pérdida de animales durante el ciclo.">
-          {f.mortandad}
-        </Dato>
         <Dato etiqueta="Duración del proyecto">
           Del {formatFecha(f.inicioAt)} al {formatFecha(f.extincionAt)}
         </Dato>

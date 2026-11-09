@@ -455,7 +455,6 @@ function Informe({
     );
   const esperado = pesoEsperado(proyecto, inicio ?? proyecto.publicadoAt ?? proyecto.creadoAt, ultima.fecha);
   const desvio = ultima.pesoPromedioKg - esperado;
-  const bajas = registros.reduce((a, r) => a + r.mortandad, 0);
   return (
     <div className="mt-4 border-t border-borde pt-4">
       <p className="rotulo text-tinta-tenue">Informe del ciclo · {formatFecha(ultima.fecha)}</p>
@@ -468,9 +467,8 @@ function Informe({
             {formatNum(desvio)} kg
           </span>
         </Dato>
-        <Dato etiqueta="Cabezas vivas">
+        <Dato etiqueta="Cabezas">
           {formatNum(ultima.cabezas)}
-          {bajas > 0 ? ` (${bajas} ${bajas === 1 ? "baja" : "bajas"})` : ""}
         </Dato>
       </dl>
       {ultima.nota ? <p className="mt-3 text-sm text-tinta-suave">«{ultima.nota}»</p> : null}
