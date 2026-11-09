@@ -5,6 +5,7 @@ import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import { cerrarSesion } from "@/app/sesion/acciones";
+import { Calculator } from "lucide-react";
 import { BotonRecorrido } from "@/components/recorrido-guiado";
 
 /**
@@ -38,6 +39,19 @@ const MENUS = {
     etiqueta: "Validación",
     items: [{ href: "/admin", label: "Cola de validación" }],
   },
+} as const;
+
+/**
+ * Las páginas abiertas: la portada, quiénes somos, cómo participar y el
+ * simulador. Es la misma barra que adentro, con otras secciones.
+ */
+const PUBLICO = {
+  inicio: "/",
+  items: [
+    { href: "/quienes-somos", label: "Quiénes somos" },
+    { href: "/como-participar", label: "Cómo participar" },
+    { href: "/#consultas", label: "Contacto" },
+  ],
 } as const;
 
 type Area = keyof typeof MENUS | null;
@@ -169,14 +183,16 @@ export function Nav({
   const router = useRouter();
   // Sin cuenta no hay menú de ningún lado: el catálogo se ve, pero desde afuera.
   const area = conSesion ? areaDe(pathname, lado) : null;
-  const menu = area ? MENUS[area] : null;
+  // En las páginas abiertas, quien ya entró ve su perfil igual.
+  const perfil: Area = area ?? (conSesion ? lado : null);
+  const menu = area ? MENUS[area] : PUBLICO;
 
   return (
     <header className="sticky top-0 z-20 border-b border-borde bg-papel/90 backdrop-blur">
       {/* En el teléfono: logo, perfil y «Salir» en un renglón, y las secciones
           en el de abajo, sin cortarse. En pantalla ancha, todo en uno. */}
       <div className="mx-auto flex max-w-6xl flex-wrap items-center gap-x-5 gap-y-1 px-4 py-2 sm:py-3">
-        <Link href={menu?.inicio ?? "/"} className="flex items-center gap-2.5">
+        <Link href={menu.inicio} className="flex items-center gap-2.5">
           <Image
             src="/imagenes/marca/logo-guardian-limpio.png"
             alt=""
@@ -190,7 +206,7 @@ export function Nav({
           </span>
         </Link>
 
-        {menu ? (
+        {(
           <nav
             className="order-last -mx-1 flex w-full items-center gap-0.5 overflow-x-auto sm:gap-1 sm:order-none sm:mx-0 sm:w-auto"
             aria-label="Secciones"
@@ -199,7 +215,7 @@ export function Nav({
               const activa =
                 "exacta" in s
                   ? pathname === s.href || s.tambien.some((p) => pathname.startsWith(p))
-                  : pathname.startsWith(s.href);
+                  : !s.href.includes("#") && pathname.startsWith(s.href);
               return (
                 <Link
                   key={s.href}
@@ -216,17 +232,17 @@ export function Nav({
               );
             })}
           </nav>
-        ) : null}
+        )}
 
         {/*
-          Dos encabezados según de qué lado del ingreso estés. Afuera: el simulador,
-          entrar y registrarse. Adentro: el menú del perfil, con el simulador. La sesión ya
+          Dos encabezados según de qué lado del ingreso estés. Afuera: entrar y el
+          simulador; la cuenta se crea desde la portada. Adentro: el menú del perfil, con el simulador. La sesión ya
           sabe a qué lado va cada uno.
         */}
         <div className="ml-auto flex items-center gap-1 sm:gap-2">
-          {area ? (
+          {perfil ? (
             <>
-              <MenuPerfil area={area} nombre={nombre} />
+              <MenuPerfil area={perfil} nombre={nombre} />
               <button
                 type="button"
                 onClick={async () => {
@@ -242,23 +258,18 @@ export function Nav({
           ) : (
             <>
               <Link
-                href="/simulador"
-                aria-current={pathname.startsWith("/simulador") ? "page" : undefined}
-                className="flex min-h-11 items-center rounded-full px-3 py-2 text-sm font-medium text-tinta-suave transition-colors hover:bg-superficie-2 hover:text-tinta aria-[current=page]:bg-marca-suave aria-[current=page]:text-marca"
-              >
-                Simulador
-              </Link>
-              <Link
                 href="/ingresar"
                 className="flex min-h-11 items-center rounded-full px-3 py-2 text-sm font-medium text-tinta-suave transition-colors hover:bg-superficie-2 hover:text-tinta"
               >
                 Iniciar sesión
               </Link>
               <Link
-                href="/registro"
-                className="flex min-h-11 items-center rounded-full bg-marca px-4 py-2 text-sm font-medium text-marca-contraste transition-colors hover:bg-marca-fuerte"
+                href="/simulador"
+                aria-current={pathname.startsWith("/simulador") ? "page" : undefined}
+                className="flex min-h-11 items-center gap-2 rounded-full bg-marca px-4 py-2 text-sm font-medium text-marca-contraste transition-colors hover:bg-marca-fuerte"
               >
-                Registrarse
+                <Calculator className="size-4" strokeWidth={1.75} aria-hidden />
+                Simulador
               </Link>
             </>
           )}

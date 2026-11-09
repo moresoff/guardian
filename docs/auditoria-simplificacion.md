@@ -22,6 +22,12 @@ desplazarse en cada una («pantallas» = alto de la página ÷ alto del teléfon
 | Barra de la portada | «Cambiar perfil» abría un menú con dos opciones | Botón «Simulador» | En el teléfono va en el mismo renglón que el logo y el menú, en vez de ocupar uno entero. |
 | «Probá un ciclo» | Página aparte con papeles de ejemplo | Se sacó | Quien tenga el enlace viejo cae en el simulador. El simulador está abierto sin cuenta. |
 
+| Páginas abiertas y app | Dos sitios: `GuardianWebsite` + `website.css` (1.700 líneas, colores a mano) y la app con Tailwind | Un solo marco | La misma barra, el mismo pie y los mismos tokens en todas las pantallas. Se borraron `website.css`, `GuardianWebsite` y el `Logo` viejo. |
+| Portada | 5,9 pantallas (teléfono) | 4,4 | Se sacaron «Qué hacemos» y «Antes de participar», que repetían «Cómo participar». Desde «Cómo corre un ciclo» hay un enlace a esa página. Computadora: 4,5 → 3,4. |
+| Quiénes somos | 4,3 | 2,7 | «Quién es Guardian» y «Nuestro propósito» quedaron en una sola sección. |
+| Cómo participar | 4,5 | 3,3 | Los pasos son los de la app: cuenta, identidad, proyecto, contrato, seguimiento. Recibe «Antes de participar». Las preguntas frecuentes se abren de a una. |
+| Avisos de prototipo en lo público | 4 | 2 | Quedan el de la foto de arriba y el del pie, que ahora es el mismo en toda la app. |
+
 ## Lo que propongo simplificar (no está hecho)
 
 Ordenado por cuánto le ahorra al ganadero.
@@ -56,29 +62,7 @@ Ordenado por cuánto le ahorra al ganadero.
 7. **Datos del colaborador (2,8 pantallas).** Repite nombre, CUIL e identidad,
    que ya están en la validación de identidad. Propuesta: una sola pantalla
    «Mis datos» con la identidad y el CBU.
-8. **«Quiénes somos» dice lo mismo dos veces.** «Quién es Guardian» y «Nuestro
-   propósito» cuentan, con otras palabras, que Guardian conecta productores y
-   colaboradores y ordena la documentación. Propuesta: una sola sección. Ahorra
-   casi una pantalla de teléfono.
-9. **«Cómo participar» describe un recorrido que ya no es el de la app.** El
-   paso 1 es «Escribinos» y el 4 dice que la portada no permite sumarse. Hoy se
-   crea la cuenta, se valida la identidad, se elige un proyecto y se firma.
-   Propuesta: que los pasos sean esos cinco, con el mismo nombre que tienen
-   adentro, sin montos ni plazos (es pantalla pública).
-10. **La portada repite «Cómo participar».** «Qué hacemos», «Cómo corre un
-    ciclo» y «Antes de participar» están en la portada y, con otras palabras, en
-    «Cómo participar». Propuesta: dejar en la portada solo «Cómo corre un ciclo»
-    y enlazar el resto. Bajaría la portada a unas 4,5 pantallas en el teléfono.
-11. **Cuatro avisos de prototipo en las páginas públicas.** En la foto de
-    arriba, en el pie, en «Quiénes somos» y en «Conversemos». Propuesta: dejar
-    el del pie y el de la foto de arriba.
-12. **Dos sitios con dos sistemas de diseño.** Las páginas públicas usan
-    `GuardianWebsite` y `website.css` (unas 1.700 líneas, colores escritos a
-    mano, reglas repetidas en tres bloques para teléfono). La app usa `Nav` y los
-    tokens de Tailwind. Propuesta: pasar las páginas públicas a los mismos
-    tokens y componentes. Es el cambio más grande de la lista, pero el que más
-    código saca.
-13. **Rutas viejas que solo redirigen.** `/como-invertir`, `/investor`,
+8. **Rutas viejas que solo redirigen.** `/como-invertir`, `/investor`,
     `/fiduciary`, `/comparison` y ahora `/simulacion`. Propuesta: borrarlas
     cuando no queden enlaces viejos dando vueltas.
 

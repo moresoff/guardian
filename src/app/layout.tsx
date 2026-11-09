@@ -3,7 +3,6 @@ import { JetBrains_Mono, Poppins } from "next/font/google";
 import { SiteFrame } from "@/components/SiteFrame";
 import { usuarioActual } from "@/lib/sesion";
 import "./globals.css";
-import "./website.css";
 
 const poppins = Poppins({
   variable: "--font-poppins",

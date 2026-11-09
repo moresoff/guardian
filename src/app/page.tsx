@@ -1,9 +1,7 @@
 import {
-  ClipboardList,
-  FileCheck,
+  ArrowRight,
   Mail,
   Phone,
-  ShieldCheck,
   Sprout,
   Split,
   Warehouse,
@@ -34,7 +32,7 @@ export const metadata = {
  * completo. El alto de la foto está limitado a propósito: la elección de puerta
  * tiene que asomar sin tener que desplazar.
  */
-const ANCHO_COMPLETO = "relative left-1/2 w-screen -translate-x-1/2";
+const ANCHO_COMPLETO = "relative";
 
 const PUERTAS = [
   {
@@ -55,30 +53,6 @@ const PUERTAS = [
   },
 ];
 
-/** Lo que conviene saber antes de participar, sin ceremonia. El detalle está en la ficha. */
-const ANTES_DE_PARTICIPAR: { titulo: string; texto: string }[] = [
-  {
-    titulo: "El destino está escrito",
-    texto:
-      "Cada proyecto dice en qué se usa lo aportado, en qué plazo y cómo se reparte. Salir de ahí es incumplimiento.",
-  },
-  {
-    titulo: "El resultado sale de la venta",
-    texto:
-      "Guardian conecta y verifica la documentación. El resultado depende de la venta del lote: lo fija el romaneo del frigorífico y puede ser distinto de lo esperado.",
-  },
-  {
-    titulo: "Cada proyecto va por separado",
-    texto:
-      "Tiene sus propias condiciones, su propia cuenta y su propia rendición. Lo que pasa en un ciclo no se mezcla con otro.",
-  },
-  {
-    titulo: "Rendición de cuentas",
-    texto:
-      "Cada proyecto rinde cuentas de gastos y pesadas mientras corre, y al cierre con el romaneo.",
-  },
-];
-
 const ICONO_CICLO: Record<string, LucideIcon> = {
   corral: Warehouse,
   mixto: Split,
@@ -91,27 +65,6 @@ const FOTO_CICLO: Record<string, string> = {
   mixto: "/imagenes/fotos/proyecto-1.webp",
   pastura: "/imagenes/fotos/proyecto6.webp",
 };
-
-const QUE_HACEMOS: { icono: LucideIcon; titulo: string; texto: string }[] = [
-  {
-    icono: FileCheck,
-    titulo: "Publicamos ciclos con respaldo",
-    texto:
-      "El productor declara el lote y sube la documentación que ya emite. Guardian la lee y cruza cada dato contra lo declarado.",
-  },
-  {
-    icono: ShieldCheck,
-    titulo: "Verificamos antes de mostrar",
-    texto:
-      "Revisamos las discrepancias y comprobamos la autenticidad de los comprobantes por el canal oficial antes de que el proyecto sea visible.",
-  },
-  {
-    icono: ClipboardList,
-    titulo: "Acompañamos hasta el cierre",
-    texto:
-      "Cada proyecto rinde cuentas mientras corre y cierra con el romaneo del frigorífico, que es la cifra que queda.",
-  },
-];
 
 const ETAPAS: Etapa[] = [
   {
@@ -159,23 +112,17 @@ export default async function Home() {
   const fotoCaso = cerrado ? fotoDelProyecto(cerrado.id) : null;
 
   return (
-    <div className="-mb-10 -mt-10">
+    <div>
       {/*
         Portada y elección de puerta comparten pantalla: quien entra tiene que
         poder elegir sin desplazar. El alto se mide en `svh` —la unidad que
         descuenta la barra del navegador del teléfono— y es mínimo, no fijo: si el
         contenido no entra, la sección crece en vez de recortarse.
       */}
-      {/*
-        La foto de la portada queda quieta mientras «Qué hacemos» sube encima
-        como una lámina: vive en una capa pegajosa (sticky) detrás de las dos. Es sticky
-        y no `background-attachment: fixed` porque Safari del iPhone ignora el
-        fixed. No se anima nada: solo deja de desplazarse.
-      */}
       <div className={`${ANCHO_COMPLETO} bg-marca-fuerte`}>
         {fondo ? (
           <div className="absolute inset-0" aria-hidden>
-            <div className="sticky top-0 h-svh overflow-hidden">
+            <div className="h-full overflow-hidden">
               <Image
                 src={fondo}
                 alt=""
@@ -189,7 +136,7 @@ export default async function Home() {
           </div>
         ) : null}
 
-      <section className="relative flex min-h-[calc(100svh-6.9rem)] items-center sm:min-h-[calc(100svh-4.31rem)]">
+      <section className="relative flex min-h-[calc(100svh-7.5rem)] items-center sm:min-h-[calc(100svh-4.5rem)]">
 
         <div className="relative mx-auto grid w-full max-w-6xl items-center gap-8 px-4 py-8 sm:py-12 lg:grid-cols-[1.2fr_1fr] lg:gap-14">
           <div>
@@ -251,33 +198,6 @@ export default async function Home() {
         </div>
       </section>
 
-      {/*
-        Qué hacemos: una lámina verde clara que sube y tapa la foto de la
-        portada, que se queda quieta detrás.
-      */}
-      <section className="relative rounded-t-[2rem] bg-marca-suave">
-        <div className="mx-auto max-w-6xl px-4 py-10 sm:py-16">
-          <h2 className="text-2xl font-semibold tracking-tight text-marca-fuerte">
-            Qué hacemos
-          </h2>
-          <ol className="mt-5 grid gap-3 md:mt-6 md:grid-cols-3 md:gap-4">
-            {QUE_HACEMOS.map(({ icono: Icono, titulo, texto }) => (
-              <li
-                key={titulo}
-                className="flex gap-4 rounded-2xl border border-marca/15 bg-superficie p-5 shadow-[var(--sombra-baja)] md:block md:p-6"
-              >
-                <span className="flex size-11 shrink-0 items-center justify-center rounded-full bg-marca-suave text-marca">
-                  <Icono className="size-5" strokeWidth={1.75} aria-hidden />
-                </span>
-                <div>
-                  <h3 className="text-lg font-semibold tracking-tight md:mt-4">{titulo}</h3>
-                  <p className="mt-1 text-tinta-suave md:mt-2">{texto}</p>
-                </div>
-              </li>
-            ))}
-          </ol>
-        </div>
-      </section>
       </div>
 
       {/*
@@ -368,25 +288,18 @@ export default async function Home() {
               </li>
             ))}
           </ol>
+          <Link
+            href="/como-participar"
+            className="mt-6 inline-flex min-h-11 items-center gap-2 font-medium text-white underline underline-offset-4 hover:text-marca-suave"
+          >
+            Cómo participar, paso a paso
+            <ArrowRight className="size-5" strokeWidth={1.75} aria-hidden />
+          </Link>
         </div>
       </section>
 
-      {/* 5. Antes de participar */}
-      <Banda tono="bg-superficie-2">
-        <h2 className="text-2xl font-semibold tracking-tight">
-          Antes de participar
-        </h2>
-        <dl className="mt-7 grid gap-x-10 gap-y-6 sm:grid-cols-2">
-          {ANTES_DE_PARTICIPAR.map((c) => (
-            <div key={c.titulo} className="border-t border-borde-fuerte pt-3">
-              <dt className="font-semibold tracking-tight">{c.titulo}</dt>
-              <dd className="mt-1 text-tinta-suave">{c.texto}</dd>
-            </div>
-          ))}
-        </dl>
-      </Banda>
 
-      {/* 6. Proyectos y casos */}
+      {/* 5. Proyectos y casos */}
       <Banda>
         <div className="flex flex-wrap items-end justify-between gap-4">
           <div className="max-w-2xl">
@@ -425,7 +338,7 @@ export default async function Home() {
         </ul>
       </Banda>
 
-      {/* 7. Cierre: crear la cuenta y el contacto, juntos y al final */}
+      {/* 6. Cierre: crear la cuenta y el contacto, juntos y al final */}
       <section id="consultas" className={`${ANCHO_COMPLETO} bg-marca-fuerte text-white`}>
         <div className="mx-auto grid max-w-6xl gap-8 px-4 py-10 sm:py-14 lg:grid-cols-2 lg:gap-16">
           <div>
