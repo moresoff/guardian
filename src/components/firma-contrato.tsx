@@ -10,7 +10,7 @@ import {
   type Contrato,
 } from "@/lib/contrato";
 import { formatArs, formatNum } from "@/lib/format";
-import { MODELOS, simularColaborador } from "@/lib/simulador";
+import { MODELOS, simularColaborador, type Precios } from "@/lib/simulador";
 import type { Garantia, Productor, Proyecto } from "@/lib/types";
 import { firmarFideicomisoDelProyecto, participar } from "@/app/proyectos/[id]/acciones";
 
@@ -21,6 +21,8 @@ type Props =
       productor: Productor;
       /** Lo que todavía falta cubrir del objetivo. */
       lugar: number;
+      /** El precio del kilo de hoy, para la estimación. */
+      precios?: Precios;
     }
   | {
       rol: "productor";
@@ -163,7 +165,7 @@ export function FirmaContrato(props: Props) {
   }
 
   const estimado = props.rol === "colaborador" && nMonto >= MINIMO
-    ? simularColaborador(proyecto.sistemaProductivo, nMonto)
+    ? simularColaborador(proyecto.sistemaProductivo, nMonto, props.precios)
     : null;
 
   return (
@@ -210,7 +212,8 @@ export function FirmaContrato(props: Props) {
                 </p>
                 <p className="tabular text-2xl font-semibold">{formatArs(estimado.ganancia)}</p>
                 <p className="text-sm text-tinta-suave">
-                  Después de comisiones e impuestos. Es una estimación, no una promesa.
+                  Después de comisiones e impuestos{props.precios ? ", con el precio del kilo de hoy" : ""}. Es una
+                  estimación, no una promesa.
                 </p>
               </div>
             ) : null}

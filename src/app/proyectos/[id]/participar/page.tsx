@@ -4,6 +4,7 @@ import { FirmaContrato } from "@/components/firma-contrato";
 import { BotonLink } from "@/components/ui/primitivos";
 import { getAportesDeProyecto, getProductor, getProyecto } from "@/lib/data";
 import { getVerificacion } from "@/lib/identidad";
+import { getPreciosHacienda } from "@/lib/precios-hacienda";
 import { calcularFondeo, puedeAdherirse } from "@/lib/proyecto";
 import { usuarioActual } from "@/lib/sesion";
 
@@ -24,7 +25,7 @@ export default async function ParticiparPage({ params }: { params: Promise<{ id:
     0,
     proyecto.montoObjetivoArs - fondeo.acreditadoArs - fondeo.comprometidoSinAcreditarArs,
   );
-  const v = await getVerificacion(u.id);
+  const [v, mercado] = await Promise.all([getVerificacion(u.id), getPreciosHacienda()]);
 
   return (
     <div className="mx-auto max-w-2xl">
@@ -38,7 +39,13 @@ export default async function ParticiparPage({ params }: { params: Promise<{ id:
         ) : v?.estado !== "aprobada" ? (
           <FaltaIdentidad volver={`/proyectos/${id}/participar`} />
         ) : (
-          <FirmaContrato rol="colaborador" proyecto={proyecto} productor={productor} lugar={lugar} />
+          <FirmaContrato
+            rol="colaborador"
+            proyecto={proyecto}
+            productor={productor}
+            lugar={lugar}
+            precios={{ compraKg: mercado.compra.valor, ventaKg: mercado.venta.valor }}
+          />
         )}
       </div>
     </div>

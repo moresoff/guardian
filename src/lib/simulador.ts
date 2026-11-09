@@ -114,6 +114,19 @@ export const SISTEMAS_SIMULADOR: SistemaProductivo[] = ["corral", "mixto", "past
 /** Lo que cuesta comprar un ternero: es lo que pone el colaborador por cabeza. */
 export const COMPRA_POR_CABEZA = SUPUESTOS.pesoEntradaKg * SUPUESTOS.precioCompraKg;
 
+/** Los precios del kilo con que se hace la cuenta. Por defecto, los del análisis. */
+export interface Precios {
+  compraKg: number;
+  ventaKg: number;
+}
+
+export const PRECIOS_DEL_ANALISIS: Precios = {
+  compraKg: SUPUESTOS.precioCompraKg,
+  ventaKg: SUPUESTOS.precioVentaKg,
+};
+
+export const compraPorCabeza = (p: Precios) => SUPUESTOS.pesoEntradaKg * p.compraKg;
+
 export interface Linea {
   concepto: string;
   /** Positivo entra, negativo sale. */
@@ -153,16 +166,21 @@ function venta(m: ModeloCiclo, cabezas: number) {
  * El colaborador: pone la compra de la hacienda y se lleva su parte de la venta.
  * `aporte` en pesos; se traduce en cuántas cabezas compra.
  */
-export function simularColaborador(sistema: SistemaProductivo, aporte: number): Resultado {
+export function simularColaborador(
+  sistema: SistemaProductivo,
+  aporte: number,
+  precios: Precios = PRECIOS_DEL_ANALISIS,
+): Resultado {
   const m = MODELOS[sistema];
-  const cabezas = Math.max(0, aporte) / COMPRA_POR_CABEZA;
+  const porCabeza = compraPorCabeza(precios);
+  const cabezas = Math.max(0, aporte) / porCabeza;
   const { vendidas, kilos } = venta(m, cabezas);
   const s = m.parteColaboradores;
 
-  const compra = cabezas * COMPRA_POR_CABEZA;
+  const compra = cabezas * porCabeza;
   const comision = compra * COMISIONES.colaborador;
-  const ingreso = kilos * s * SUPUESTOS.precioVentaKg;
-  const fiduciario = vendidas * FIDUCIARIO_KG_POR_CABEZA * SUPUESTOS.precioVentaKg * s;
+  const ingreso = kilos * s * precios.ventaKg;
+  const fiduciario = vendidas * FIDUCIARIO_KG_POR_CABEZA * precios.ventaKg * s;
   const debitos = (compra + comision) * IMPUESTO_CHEQUE;
   const creditos = ingreso * IMPUESTO_CHEQUE;
   const antesDeGanancias = ingreso - compra - comision - fiduciario - debitos - creditos;
@@ -193,20 +211,24 @@ export function simularColaborador(sistema: SistemaProductivo, aporte: number): 
 }
 
 /** El productor: pone la alimentación, el cuidado y el campo, y se lleva su parte. */
-export function simularProductor(sistema: SistemaProductivo, cabezas: number): Resultado {
+export function simularProductor(
+  sistema: SistemaProductivo,
+  cabezas: number,
+  precios: Precios = PRECIOS_DEL_ANALISIS,
+): Resultado {
   const m = MODELOS[sistema];
   const n = Math.max(0, cabezas);
   const { vendidas, kilos } = venta(m, n);
   const s = 1 - m.parteColaboradores;
   const c = m.costos;
 
-  const compra = n * COMPRA_POR_CABEZA;
+  const compra = n * compraPorCabeza(precios);
   const comision = compra * COMISIONES.productor;
   const crianza = n * (c.alimentacion + c.sanidad + c.personal + c.mantenimiento);
   const flete = n * c.flete;
   const capacidad = n * c.capacidadComprometida;
-  const ingreso = kilos * s * SUPUESTOS.precioVentaKg;
-  const fiduciario = vendidas * FIDUCIARIO_KG_POR_CABEZA * SUPUESTOS.precioVentaKg * s;
+  const ingreso = kilos * s * precios.ventaKg;
+  const fiduciario = vendidas * FIDUCIARIO_KG_POR_CABEZA * precios.ventaKg * s;
   const debitos = (comision + crianza + flete) * IMPUESTO_CHEQUE;
   const creditos = ingreso * IMPUESTO_CHEQUE;
   const antesDeGanancias =

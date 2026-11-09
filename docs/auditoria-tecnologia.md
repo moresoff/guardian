@@ -122,3 +122,12 @@ flujo que lo produzca: el registro toma el CUIT como texto.
 2. Versiones de documento (el original sin pisar).
 3. Lectura real con modelo de visión.
 4. Identidad y firma con proveedores externos.
+
+## Precio del kilo en el simulador (2026-11-09)
+
+`src/lib/precios-hacienda.ts` trae dos precios públicos y los guarda seis horas:
+
+- Compra: Índice Ternero de ROSGAN (`https://www.rosgan.app/api/market-indices`, JSON sin cuenta).
+- Venta: promedio de «NOVILLITOS EyB M. 300/390» del Mercado Agroganadero de Cañuelas, últimos 7 días (tabla HTML de `haciinfo000002`, por POST con fechas).
+
+Si una fuente no responde, el simulador usa el valor del análisis económico y lo dice en pantalla. El simulador y la estimación al participar usan los mismos precios.

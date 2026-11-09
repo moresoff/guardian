@@ -48,6 +48,8 @@ const MENUS = {
 const PUBLICO = {
   inicio: "/",
   items: [
+    // En el teléfono el botón verde no entra arriba: baja a las secciones.
+    { href: "/simulador", label: "Simulador", soloTelefono: true },
     { href: "/quienes-somos", label: "Quiénes somos" },
     { href: "/como-participar", label: "Cómo participar" },
     { href: "/#consultas", label: "Contacto" },
@@ -222,9 +224,13 @@ export function Nav({
                   href={s.href}
                   aria-current={activa ? "page" : undefined}
                   className={`inline-flex min-h-11 shrink-0 items-center whitespace-nowrap rounded-full px-2.5 text-sm transition-colors sm:px-3 ${
+                    "soloTelefono" in s ? "font-medium sm:hidden " : ""
+                  }${
                     activa
                       ? "bg-marca-suave font-medium text-marca"
-                      : "text-tinta-suave hover:bg-superficie-2"
+                      : "soloTelefono" in s
+                        ? "text-marca"
+                        : "text-tinta-suave hover:bg-superficie-2"
                   }`}
                 >
                   {s.label}
@@ -266,7 +272,7 @@ export function Nav({
               <Link
                 href="/simulador"
                 aria-current={pathname.startsWith("/simulador") ? "page" : undefined}
-                className="flex min-h-11 items-center gap-2 rounded-full bg-marca px-4 py-2 text-sm font-medium text-marca-contraste transition-colors hover:bg-marca-fuerte"
+                className="hidden min-h-11 items-center gap-2 rounded-full bg-marca px-4 py-2 text-sm font-medium text-marca-contraste transition-colors hover:bg-marca-fuerte sm:flex"
               >
                 <Calculator className="size-4" strokeWidth={1.75} aria-hidden />
                 Simulador
