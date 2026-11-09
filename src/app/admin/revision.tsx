@@ -6,7 +6,6 @@ import { DatoGarantia } from "@/components/garantia";
 import {
   Aviso,
   Badge,
-  Boton,
   Panel,
   Dato,
   TituloBloque,
@@ -27,7 +26,17 @@ import {
   formatNum,
   formatPct,
 } from "@/lib/format";
+import { getFirmaFideicomiso } from "@/lib/firmas";
 import { puedePublicarse } from "@/lib/proyecto";
+import { getMotivoRechazo } from "@/lib/validacion";
+import {
+  accionPublicar,
+  accionRechazarDocumento,
+  accionRechazarProyecto,
+  accionResolverDiscrepancia,
+  accionVerificarDocumento,
+} from "./acciones";
+import { AccionConTexto, BotonAccion } from "./controles";
 
 /** La revisión de un proyecto de la cola: lo declarado, sus documentos y el checklist. */
 export async function RevisionProyecto({ id }: { id: string }) {
@@ -49,7 +58,10 @@ export async function RevisionProyecto({ id }: { id: string }) {
     (d) => d.estadoAutenticidad === "sin_verificar",
   );
 
-  const bloqueantes = faltantes.length + sinResolver.length + sinVerificar.length;
+  const firma = await getFirmaFideicomiso(proyecto.id);
+  const motivoRechazo = proyecto.estado === "rechazado" ? await getMotivoRechazo(proyecto.id) : null;
+  const enRevision = proyecto.estado === "en_validacion";
+  const bloqueantes = faltantes.length + sinResolver.length + sinVerificar.length + (firma ? 0 : 1);
   const publicabilidad = puedePublicarse(proyecto);
 
   return (
@@ -101,10 +113,47 @@ export async function RevisionProyecto({ id }: { id: string }) {
                     documento={d}
                     discrepancias={discrepancias.filter((x) => x.documentoId === d.id)}
                   />
-                  <div className="mt-2 flex flex-wrap justify-end gap-2">
-                    <Boton variante="secundario">Verificar autenticidad</Boton>
-                    <Boton variante="peligro">Rechazar documento</Boton>
-                  </div>
+                  {discrepancias
+                    .filter((x) => x.documentoId === d.id && !x.resuelta)
+                    .map((x) => (
+                      <div key={x.id} className="mt-2 flex flex-wrap items-center justify-between gap-2 rounded-xl bg-alerta-suave px-3 py-2">
+                        <span className="text-sm">
+                          {x.etiqueta}: declarado {x.valorDeclarado}, en el papel {x.valorExtraido}
+                        </span>
+                        {enRevision ? (
+                          <AccionConTexto
+                            accion={accionResolverDiscrepancia}
+                            datos={{ discrepanciaId: x.id }}
+                            boton="Resolver"
+                            etiqueta="¿Cómo se resolvió?"
+                            confirmar="Marcar resuelta"
+                          />
+                        ) : null}
+                      </div>
+                    ))}
+                  {enRevision ? (
+                    <div className="mt-2 flex flex-wrap justify-end gap-2">
+                      {d.estadoAutenticidad === "verificada" ? (
+                        <Badge tono="ok">Autenticidad verificada</Badge>
+                      ) : (
+                        <BotonAccion accion={accionVerificarDocumento} datos={{ documentoId: d.id }} variante="secundario">
+                          {d.tipo === "dte" ? "Verifiqué el CUVE en SENASA" : "Verificar autenticidad"}
+                        </BotonAccion>
+                      )}
+                      {d.estadoAutenticidad === "rechazada" ? (
+                        <Badge tono="error">Rechazado{d.observacionAdmin ? `: ${d.observacionAdmin}` : ""}</Badge>
+                      ) : (
+                        <AccionConTexto
+                          accion={accionRechazarDocumento}
+                          datos={{ documentoId: d.id }}
+                          boton="Rechazar documento"
+                          etiqueta="¿Por qué se rechaza? El productor lo va a leer."
+                          confirmar="Rechazar"
+                          variante="peligro"
+                        />
+                      )}
+                    </div>
+                  ) : null}
                 </div>
               ))}
             </div>
@@ -131,6 +180,10 @@ export async function RevisionProyecto({ id }: { id: string }) {
                     ? "Sin discrepancias abiertas"
                     : `${sinResolver.length} discrepancias sin resolver`
                 }
+              />
+              <Item
+                ok={!!firma}
+                texto={firma ? "Contrato del fideicomiso firmado" : "El productor no firmó el contrato del fideicomiso"}
               />
               <Item
                 ok={sinVerificar.length === 0}
@@ -172,14 +225,32 @@ export async function RevisionProyecto({ id }: { id: string }) {
               </div>
             ) : null}
 
-            <div className="mt-5 space-y-2 border-t border-borde pt-4">
-              <Boton className="w-full" disabled={bloqueantes > 0 || !publicabilidad.puede}>
-                Publicar proyecto
-              </Boton>
-              <Boton variante="peligro" className="w-full">
-                Rechazar proyecto
-              </Boton>
-            </div>
+            {enRevision ? (
+              <div className="mt-5 space-y-2 border-t border-borde pt-4">
+                <BotonAccion
+                  accion={accionPublicar}
+                  datos={{ proyectoId: proyecto.id }}
+                  disabled={bloqueantes > 0 || !publicabilidad.puede}
+                >
+                  Publicar proyecto
+                </BotonAccion>
+                <AccionConTexto
+                  accion={accionRechazarProyecto}
+                  datos={{ proyectoId: proyecto.id }}
+                  boton="Rechazar proyecto"
+                  etiqueta="Motivo del rechazo. El productor lo va a leer."
+                  confirmar="Rechazar proyecto"
+                  variante="peligro"
+                  className="w-full"
+                />
+              </div>
+            ) : (
+              <p className="mt-5 border-t border-borde pt-4 text-sm text-tinta-suave">
+                {proyecto.estado === "rechazado"
+                  ? `Rechazado${motivoRechazo ? `: ${motivoRechazo}` : "."}`
+                  : "Ya salió de la revisión."}
+              </p>
+            )}
 
             {bloqueantes > 0 ? (
               <p className="mt-3 text-sm text-tinta-tenue">

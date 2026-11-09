@@ -5,7 +5,6 @@ import { CabeceraProductor } from "@/components/cabecera-productor";
 import { ListaProyectos } from "@/components/lista-proyectos";
 import { SaldosCard } from "@/components/saldos-card";
 import type { ItemProyecto } from "@/components/tarjeta-proyecto";
-import { BotonLink, Vacio } from "@/components/ui/primitivos";
 import {
   getDiscrepanciasDeProyecto,
   getDocumentosVigentesDeProyecto,
@@ -76,39 +75,17 @@ export async function PanelProductor() {
   return (
     <div className="space-y-8">
       <AvisoIdentidad />
-      {/* Sin proyectos, las cifras son todas cero: no dicen nada y empujan el
-          único botón útil hacia abajo. Aparecen con el primer proyecto. */}
-      {proyectos.length > 0 ? (
-        <>
+      {/* Con o sin proyectos, el tablero es el mismo: una cuenta nueva lo ve en
+          cero y sabe qué va a encontrar cuando publique. */}
       <CabeceraProductor />
-
-      {/* Los recuentos por estado ya están en las solapas de la lista: un panel
-          con los mismos cuatro números repetía lo mismo dos veces. */}
       <SaldosCard saldos={saldos} />
-        </>
-      ) : null}
 
-      <section
-        id="proyectos"
-        className={`scroll-mt-20 ${proyectos.length > 0 ? "border-t border-borde pt-8" : ""}`}
-      >
-        {items.length === 0 ? (
-          <Vacio
-            titulo="Todavía no publicaste ningún proyecto"
-            accion={
-              <BotonLink href="/productor/proyectos/nuevo">Publicar el primero</BotonLink>
-            }
-          >
-            Un proyecto describe un ciclo de engorde y lo que necesitás para llevarlo
-            adelante.
-          </Vacio>
-        ) : (
-          // La lista lee la solapa de la URL: necesita su propio límite de
-          // Suspense para que la página siga prerenderizándose.
-          <Suspense fallback={null}>
-            <ListaProyectos items={items} />
-          </Suspense>
-        )}
+      <section id="proyectos" className="scroll-mt-20 border-t border-borde pt-8">
+        {/* La lista lee la solapa de la URL: necesita su propio límite de
+            Suspense para que la página siga prerenderizándose. */}
+        <Suspense fallback={null}>
+          <ListaProyectos items={items} />
+        </Suspense>
       </section>
     </div>
   );

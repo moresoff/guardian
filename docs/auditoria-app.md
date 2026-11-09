@@ -4,6 +4,32 @@ Fecha: 2026-11-09. Se recorrió la app por dentro con una cuenta nueva de cada
 lado (teléfono, 390 px) y se comparó cada etapa con lo que dice el trabajo final
 (`Guardian_9.md`). Las referencias «L» son líneas de ese archivo.
 
+## 0. Hecho después de esta auditoría (2026-11-09)
+
+- **Validación que funciona** (`src/lib/validacion.ts`, `src/app/admin/acciones.ts`):
+  verificar la autenticidad de cada papel (el DT-e con su CUVE), rechazarlo con
+  motivo, resolver cada diferencia diciendo cómo, publicar y rechazar el proyecto
+  con motivo. Publicar se vuelve a controlar en el servidor y exige el contrato
+  del fideicomiso firmado. El productor ve el motivo si se rechaza.
+- **Acreditar aportes**: «Transferencias por confirmar» en la cola de validación.
+  Registra el movimiento bancario (la orden es la referencia, así no se duplica),
+  pasa el aporte a acreditado y suma a lo recaudado.
+- **Mínimo para arrancar**: un proyecto nuevo nace con el 80 % del objetivo.
+- **Números del ciclo**: `src/lib/ciclos.ts` sale del modelo del simulador, que
+  es el del trabajo (feedlot de 90 días, 31,78 / 68,22). Migración `0006`.
+- **Comisión del productor** partida en 2 % al ejecutar y 1,5 % de éxito, con el
+  piso de 0,5 % si desiste, en el simulador y en el contrato (v2).
+- **Pago único**: la ficha ya no muestra tramos de desembolso.
+- **Mis datos** del colaborador con lo que declaró en la identidad (DNI, CUIL,
+  domicilio, CBU) y los contratos que firmó, con su huella.
+- **Tres avisos fijos** en lugar de interruptores que no guardaban nada.
+- **Panel del productor** completo aunque esté en cero.
+- **Identidad** y **alta de un proyecto** en una sola pantalla cada una.
+
+Probado de punta a punta en el teléfono, en memoria y contra Postgres: alta del
+productor, identidad, presentar con papeles, firmar, validar, publicar, alta del
+colaborador, participar, firmar y acreditar.
+
 ## 1. El circuito de punta a punta
 
 | Etapa | Lo que dice el trabajo | La app hoy | Estado |

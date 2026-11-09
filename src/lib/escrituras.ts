@@ -2,6 +2,7 @@ import "server-only";
 import { randomUUID } from "node:crypto";
 import { guardarArchivo, type ArchivoValidado } from "@/lib/almacen";
 import { CICLOS } from "@/lib/ciclos";
+import { MODELOS, SUPUESTOS } from "@/lib/simulador";
 import { consultar, enTransaccion, hayBaseConfigurada } from "@/lib/db/conexion";
 import { getProductor, getProyecto } from "@/lib/data";
 import type { Consultar } from "@/lib/data/postgres";
@@ -43,15 +44,12 @@ export interface Presentacion {
 }
 
 /**
- * Ganancia diaria esperada por sistema, en kilos por cabeza. Da el peso de
- * salida objetivo, que el alta no pregunta: es el mismo cálculo con el que se
- * armaron los proyectos de la demo.
+ * Ganancia diaria esperada por sistema, en kilos por cabeza: la del modelo del
+ * simulador (de 180 kg a la salida en los días del ciclo). Da el peso de salida
+ * objetivo, que el alta no pregunta.
  */
-const GANANCIA_DIARIA: Record<SistemaProductivo, number> = {
-  corral: 1.07,
-  mixto: 0.78,
-  pastura: 0.54,
-};
+const GANANCIA_DIARIA = (s: SistemaProductivo) =>
+  (MODELOS[s].pesoSalidaKg - SUPUESTOS.pesoEntradaKg) / MODELOS[s].dias;
 
 const TITULO: Record<SistemaProductivo, string> = {
   corral: "Engorde a corral",
@@ -63,6 +61,9 @@ const BASE_REPARTO =
   "Sobre el resultado neto de la venta, una vez cubiertos los gastos reconocidos del ciclo";
 
 const hoy = () => new Date().toISOString().slice(0, 10);
+
+/** El umbral del trabajo final: con el 80 % juntado, el proyecto arranca. */
+export const MINIMO_PARA_ARRANCAR = 0.8;
 
 function detalleDelDestino(p: Presentacion): string {
   const partes = [
@@ -89,7 +90,7 @@ export async function presentarProyecto(
   const id = randomUUID();
   const ciclo = CICLOS[p.sistemaProductivo];
   const pesoSalida = Math.round(
-    p.pesoEntradaKg + ciclo.plazoDias * GANANCIA_DIARIA[p.sistemaProductivo],
+    p.pesoEntradaKg + ciclo.plazoDias * GANANCIA_DIARIA(p.sistemaProductivo),
   );
   const titulo = `${TITULO[p.sistemaProductivo]} — ${p.cabezas} ${p.categoria.toLowerCase()}s`;
 
@@ -115,7 +116,8 @@ export async function presentarProyecto(
         comisiones: [],
         contingencias: [],
       },
-      montoMinimoInicioArs: null,
+      // El trabajo: el proyecto arranca con al menos el 80 % de lo pedido.
+      montoMinimoInicioArs: Math.round(p.montoObjetivoArs * MINIMO_PARA_ARRANCAR),
       destinoDetalle: detalleDelDestino(p),
       tipoPosesion: p.tipoPosesion,
       sistemaProductivo: p.sistemaProductivo,
@@ -150,14 +152,14 @@ export async function presentarProyecto(
       `insert into proyectos (id, productor_id, titulo, modalidad, destino_detalle, tipo_posesion,
          sistema_productivo, cabezas, categoria, raza, peso_entrada_kg, peso_salida_objetivo_kg,
          monto_objetivo_ars, plazo_dias, plazo_cobro_dias, rendimiento_esperado_pct, garantia_id,
-         tiene_seguro, estado, provincia)
+         tiene_seguro, estado, provincia, monto_minimo_inicio_ars)
        values ($1, $2, $3, 'compra_engorde', $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, 30, $14,
-               $15, $16, 'en_validacion', $17)`,
+               $15, $16, 'en_validacion', $17, $18)`,
       [
         id, productorId, titulo, detalleDelDestino(p), p.tipoPosesion, p.sistemaProductivo,
         p.cabezas, p.categoria, p.raza, p.pesoEntradaKg, pesoSalida, p.montoObjetivoArs,
         ciclo.plazoDias, ciclo.rentabilidadAnualProductorPct, p.garantiaId, p.tieneSeguro,
-        productor.provincia,
+        productor.provincia, Math.round(p.montoObjetivoArs * MINIMO_PARA_ARRANCAR),
       ],
     );
     await q(
@@ -284,6 +286,7 @@ function documentoEnMemoria(
     estadoExtraccion: "ok",
     estadoConsistencia: d.discrepa ? "con_discrepancias" : "consistente",
     estadoAutenticidad: "sin_verificar",
+    cuve: d.lectura.campos.find((c) => c.etiqueta === "CUVE")?.valor,
     camposExtraidos: d.lectura.campos.map((c, i) => ({
       campo: `campo${i + 1}`,
       etiqueta: c.etiqueta,

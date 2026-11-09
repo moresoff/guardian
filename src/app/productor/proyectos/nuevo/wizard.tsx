@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useMemo, useState } from "react";
 import { EnviadoAValidacion } from "@/components/enviado-a-validacion";
 import {
   SlotDocumento,
@@ -211,19 +211,32 @@ const USOS = [
   "Flete a faena",
 ] as const;
 
-const PASOS = ["Tus animales", "Tenencia", "El ciclo", "Tus papeles"] as const;
-
 const TITULOS = [
-  "¿Qué animales vas a engordar y cuánto necesitás?",
-  "¿Los animales ya son tuyos?",
-  "¿Cómo los vas a engordar?",
-  "Subí tus papeles",
+  "Qué animales vas a engordar y cuánto necesitás",
+  "Si los animales ya son tuyos",
+  "Cómo los vas a engordar",
+  "Tus papeles",
 ] as const;
 
+/** Un bloque del formulario, numerado para orientarse al bajar. */
+function Bloque({ n, children }: { n: number; children: React.ReactNode }) {
+  return (
+    <section className="border-t border-borde pt-6 first:border-t-0 first:pt-0">
+      <h2 className="flex items-center gap-3 text-lg font-semibold tracking-tight">
+        <span className="flex size-8 shrink-0 items-center justify-center rounded-full bg-marca text-sm font-semibold text-marca-contraste">
+          {n + 1}
+        </span>
+        {TITULOS[n]}
+      </h2>
+      <div className="mt-4">{children}</div>
+    </section>
+  );
+}
+
 /**
- * Publicar un proyecto, de a un paso por vez: los animales y el monto, si ya son
- * del productor, el ciclo y los papeles. Cada paso es una sola pregunta, así no
- * se ve todo junto, y los papeles que se piden cambian solos según la tenencia.
+ * Publicar un proyecto, cargado a mano en una sola pantalla: los animales y el
+ * monto, si ya son del productor, el ciclo y los papeles. Los papeles que se
+ * piden cambian solos según la tenencia, y se pueden subir después.
  */
 export function WizardPublicacion({
   garantias,
@@ -237,25 +250,6 @@ export function WizardPublicacion({
   const [errorEnvio, setErrorEnvio] = useState<string | null>(null);
   const [presentado, setPresentado] = useState<{ id: string; documentos: number } | null>(null);
   const [huecos, setHuecos] = useState<ClaveFicha[]>([]);
-  const [paso, setPaso] = useState(0);
-  const titulo = useRef<HTMLHeadingElement>(null);
-  const primeraVez = useRef(true);
-
-  // Al cambiar de paso el foco va al título: con teclado o lector de pantalla
-  // se entiende que cambió la pantalla, y se vuelve a ver desde arriba.
-  useEffect(() => {
-    if (primeraVez.current) {
-      primeraVez.current = false;
-      return;
-    }
-    titulo.current?.focus();
-    window.scrollTo({ top: 0, behavior: "smooth" });
-  }, [paso]);
-
-  const irA = (n: number) => {
-    setHuecos([]);
-    setPaso(n);
-  };
 
   const set = <K extends keyof Borrador>(k: K, v: Borrador[K]) =>
     setB((prev) => ({ ...prev, [k]: v }));
@@ -306,7 +300,7 @@ export function WizardPublicacion({
     );
     if (pendientes.length > 0) {
       setHuecos(pendientes);
-      irA(0);
+      document.getElementById(idDeCampo(pendientes[0]))?.focus();
       return;
     }
     const f = new FormData();
@@ -333,62 +327,12 @@ export function WizardPublicacion({
     setEnviado(true);
   };
 
-  /** El primer paso no deja seguir con datos vacíos: el foco cae en el primero. */
-  const siguiente = () => {
-    if (paso === 0) {
-      const pendientes = OBLIGATORIOS.filter(
-        (c) => b[c].trim() === "" || Number(b[c]) === 0,
-      );
-      if (pendientes.length > 0) {
-        setHuecos(pendientes);
-        document.getElementById(idDeCampo(pendientes[0]))?.focus();
-        return;
-      }
-    }
-    irA(paso + 1);
-  };
-
   return (
     <div className="mx-auto max-w-3xl">
-      <div className="mb-5">
-        <ol className="flex gap-2" aria-label="Pasos para publicar">
-          {PASOS.map((t, i) => (
-            <li
-              key={t}
-              aria-current={i === paso ? "step" : undefined}
-              className="flex-1"
-            >
-              <span
-                className={`block h-1.5 rounded-full transition-colors ${
-                  i <= paso ? "bg-marca" : "bg-borde"
-                }`}
-              />
-              <span
-                className={`mt-2 hidden text-sm sm:block ${
-                  i === paso ? "font-medium text-tinta" : "text-tinta-suave"
-                }`}
-              >
-                {i + 1}. {t}
-              </span>
-            </li>
-          ))}
-        </ol>
-        <p className="mt-2 text-sm text-tinta-suave sm:hidden">
-          Paso {paso + 1} de {PASOS.length} · {PASOS[paso]}
-        </p>
-      </div>
-
       <section className="rounded-2xl border border-borde bg-superficie p-5 shadow-[var(--sombra-baja)] sm:p-7">
-        <h2
-          ref={titulo}
-          tabIndex={-1}
-          className="text-xl font-semibold tracking-tight outline-none"
-        >
-          {TITULOS[paso]}
-        </h2>
-
-        {paso === 0 ? (
-          <div className="mt-5 grid gap-x-4 gap-y-4 sm:grid-cols-2">
+        <div className="space-y-6">
+        <Bloque n={0}>
+          <div className="grid gap-x-4 gap-y-4 sm:grid-cols-2">
             <CamposDeFicha
               grupo="El lote"
               b={b}
@@ -418,10 +362,10 @@ export function WizardPublicacion({
               ) : null}
             </div>
           </div>
-        ) : null}
+        </Bloque>
 
-        {paso === 1 ? (
-          <div className="mt-5">
+        <Bloque n={1}>
+          <div>
             <GrupoOpciones
               etiqueta="¿Los animales ya son tuyos?"
               className="space-y-3"
@@ -430,13 +374,13 @@ export function WizardPublicacion({
               opciones={TENENCIA}
             />
             <p className="mt-4 text-sm text-tinta-suave">
-              Según lo que elijas, en el último paso te pedimos unos papeles u otros.
+              Según lo que elijas, más abajo te pedimos unos papeles u otros.
             </p>
           </div>
-        ) : null}
+        </Bloque>
 
-        {paso === 2 ? (
-          <div className="mt-5 space-y-6">
+        <Bloque n={2}>
+          <div className="space-y-6">
             <GrupoOpciones
               etiqueta="Tipo de ciclo"
               className="space-y-3"
@@ -477,10 +421,10 @@ export function WizardPublicacion({
               </ul>
             </div>
           </div>
-        ) : null}
+        </Bloque>
 
-        {paso === 3 ? (
-          <div className="mt-5" id="documentacion-alta">
+        <Bloque n={3}>
+          <div id="documentacion-alta">
             <p className="text-sm text-tinta-suave">
               {completos} de {requeridos.length} subidos. Podés enviarlo así y completar
               los papeles después; Guardian los lee y los cruza con lo que cargaste.
@@ -579,7 +523,8 @@ export function WizardPublicacion({
               </div>
             </div>
           </div>
-        ) : null}
+        </Bloque>
+        </div>
 
         <p className="mt-5 min-h-5 text-sm text-alerta" role="alert">
           {errorEnvio ??
@@ -593,20 +538,10 @@ export function WizardPublicacion({
         </p>
 
         <div className="mt-3 flex items-center justify-between gap-3 border-t border-borde pt-5">
-          {paso > 0 ? (
-            <Boton variante="secundario" onClick={() => irA(paso - 1)}>
-              Atrás
-            </Boton>
-          ) : (
-            <span />
-          )}
-          {paso < PASOS.length - 1 ? (
-            <Boton onClick={siguiente}>Siguiente</Boton>
-          ) : (
-            <Boton onClick={enviar} disabled={enviando || Boolean(presentado)}>
-              {enviando ? "Guardando…" : presentado ? "Presentado" : "Enviar a validación"}
-            </Boton>
-          )}
+          <span className="text-sm text-tinta-suave">Los papeles los podés subir después.</span>
+          <Boton onClick={enviar} disabled={enviando || Boolean(presentado)}>
+            {enviando ? "Guardando…" : presentado ? "Presentado" : "Enviar a validación"}
+          </Boton>
         </div>
       </section>
 

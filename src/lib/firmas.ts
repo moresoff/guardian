@@ -25,6 +25,10 @@ const hoy = () => new Date().toISOString().slice(0, 10);
 
 const global_ = globalThis as unknown as { firmasGuardian?: Map<string, Firma> };
 const enMemoria = () => (global_.firmasGuardian ??= new Map());
+const globalPerfil = globalThis as unknown as { firmasPorPerfil?: Map<string, FirmaGuardada[]> };
+const enMemoriaPerfil = () => (globalPerfil.firmasPorPerfil ??= new Map());
+const anotar = (perfilId: string, f: FirmaGuardada) =>
+  enMemoriaPerfil().set(perfilId, [...(enMemoriaPerfil().get(perfilId) ?? []), f]);
 
 /** La firma del productor sobre el fideicomiso de su proyecto, si existe. */
 export async function getFirmaFideicomiso(proyectoId: string): Promise<Firma | null> {
@@ -63,6 +67,7 @@ export async function firmarFideicomiso(
   };
   if (!hayBaseConfigurada()) {
     enMemoria().set(`fid:${proyectoId}`, firma);
+    anotar(perfilId, { ...firma, documento: "fideicomiso", proyectoId });
     return firma;
   }
   await enTransaccion(async (q) => {
@@ -105,6 +110,7 @@ export async function firmarAdhesion(
 
   if (!hayBaseConfigurada()) {
     const orden = nuevaOrden();
+    anotar(perfilId, { ...firma, documento: "adhesion", proyectoId });
     aportes.push({
       id: randomUUID(),
       proyectoId,
@@ -150,4 +156,34 @@ export async function firmarAdhesion(
     }
   }
   throw new Error("No se pudo emitir un número de orden.");
+}
+
+export interface FirmaGuardada extends Firma {
+  documento: "adhesion" | "fideicomiso";
+  proyectoId: string;
+}
+
+/** Los contratos que firmó una cuenta, del más nuevo al más viejo. */
+export async function getFirmasDePerfil(perfilId: string): Promise<FirmaGuardada[]> {
+  if (!hayBaseConfigurada()) return [...(enMemoriaPerfil().get(perfilId) ?? [])].reverse();
+  const filas = await consultar<{
+    documento: "adhesion" | "fideicomiso";
+    proyecto_id: string;
+    contrato_version: string;
+    contrato_hash: string;
+    firmado_at: Date;
+    fiduciario: string;
+  }>(
+    `select documento, proyecto_id, contrato_version, contrato_hash, firmado_at, fiduciario
+       from firmas where perfil_id = $1 order by firmado_at desc`,
+    [perfilId],
+  );
+  return filas.map((f) => ({
+    documento: f.documento,
+    proyectoId: f.proyecto_id,
+    version: f.contrato_version,
+    hash: f.contrato_hash,
+    fecha: f.firmado_at.toISOString().slice(0, 10),
+    fiduciario: f.fiduciario,
+  }));
 }

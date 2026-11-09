@@ -31,8 +31,6 @@ interface Datos {
 
 type Errores = Partial<Record<keyof Datos | "dniFrente" | "dniDorso" | "selfie", string>>;
 
-const PASOS = ["Tus datos", "Tu DNI", "Una selfie", "Últimas preguntas"] as const;
-
 /**
  * Una foto, con la cámara del teléfono si hay. Se ve lo que se sacó, así se
  * puede repetir si salió movida.
@@ -142,9 +140,24 @@ function SiNo({
   );
 }
 
+/** Un bloque del formulario, con su número para orientarse al bajar. */
+function Bloque({ n, titulo, children }: { n: number; titulo: string; children: React.ReactNode }) {
+  return (
+    <section className="border-t border-borde pt-6 first:border-t-0 first:pt-0">
+      <h2 className="flex items-center gap-3 text-lg font-semibold tracking-tight">
+        <span className="flex size-8 shrink-0 items-center justify-center rounded-full bg-marca text-sm font-semibold text-marca-contraste">
+          {n}
+        </span>
+        {titulo}
+      </h2>
+      <div className="mt-4">{children}</div>
+    </section>
+  );
+}
+
 /**
- * La validación de identidad, de a un paso por pantalla: los datos del DNI, la
- * foto del DNI, una selfie y las preguntas que pide la norma. La lectura del DNI,
+ * La validación de identidad, en una sola pantalla: los datos del DNI, la foto
+ * del DNI, una selfie y las preguntas que pide la norma. La lectura del DNI,
  * la prueba de vida y la comparación facial están simuladas; las fotos y los
  * datos se guardan de verdad.
  */
@@ -167,7 +180,6 @@ export function ValidarIdentidad({
     metodo: string;
   } | null;
 }) {
-  const [paso, setPaso] = useState(0);
   const [d, setD] = useState<Datos>(() => {
     const [nombre, ...resto] = inicial.nombre.trim().split(/\s+/);
     return {
@@ -199,14 +211,12 @@ export function ValidarIdentidad({
   const [errorGeneral, setErrorGeneral] = useState<string | null>(null);
   const [resultado, setResultado] = useState<"aprobada" | "en_revision" | "rechazada" | null>(null);
   const titulo = useRef<HTMLHeadingElement>(null);
-  const pasoAnterior = useRef(paso);
 
   useEffect(() => {
-    if (pasoAnterior.current === paso) return;
-    pasoAnterior.current = paso;
+    if (!resultado) return;
     titulo.current?.focus();
     window.scrollTo({ top: 0, behavior: "smooth" });
-  }, [paso, resultado]);
+  }, [resultado]);
 
   const set = <K extends keyof Datos>(k: K) => (v: Datos[K]) => {
     setD((x) => ({ ...x, [k]: v }));
@@ -217,13 +227,17 @@ export function ValidarIdentidad({
     const motivo = revisarArchivo(f, true);
     setErrores((e) => ({ ...e, [k]: motivo ?? undefined }));
     if (motivo) return;
-    setFotos((x) => ({ ...x, [k]: f }));
-    setLeido((l) => ({ ...l, [k === "selfie" ? "selfie" : "dni"]: false }));
+    const nuevas = { ...fotos, [k]: f };
+    setFotos(nuevas);
+    // La revisión arranca sola cuando están las fotos: no hay un botón más que tocar.
+    if (k === "selfie") leer("selfie");
+    else if (nuevas.dniFrente && nuevas.dniDorso) leer("dni");
+    else setLeido((l) => ({ ...l, dni: false }));
   };
 
-  const validarPaso = (): boolean => {
+  const validar = (): boolean => {
     const e: Errores = {};
-    if (paso === 0) {
+    {
       if (!d.nombre.trim()) e.nombre = "Escribí tu nombre como figura en el DNI.";
       if (!d.apellido.trim()) e.apellido = "Escribí tu apellido.";
       if (!/^\d{7,8}$/.test(soloDigitos(d.dni))) e.dni = "El DNI tiene 7 u 8 números, sin puntos.";
@@ -239,12 +253,12 @@ export function ValidarIdentidad({
       if (!d.localidad.trim()) e.localidad = "Escribí la localidad.";
       if (!d.ocupacion.trim()) e.ocupacion = "Contanos a qué te dedicás.";
     }
-    if (paso === 1) {
+    {
       if (!fotos.dniFrente) e.dniFrente = "Falta la foto del frente.";
       if (!fotos.dniDorso) e.dniDorso = "Falta la foto del dorso.";
     }
-    if (paso === 2 && !fotos.selfie) e.selfie = "Falta la selfie.";
-    if (paso === 3) {
+    if (!fotos.selfie) e.selfie = "Falta la selfie.";
+    {
       if (!d.pep) e.pep = "Elegí sí o no.";
       if (!d.sujetoObligado) e.sujetoObligado = "Elegí sí o no.";
       if (lado === "colaborador" && !d.origenFondos) e.origenFondos = "Elegí una opción.";
@@ -258,23 +272,17 @@ export function ValidarIdentidad({
   };
 
   /** La lectura simulada: un momento de espera, como tendría una real. */
-  const leer = (que: "dni" | "selfie") => {
+  function leer(que: "dni" | "selfie") {
     setLeyendo(que);
+    setLeido((l) => ({ ...l, [que]: false }));
     setTimeout(() => {
-      setLeyendo(null);
+      setLeyendo((x) => (x === que ? null : x));
       setLeido((l) => ({ ...l, [que]: true }));
     }, 1400);
-  };
-
-  const siguiente = () => {
-    if (leyendo || !validarPaso()) return;
-    if (paso === 1 && !leido.dni) return leer("dni");
-    if (paso === 2 && !leido.selfie) return leer("selfie");
-    setPaso((p) => p + 1);
-  };
+  }
 
   const enviar = async () => {
-    if (!validarPaso() || enviando) return;
+    if (!validar() || enviando || leyendo) return;
     const f = new FormData();
     for (const [k, v] of Object.entries(d)) f.set(k, k === "declaro" ? (v ? "si" : "no") : String(v));
     f.set("dniFrente", fotos.dniFrente!);
@@ -289,7 +297,6 @@ export function ValidarIdentidad({
       return;
     }
     setResultado(r.estado);
-    setPaso(4);
   };
 
 
@@ -313,7 +320,7 @@ export function ValidarIdentidad({
     );
   }
 
-  if (paso === 4 && resultado) {
+  if (resultado) {
     const aprobada = resultado === "aprobada";
     return (
       <section className="rounded-2xl border border-borde bg-superficie p-5 shadow-[var(--sombra-baja)] sm:p-7">
@@ -339,32 +346,16 @@ export function ValidarIdentidad({
 
   return (
     <div>
-      <div className="mb-5">
-        <div className="h-1.5 overflow-hidden rounded-full bg-borde" aria-hidden="true">
-          <div
-            className="h-full rounded-full bg-marca transition-[width]"
-            style={{ width: `${((paso + 1) / PASOS.length) * 100}%` }}
-          />
-        </div>
-        <p className="mt-2 text-base text-tinta-suave">
-          Paso {paso + 1} de {PASOS.length} · {PASOS[paso]}
-        </p>
-      </div>
-
-      <section className="rounded-2xl border border-borde bg-superficie p-5 shadow-[var(--sombra-baja)] sm:p-7">
-        <h2 ref={titulo} tabIndex={-1} className="text-xl font-semibold tracking-tight outline-none">
-          {
-            [
-              "Tus datos, como figuran en el DNI",
-              "Sacale una foto a tu DNI",
-              "Ahora una selfie",
-              "Últimas preguntas",
-            ][paso]
-          }
-        </h2>
-
-        {paso === 0 ? (
-          <div className="mt-5 grid gap-4 sm:grid-cols-2">
+      <form
+        noValidate
+        onSubmit={(e) => {
+          e.preventDefault();
+          enviar();
+        }}
+        className="space-y-6 rounded-2xl border border-borde bg-superficie p-5 shadow-[var(--sombra-baja)] sm:p-7"
+      >
+        <Bloque n={1} titulo="Tus datos, como figuran en el DNI">
+          <div className="grid gap-4 sm:grid-cols-2">
             <Campo id="kyc-nombre" etiqueta="Nombre" autoComplete="given-name" value={d.nombre} error={errores.nombre} onChange={(e) => set("nombre")(e.target.value)} />
             <Campo id="kyc-apellido" etiqueta="Apellido" autoComplete="family-name" value={d.apellido} error={errores.apellido} onChange={(e) => set("apellido")(e.target.value)} />
             <Campo id="kyc-dni" etiqueta="Número de DNI" inputMode="numeric" className="tabular" placeholder="Ej.: 30123456…" value={d.dni} error={errores.dni} onChange={(e) => set("dni")(e.target.value)} />
@@ -386,18 +377,20 @@ export function ValidarIdentidad({
             <Campo id="kyc-localidad" etiqueta="Localidad" autoComplete="address-level2" value={d.localidad} error={errores.localidad} onChange={(e) => set("localidad")(e.target.value)} />
             <Seleccion id="kyc-provincia" etiqueta="Provincia" opciones={[...PROVINCIAS]} value={d.provincia} onChange={(e) => set("provincia")(e.target.value)} />
           </div>
-        ) : null}
+        </Bloque>
 
-        {paso === 1 ? (
-          <div className="mt-5 space-y-4">
+        <Bloque n={2} titulo="Fotos del DNI">
+          <div className="space-y-4">
             <p className="text-base text-tinta-suave">
               Con buena luz y sin reflejos. Que se lean bien los números.
             </p>
+<div className="grid gap-3 sm:grid-cols-2">
             <div id="kyc-dniFrente" tabIndex={-1}>
               <Foto etiqueta="Frente del DNI" ayuda="El lado de la foto." camara="environment" archivo={fotos.dniFrente} error={errores.dniFrente} onArchivo={ponerFoto("dniFrente")} />
             </div>
             <div id="kyc-dniDorso" tabIndex={-1}>
               <Foto etiqueta="Dorso del DNI" ayuda="El lado del código de barras." camara="environment" archivo={fotos.dniDorso} error={errores.dniDorso} onArchivo={ponerFoto("dniDorso")} />
+            </div>
             </div>
             <div aria-live="polite">
               {leyendo === "dni" ? <Aviso>Leyendo tu DNI…</Aviso> : null}
@@ -408,10 +401,10 @@ export function ValidarIdentidad({
               ) : null}
             </div>
           </div>
-        ) : null}
+        </Bloque>
 
-        {paso === 2 ? (
-          <div className="mt-5 space-y-4">
+        <Bloque n={3} titulo="Una selfie">
+          <div className="space-y-4">
             <p className="text-base text-tinta-suave">
               Mirá a la cámara, sin anteojos de sol ni gorra. La comparamos con la foto de tu
               DNI para saber que sos vos.
@@ -428,10 +421,10 @@ export function ValidarIdentidad({
               ) : null}
             </div>
           </div>
-        ) : null}
+        </Bloque>
 
-        {paso === 3 ? (
-          <div className="mt-5 space-y-6">
+        <Bloque n={4} titulo="Últimas preguntas">
+          <div className="space-y-6">
             <div id="kyc-pep" tabIndex={-1}>
               <SiNo
                 pregunta="¿Sos persona expuesta políticamente?"
@@ -485,31 +478,18 @@ export function ValidarIdentidad({
               {errores.declaro ? <p className="mt-1 text-sm font-medium text-error">{errores.declaro}</p> : null}
             </div>
           </div>
-        ) : null}
+        </Bloque>
 
-        <p className="mt-5 min-h-5 text-sm font-medium text-error" role="alert">
-          {errorGeneral ?? ""}
+        <p className="min-h-5 text-sm font-medium text-error" role="alert">
+          {errorGeneral ?? (Object.values(errores).some(Boolean) ? "Revisá los datos marcados." : "")}
         </p>
 
-        <div className="mt-3 flex items-center justify-between gap-3 border-t border-borde pt-5">
-          {paso > 0 ? (
-            <Boton variante="secundario" className="min-h-12" onClick={() => setPaso((p) => p - 1)}>
-              Atrás
-            </Boton>
-          ) : (
-            <span />
-          )}
-          {paso < 3 ? (
-            <Boton className="min-h-12" onClick={siguiente} aria-disabled={leyendo !== null}>
-              {leyendo ? "Revisando…" : (paso === 1 && !leido.dni) || (paso === 2 && !leido.selfie) ? "Revisar la foto" : "Siguiente"}
-            </Boton>
-          ) : (
-            <Boton className="min-h-12" onClick={enviar} aria-disabled={enviando}>
-              {enviando ? "Guardando…" : "Validar mi identidad"}
-            </Boton>
-          )}
+        <div className="border-t border-borde pt-5">
+          <Boton type="submit" className="min-h-12 w-full sm:w-auto" aria-disabled={enviando || leyendo !== null}>
+            {enviando ? "Guardando…" : leyendo ? "Revisando las fotos…" : "Validar mi identidad"}
+          </Boton>
         </div>
-      </section>
+      </form>
 
       <p className="mt-4 text-sm text-tinta-suave">
         Prototipo: la lectura del DNI, la prueba de vida y la comparación facial están simuladas.

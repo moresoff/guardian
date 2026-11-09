@@ -482,7 +482,9 @@ export function SimuladorCiclo({
                   >
                     <p className="text-sm text-tinta-suave">Guardian cobra {l === "productor" ? "al productor" : "al colaborador"}</p>
                     <p className="tabular text-2xl font-semibold">{formatPct(COMISIONES[l] * 100)}</p>
-                    <p className="text-sm text-tinta-suave">del valor de la hacienda, una vez</p>
+                    <p className="text-sm text-tinta-suave">
+                      {l === "productor" ? "2 % al ejecutar y 1,5 % de éxito" : "de tu aporte, una vez"}
+                    </p>
                   </div>
                 ))}
                 <p className="col-span-2 text-sm text-tinta-suave">

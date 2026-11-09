@@ -1,5 +1,5 @@
 import { formatArs, formatNum, formatPct } from "@/lib/format";
-import { COMISIONES } from "@/lib/simulador";
+import { COMISIONES, COMISION_PRODUCTOR } from "@/lib/simulador";
 import type { Garantia, Productor, Proyecto } from "@/lib/types";
 
 /**
@@ -14,7 +14,7 @@ import type { Garantia, Productor, Proyecto } from "@/lib/types";
  */
 
 export const VERSION_ADHESION = "Contrato de adhesión v4 — 2026-11-09";
-export const VERSION_FIDEICOMISO = "Contrato de fideicomiso v1 — 2026-11-09";
+export const VERSION_FIDEICOMISO = "Contrato de fideicomiso v2 — 2026-11-09";
 
 /** El fiduciario de las series. Dato de demostración: se reemplaza por el real. */
 export const FIDUCIARIO = {
@@ -160,7 +160,7 @@ export function contratoDeFideicomiso(
       },
       {
         titulo: "Lo que se cobra",
-        texto: `Guardian cobra el ${formatPct(COMISIONES.productor * 100)} del valor de la hacienda, una sola vez. El fiduciario cobra ${FIDUCIARIO.cobra.toLowerCase()}`,
+        texto: `Guardian cobra el ${formatPct(COMISION_PRODUCTOR.ejecucion * 100)} del valor de la hacienda al ejecutar el proyecto y un ${formatPct(COMISION_PRODUCTOR.exito * 100)} más si se junta al menos el 80 %. Si desistís después de publicado, pagás el ${formatPct(COMISION_PRODUCTOR.desistimiento * 100)}. El fiduciario cobra ${FIDUCIARIO.cobra.toLowerCase()}`,
       },
       {
         titulo: "El riesgo",

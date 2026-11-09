@@ -2,6 +2,9 @@ import Link from "next/link";
 import { EstadoProyectoBadge } from "@/components/estados";
 import { Aviso, Badge, Panel, Vacio } from "@/components/ui/primitivos";
 import { RevisionProyecto } from "./revision";
+import { accionAcreditar } from "./acciones";
+import { BotonAccion } from "./controles";
+import { getTransferenciasPendientes } from "@/lib/validacion";
 import {
   getDiscrepanciasDeProyecto,
   getDocumentosVigentesDeProyecto,
@@ -11,6 +14,7 @@ import {
 import {
   POSESION_LABEL,
   documentosRequeridos,
+  formatArs,
   formatArsCompacto,
   formatFecha,
   formatNum,
@@ -29,6 +33,7 @@ export default async function AdminPage({
 }) {
   const { proyecto: elegido } = await searchParams;
   const proyectos = await getProyectosEnValidacion();
+  const transferencias = await getTransferenciasPendientes();
 
   const filas = await Promise.all(
     proyectos.map(async (p) => {
@@ -89,6 +94,43 @@ export default async function AdminPage({
         </p>
       </div>
 
+      <section aria-labelledby="titulo-transferencias" className="mb-8">
+        <h2 id="titulo-transferencias" className="text-lg font-semibold tracking-tight">
+          Transferencias por confirmar
+        </h2>
+        <p className="mt-1 max-w-2xl text-sm text-tinta-suave">
+          Adhesiones firmadas cuya transferencia todavía no informó el banco. Al confirmarla, el
+          aporte se acredita y suma a lo recaudado del proyecto.
+        </p>
+        {transferencias.length === 0 ? (
+          <p className="mt-3 text-sm text-tinta-suave">No hay transferencias pendientes.</p>
+        ) : (
+          <ul className="mt-3 divide-y divide-borde rounded-2xl border border-borde bg-superficie">
+            {transferencias.map((t) => (
+              <li key={t.aporteId} className="flex flex-wrap items-center justify-between gap-3 p-4">
+                <div className="min-w-0">
+                  <p className="font-medium">
+                    <span className="tabular">{formatArs(t.monto)}</span> · {t.colaborador}
+                  </p>
+                  <p className="text-sm text-tinta-suave">
+                    {t.proyecto} · orden <span className="codigo">{t.orden}</span> · firmó el{" "}
+                    {formatFecha(t.fecha)}
+                  </p>
+                </div>
+                <BotonAccion
+                  accion={accionAcreditar}
+                  datos={{ aporteId: t.aporteId, proyectoId: t.proyectoId }}
+                  variante="secundario"
+                >
+                  El banco la acreditó
+                </BotonAccion>
+              </li>
+            ))}
+          </ul>
+        )}
+      </section>
+
+      <h2 className="mb-3 text-lg font-semibold tracking-tight">Proyectos para revisar</h2>
       <div className="mb-6">
         <Aviso titulo="Hasta dónde llegó la lectura automática">
           Cada documento ya se cruzó contra lo declarado y las discrepancias quedaron
