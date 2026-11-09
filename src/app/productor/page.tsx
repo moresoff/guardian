@@ -1,14 +1,16 @@
 import { notFound } from "next/navigation";
+import { productorDeSesion } from "@/lib/cuentas";
 import { PanelProductor } from "@/components/panel-productor";
 import { BotonLink } from "@/components/ui/primitivos";
-import { PRODUCTOR_DEMO, getProductor } from "@/lib/data";
+import { getProductor } from "@/lib/data";
 import { usuarioActual } from "@/lib/sesion";
 
 export const metadata = { title: "Mis proyectos — Guardian" };
 
 export default async function ResumenProductor() {
   const usuario = await usuarioActual();
-  const productor = await getProductor(PRODUCTOR_DEMO);
+  const productorId = await productorDeSesion();
+  const productor = await getProductor(productorId);
   if (!productor) notFound();
 
   return (
@@ -19,7 +21,7 @@ export default async function ResumenProductor() {
         </h1>
         <BotonLink href="/productor/proyectos/nuevo">Publicar un proyecto</BotonLink>
       </div>
-      <PanelProductor base="/productor" />
+      <PanelProductor />
     </div>
   );
 }

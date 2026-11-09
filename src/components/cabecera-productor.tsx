@@ -1,8 +1,8 @@
 import { notFound } from "next/navigation";
+import { productorDeSesion } from "@/lib/cuentas";
 import { CabeceraPerfil, type DatoCabecera } from "@/components/cabecera-perfil";
 import { Badge, BotonLink } from "@/components/ui/primitivos";
 import {
-  PRODUCTOR_DEMO,
   getDocumentosPermanentes,
   getProductor,
   getProyectosDeProductor,
@@ -16,11 +16,12 @@ import { buscarImagen } from "@/lib/imagenes";
  * las cifras se calculan en un solo lugar.
  */
 export async function CabeceraProductor() {
-  const productor = await getProductor(PRODUCTOR_DEMO);
+  const productorId = await productorDeSesion();
+  const productor = await getProductor(productorId);
   if (!productor) notFound();
 
-  const proyectos = await getProyectosDeProductor(PRODUCTOR_DEMO);
-  const permanentes = await getDocumentosPermanentes(PRODUCTOR_DEMO);
+  const proyectos = await getProyectosDeProductor(productorId);
+  const permanentes = await getDocumentosPermanentes(productorId);
 
   const cerrados = proyectos.filter((p) => p.estado === "cerrado" && p.resultado);
   const capitalMovilizado = proyectos
@@ -60,9 +61,9 @@ export async function CabeceraProductor() {
   return (
     <CabeceraPerfil
       titulo={productor.razonSocial}
-      subtitulo={`${productor.establecimiento} · ${productor.localidad}, ${
-        productor.provincia
-      } · ${SISTEMA_LABEL[productor.sistemaProductivo]}`}
+      subtitulo={`${productor.establecimiento} · ${[productor.localidad, productor.provincia]
+        .filter(Boolean)
+        .join(", ")} · ${SISTEMA_LABEL[productor.sistemaProductivo]}`}
       sello={renspaVerificado ? <Badge tono="ok">RENSPA verificado</Badge> : undefined}
       foto={retrato}
       datos={datos}

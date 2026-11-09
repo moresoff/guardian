@@ -1,7 +1,7 @@
 import { notFound } from "next/navigation";
-import { CabeceraProductor } from "@/components/cabecera-productor";
+import { productorDeSesion } from "@/lib/cuentas";
 import { Pestanas } from "@/components/pestanas";
-import { PRODUCTOR_DEMO, getProductor } from "@/lib/data";
+import { getProductor } from "@/lib/data";
 import { AjustesCuenta } from "./ajustes";
 import { ConfiguracionPerfil } from "./configuracion";
 import { Documentos } from "./documentos";
@@ -30,13 +30,18 @@ export default async function EstablecimientoPage({
 }) {
   const { tab } = await searchParams;
   const activa = tab === "documentos" ? tab : "datos";
-  const productor = await getProductor(PRODUCTOR_DEMO);
+  const productorId = await productorDeSesion();
+  const productor = await getProductor(productorId);
   if (!productor) notFound();
 
   return (
-    <div className="space-y-8">
-      <CabeceraProductor />
-
+    <div className="space-y-6">
+      <div>
+        <h1 className="text-2xl font-semibold tracking-tight">Mi establecimiento</h1>
+        <p className="mt-1 text-base text-tinta-suave">
+          {[productor.establecimiento, productor.localidad, productor.provincia].filter(Boolean).join(" · ")}
+        </p>
+      </div>
       <Pestanas
         pestanas={PESTANAS}
         activa={activa}

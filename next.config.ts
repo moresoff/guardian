@@ -15,6 +15,18 @@ const nextConfig: NextConfig = {
   outputFileTracingIncludes: {
     "/**": ["./public/imagenes/**"],
   },
+
+  /*
+   * Los papeles del proyecto y las fotos del DNI viajan en el cuerpo de una
+   * acción del servidor. El tope por defecto es 1 MB, menos que una foto de
+   * celular. Cada archivo puede pesar hasta 10 MB (`src/lib/archivos.ts`) y se
+   * suben hasta cuatro juntos, más el margen del formulario.
+   */
+  experimental: {
+    serverActions: {
+      bodySizeLimit: "45mb",
+    },
+  },
 };
 
 export default nextConfig;

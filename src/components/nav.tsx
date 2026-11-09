@@ -5,6 +5,7 @@ import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import { cerrarSesion } from "@/app/sesion/acciones";
+import { Calculator } from "lucide-react";
 import { BotonRecorrido } from "@/components/recorrido-guiado";
 
 /**
@@ -21,6 +22,7 @@ const MENUS = {
       // activa en ella y en la ficha o el alta de un proyecto.
       { href: "/productor", label: "Mis proyectos", exacta: true, tambien: ["/productor/proyectos", "/proyectos/"] },
       { href: "/productor/establecimiento", label: "Mi establecimiento" },
+      { href: "/simulador", label: "Simulador" },
     ],
   },
   colaborador: {
@@ -29,6 +31,7 @@ const MENUS = {
     items: [
       { href: "/proyectos", label: "Catálogo" },
       { href: "/colaborador/cartera", label: "Mi cartera" },
+      { href: "/simulador", label: "Simulador" },
     ],
   },
   admin: {
@@ -36,6 +39,21 @@ const MENUS = {
     etiqueta: "Validación",
     items: [{ href: "/admin", label: "Cola de validación" }],
   },
+} as const;
+
+/**
+ * Las páginas abiertas: la portada, quiénes somos, cómo participar y el
+ * simulador. Es la misma barra que adentro, con otras secciones.
+ */
+const PUBLICO = {
+  inicio: "/",
+  items: [
+    // En el teléfono el botón verde no entra arriba: baja a las secciones.
+    { href: "/simulador", label: "Simulador", soloTelefono: true },
+    { href: "/quienes-somos", label: "Quiénes somos" },
+    { href: "/como-participar", label: "Cómo participar" },
+    { href: "/#consultas", label: "Contacto" },
+  ],
 } as const;
 
 type Area = keyof typeof MENUS | null;
@@ -48,29 +66,15 @@ function areaDe(pathname: string, lado: "productor" | "colaborador" | null): Are
   if (pathname.startsWith("/colaborador") || pathname.startsWith("/proyectos"))
     return "colaborador";
   if (pathname.startsWith("/admin")) return "admin";
+  // La validación de identidad y el simulador son de los dos lados: se quedan
+  // en el menú de quien entró.
+  if (pathname.startsWith("/identidad") || pathname.startsWith("/simulador")) return lado;
   return null;
 }
 
 /**
- * Las dos vistas son de la misma cuenta: quien engorda hacienda también puede
- * poner capital en el ciclo de otro. Cambiar de vista no es cambiar de usuario.
- */
-const VISTAS = [
-  {
-    href: "/productor",
-    titulo: "Productor",
-    texto: "Publicar un ciclo y sumar colaboradores",
-  },
-  {
-    href: "/proyectos",
-    titulo: "Colaborador",
-    texto: "Ver proyectos y participar en un ciclo",
-  },
-] as const;
-
-/**
  * El perfil en un círculo: ahí viven el nombre, mi perfil, el recorrido y el
- * cambio de vista, para que la barra quede solo con el logo, las secciones y
+ * simulador, para que la barra quede solo con el logo, las secciones y
  * «Salir». Decir a dónde vas es la mitad del trabajo del enlace.
  */
 function MenuPerfil({ area, nombre }: { area: Area; nombre: string | null }) {
@@ -143,21 +147,17 @@ function MenuPerfil({ area, nombre }: { area: Area; nombre: string | null }) {
             className="flex min-h-11 w-full items-center px-4 text-left text-sm transition-colors hover:bg-superficie-2"
             alAbrir={() => setAbierto(false)}
           />
-          <p className="border-y border-borde px-4 py-3 text-sm text-tinta-tenue">
-            Las dos vistas son de la misma cuenta.
-          </p>
-          {VISTAS.map((v) => (
-            <Link
-              key={v.href}
-              href={v.href}
-              role="menuitem"
-              onClick={() => setAbierto(false)}
-              className="block px-4 py-3.5 transition-colors hover:bg-marca-suave"
-            >
-              <span className="font-semibold">{v.titulo}</span>
-              <span className="mt-0.5 block text-sm text-tinta-suave">{v.texto}</span>
-            </Link>
-          ))}
+          <Link
+            href="/simulador"
+            role="menuitem"
+            onClick={() => setAbierto(false)}
+            className="block border-t border-borde px-4 py-3.5 transition-colors hover:bg-marca-suave"
+          >
+            <span className="font-semibold">Simulador</span>
+            <span className="mt-0.5 block text-sm text-tinta-suave">
+              Cuánto queda en un ciclo, con las comisiones
+            </span>
+          </Link>
           <Link
             href="/"
             role="menuitem"
@@ -185,12 +185,16 @@ export function Nav({
   const router = useRouter();
   // Sin cuenta no hay menú de ningún lado: el catálogo se ve, pero desde afuera.
   const area = conSesion ? areaDe(pathname, lado) : null;
-  const menu = area ? MENUS[area] : null;
+  // En las páginas abiertas, quien ya entró ve su perfil igual.
+  const perfil: Area = area ?? (conSesion ? lado : null);
+  const menu = area ? MENUS[area] : PUBLICO;
 
   return (
     <header className="sticky top-0 z-20 border-b border-borde bg-papel/90 backdrop-blur">
-      <div className="mx-auto flex max-w-6xl flex-wrap items-center gap-x-5 gap-y-2 px-4 py-3">
-        <Link href={menu?.inicio ?? "/"} className="flex items-center gap-2.5">
+      {/* En el teléfono: logo, perfil y «Salir» en un renglón, y las secciones
+          en el de abajo, sin cortarse. En pantalla ancha, todo en uno. */}
+      <div className="mx-auto flex max-w-6xl flex-wrap items-center gap-x-5 gap-y-1 px-4 py-2 sm:py-3">
+        <Link href={menu.inicio} className="flex items-center gap-2.5">
           <Image
             src="/imagenes/marca/logo-guardian-limpio.png"
             alt=""
@@ -204,22 +208,29 @@ export function Nav({
           </span>
         </Link>
 
-        {menu ? (
-          <nav className="flex flex-wrap items-center gap-1" aria-label="Secciones">
+        {(
+          <nav
+            className="order-last -mx-1 flex w-full items-center gap-0.5 overflow-x-auto sm:gap-1 sm:order-none sm:mx-0 sm:w-auto"
+            aria-label="Secciones"
+          >
             {menu.items.map((s) => {
               const activa =
                 "exacta" in s
                   ? pathname === s.href || s.tambien.some((p) => pathname.startsWith(p))
-                  : pathname.startsWith(s.href);
+                  : !s.href.includes("#") && pathname.startsWith(s.href);
               return (
                 <Link
                   key={s.href}
                   href={s.href}
                   aria-current={activa ? "page" : undefined}
-                  className={`rounded-full px-3 py-2 text-sm transition-colors ${
+                  className={`inline-flex min-h-11 shrink-0 items-center whitespace-nowrap rounded-full px-2.5 text-sm transition-colors sm:px-3 ${
+                    "soloTelefono" in s ? "font-medium sm:hidden " : ""
+                  }${
                     activa
                       ? "bg-marca-suave font-medium text-marca"
-                      : "text-tinta-suave hover:bg-superficie-2"
+                      : "soloTelefono" in s
+                        ? "text-marca"
+                        : "text-tinta-suave hover:bg-superficie-2"
                   }`}
                 >
                   {s.label}
@@ -227,18 +238,17 @@ export function Nav({
               );
             })}
           </nav>
-        ) : null}
+        )}
 
         {/*
-          Dos encabezados según de qué lado del ingreso estés. Afuera: entrar y
-          registrarse. Adentro: cambiar de vista, que se hace con la misma cuenta
-          —un productor también puede participar en ciclos ajenos—. El selector no tiene sentido
-          antes de entrar: la sesión ya sabe a qué lado va cada uno.
+          Dos encabezados según de qué lado del ingreso estés. Afuera: entrar y el
+          simulador; la cuenta se crea desde la portada. Adentro: el menú del perfil, con el simulador. La sesión ya
+          sabe a qué lado va cada uno.
         */}
-        <div className="ml-auto flex flex-wrap items-center gap-2">
-          {area ? (
+        <div className="ml-auto flex items-center gap-1 sm:gap-2">
+          {perfil ? (
             <>
-              <MenuPerfil area={area} nombre={nombre} />
+              <MenuPerfil area={perfil} nombre={nombre} />
               <button
                 type="button"
                 onClick={async () => {
@@ -260,10 +270,12 @@ export function Nav({
                 Iniciar sesión
               </Link>
               <Link
-                href="/registro"
-                className="flex min-h-11 items-center rounded-full bg-marca px-4 py-2 text-sm font-medium text-marca-contraste transition-colors hover:bg-marca-fuerte"
+                href="/simulador"
+                aria-current={pathname.startsWith("/simulador") ? "page" : undefined}
+                className="hidden min-h-11 items-center gap-2 rounded-full bg-marca px-4 py-2 text-sm font-medium text-marca-contraste transition-colors hover:bg-marca-fuerte sm:flex"
               >
-                Registrarse
+                <Calculator className="size-4" strokeWidth={1.75} aria-hidden />
+                Simulador
               </Link>
             </>
           )}

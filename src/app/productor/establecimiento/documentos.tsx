@@ -1,6 +1,6 @@
 import { Vacio } from "@/components/ui/primitivos";
+import { productorDeSesion } from "@/lib/cuentas";
 import {
-  PRODUCTOR_DEMO,
   getDiscrepanciasDeDocumento,
   getDocumentosDeProductor,
   getGarantiasConUso,
@@ -14,8 +14,9 @@ const GENERALES = "generales";
 
 /** La pestaña de documentos y garantías: los papeles que se reusan entre proyectos. */
 export async function Documentos() {
-  const documentos = await getDocumentosDeProductor(PRODUCTOR_DEMO);
-  const garantias = (await getGarantiasConUso(PRODUCTOR_DEMO)).map((g) => ({
+  const productorId = await productorDeSesion();
+  const documentos = await getDocumentosDeProductor(productorId);
+  const garantias = (await getGarantiasConUso(productorId)).map((g) => ({
     ...g.garantia,
     usadaEn: g.usadaEn.map((p) => ({ id: p.id, titulo: p.titulo })),
   }));

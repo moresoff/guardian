@@ -75,7 +75,7 @@ export function TarjetaProyecto({
 
   return (
     <Panel className="relative flex h-full flex-col overflow-hidden transition-shadow hover:shadow-md">
-      <div className="relative aspect-[16/9] bg-marca-suave">
+      <div className="relative aspect-[5/2] bg-marca-suave sm:aspect-[16/9]">
         {item.foto ? (
           <Image
             src={item.foto}

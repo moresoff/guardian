@@ -90,7 +90,7 @@ export function ProyectoCard({
 
   return (
     <article className={CONTENEDOR}>
-      <div className={`relative overflow-hidden rounded-2xl bg-marca-suave ${compacta ? "aspect-[2/1]" : "aspect-[16/10]"}`}>
+      <div className={`relative overflow-hidden rounded-2xl bg-marca-suave ${compacta ? "aspect-[2/1]" : "aspect-[5/2] sm:aspect-[16/10]"}`}>
         {foto ? (
           <Image
             src={foto}
@@ -193,7 +193,7 @@ export function CasoCerradoCard({
 
   return (
     <article className={CONTENEDOR}>
-      <div className={`relative overflow-hidden rounded-2xl bg-marca-suave ${compacta ? "aspect-[2/1]" : "aspect-[16/10]"}`}>
+      <div className={`relative overflow-hidden rounded-2xl bg-marca-suave ${compacta ? "aspect-[2/1]" : "aspect-[5/2] sm:aspect-[16/10]"}`}>
         {foto ? (
           <Image
             src={foto}

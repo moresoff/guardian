@@ -1,4 +1,5 @@
 import { PortadaProyecto } from "@/components/portada-proyecto";
+import { productorDeSesion } from "@/lib/cuentas";
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import {
@@ -20,7 +21,6 @@ import {
   TituloBloque,
 } from "@/components/ui/primitivos";
 import {
-  PRODUCTOR_DEMO,
   getDocumentosVigentesDeProyecto,
   getGarantia,
   getProductor,
@@ -106,7 +106,7 @@ export default async function FichaProyecto({
   // además sus herramientas. Un borrador solo existe para él, así que no tiene
   // «cómo lo ve el colaborador» todavía.
   const esDueno =
-    usuario.lado === "productor" && proyecto.productorId === PRODUCTOR_DEMO;
+    usuario.lado === "productor" && proyecto.productorId === (await productorDeSesion());
   const pestanasDueno =
     esDueno && proyecto.estado !== "borrador" ? (
       <Pestanas
@@ -241,12 +241,12 @@ export default async function FichaProyecto({
               <TituloBloque>El productor</TituloBloque>
               <dl className="grid grid-cols-2 gap-x-6 gap-y-5 sm:grid-cols-3">
                 <Dato etiqueta="Razón social">{productor.razonSocial}</Dato>
-                <Dato etiqueta="RENSPA" codigo>{productor.renspa}</Dato>
+                <Dato etiqueta="RENSPA" codigo>{productor.renspa || "Sin cargar"}</Dato>
                 <Dato etiqueta="Establecimiento">
                   {productor.establecimiento}
                 </Dato>
                 <Dato etiqueta="Ubicación">
-                  {productor.localidad}, {productor.provincia}
+                  {[productor.localidad, productor.provincia].filter(Boolean).join(", ")}
                 </Dato>
                 <Dato etiqueta="Ciclos completados en Guardian">
                   {productor.ciclosCompletados}
@@ -635,8 +635,6 @@ export default async function FichaProyecto({
             <div className="mt-5 border-t border-borde pt-4">
               <Adherir
                 proyectoId={proyecto.id}
-                titulo={proyecto.titulo}
-                contratoVersion="Contrato de adhesión v3 — 2026-08-01"
                 habilitado={adhesion.puede}
                 motivoBloqueo={adhesion.motivo}
               />
