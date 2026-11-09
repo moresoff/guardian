@@ -17,12 +17,11 @@ import {
 } from "lucide-react";
 import { Logo } from "./layout/Logo";
 
-type Section = "home" | "about" | "participate" | "simulation";
+type Section = "home" | "about" | "participate";
 const nav = [
   ["home", "/", "Inicio"],
   ["about", "/quienes-somos", "Quiénes somos"],
   ["participate", "/como-participar", "Cómo participar"],
-  ["simulation", "/simulacion", "Probá un ciclo"],
   ["contact", "/#consultas", "Contacto"],
 ];
 const contactEmail =
@@ -86,7 +85,7 @@ const questions = [
   ],
   [
     "¿Qué puedo hacer en esta demostración?",
-    "Recorrer el espacio productor, presentar un ciclo ficticio y comparar datos de ejemplo. La demo no carga documentos reales ni formaliza participaciones.",
+    "Crear una cuenta de cualquiera de los dos lados y recorrer el circuito completo con datos de ejemplo: presentar un ciclo, validar la identidad y firmar el contrato. Las firmas y las validaciones son simuladas y no tienen efecto legal.",
   ],
 ];
 

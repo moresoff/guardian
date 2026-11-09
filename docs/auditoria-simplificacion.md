@@ -16,6 +16,11 @@ desplazarse en cada una («pantallas» = alto de la página ÷ alto del teléfon
 | Proyecto en revisión (productor) | — | — | La lista de papeles aparecía dos veces y había dos avisos falsos: «el proyecto está publicado» y «los archivos no se guardan». Ahora hay un cuadro «Qué falta para publicarlo» con tres renglones (papeles, identidad, contrato) y un botón en cada uno. |
 | Participar (colaborador) | Un cuadro flotante con una casilla «Leí y acepto» | Una pantalla en 4 pasos | Cuánto, quién administra (el fiduciario), el contrato y la firma. En el primer paso se ve la ganancia estimada. |
 | Alta | Identidad aparte, con un aviso | Último paso del alta | Se puede dejar para después, pero sin identidad no se firma ningún contrato. |
+| Portada (teléfono) | 8,9 pantallas | 5,9 | «Qué hacemos» y «Cómo corre un ciclo» con el ícono o el número al costado y no arriba; los tres ciclos con la foto chica al lado del texto; los proyectos en una fila que se desliza; menos aire entre franjas. Se sacó el aviso final, que repetía el del pie y decía que todavía no se podía participar, cosa que ya no es cierta. En computadora no cambió (4,5). |
+| Quiénes somos (teléfono) | 5,1 | 4,3 | Portada interna más baja, la foto del medio de 440 a 220 px, menos aire entre secciones. |
+| Cómo participar (teléfono) | 5,2 | 4,5 | Lo mismo, y las preguntas frecuentes más juntas. La respuesta «¿Qué puedo hacer en esta demostración?» decía que no se cargaban documentos ni se formalizaban participaciones: ahora sí se puede, de forma simulada. |
+| Barra de la portada | «Cambiar perfil» abría un menú con dos opciones | Botón «Simulador» | En el teléfono va en el mismo renglón que el logo y el menú, en vez de ocupar uno entero. |
+| «Probá un ciclo» | Página aparte con papeles de ejemplo | Se sacó | Quien tenga el enlace viejo cae en el simulador. El simulador está abierto sin cuenta. |
 
 ## Lo que propongo simplificar (no está hecho)
 
@@ -51,13 +56,31 @@ Ordenado por cuánto le ahorra al ganadero.
 7. **Datos del colaborador (2,8 pantallas).** Repite nombre, CUIL e identidad,
    que ya están en la validación de identidad. Propuesta: una sola pantalla
    «Mis datos» con la identidad y el CBU.
-8. **La portada ocupa casi 9 pantallas.** Es la cara pública y tiene que
-   explicar, pero es la pantalla más larga de la app por lejos. Propuesta:
-   revisarla aparte, con la restricción de vocabulario público a mano.
-9. **Dos simuladores con nombres parecidos.** «Probá un ciclo» (`/simulacion`,
-   público: los papeles de un ciclo de ejemplo) y «Simulador» (`/simulador`,
-   con cuenta: los números). Están bien separados, pero conviene que la
-   portada diga cuál es cuál.
+8. **«Quiénes somos» dice lo mismo dos veces.** «Quién es Guardian» y «Nuestro
+   propósito» cuentan, con otras palabras, que Guardian conecta productores y
+   colaboradores y ordena la documentación. Propuesta: una sola sección. Ahorra
+   casi una pantalla de teléfono.
+9. **«Cómo participar» describe un recorrido que ya no es el de la app.** El
+   paso 1 es «Escribinos» y el 4 dice que la portada no permite sumarse. Hoy se
+   crea la cuenta, se valida la identidad, se elige un proyecto y se firma.
+   Propuesta: que los pasos sean esos cinco, con el mismo nombre que tienen
+   adentro, sin montos ni plazos (es pantalla pública).
+10. **La portada repite «Cómo participar».** «Qué hacemos», «Cómo corre un
+    ciclo» y «Antes de participar» están en la portada y, con otras palabras, en
+    «Cómo participar». Propuesta: dejar en la portada solo «Cómo corre un ciclo»
+    y enlazar el resto. Bajaría la portada a unas 4,5 pantallas en el teléfono.
+11. **Cuatro avisos de prototipo en las páginas públicas.** En la foto de
+    arriba, en el pie, en «Quiénes somos» y en «Conversemos». Propuesta: dejar
+    el del pie y el de la foto de arriba.
+12. **Dos sitios con dos sistemas de diseño.** Las páginas públicas usan
+    `GuardianWebsite` y `website.css` (unas 1.700 líneas, colores escritos a
+    mano, reglas repetidas en tres bloques para teléfono). La app usa `Nav` y los
+    tokens de Tailwind. Propuesta: pasar las páginas públicas a los mismos
+    tokens y componentes. Es el cambio más grande de la lista, pero el que más
+    código saca.
+13. **Rutas viejas que solo redirigen.** `/como-invertir`, `/investor`,
+    `/fiduciary`, `/comparison` y ahora `/simulacion`. Propuesta: borrarlas
+    cuando no queden enlaces viejos dando vueltas.
 
 ## Cómo se midió
 

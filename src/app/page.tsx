@@ -256,21 +256,23 @@ export default async function Home() {
         portada, que se queda quieta detrás.
       */}
       <section className="relative rounded-t-[2rem] bg-marca-suave">
-        <div className="mx-auto max-w-6xl px-4 py-14 sm:py-16">
+        <div className="mx-auto max-w-6xl px-4 py-10 sm:py-16">
           <h2 className="text-2xl font-semibold tracking-tight text-marca-fuerte">
             Qué hacemos
           </h2>
-          <ol className="mt-6 grid gap-4 md:grid-cols-3">
+          <ol className="mt-5 grid gap-3 md:mt-6 md:grid-cols-3 md:gap-4">
             {QUE_HACEMOS.map(({ icono: Icono, titulo, texto }) => (
               <li
                 key={titulo}
-                className="rounded-2xl border border-marca/15 bg-superficie p-6 shadow-[var(--sombra-baja)]"
+                className="flex gap-4 rounded-2xl border border-marca/15 bg-superficie p-5 shadow-[var(--sombra-baja)] md:block md:p-6"
               >
-                <span className="flex size-11 items-center justify-center rounded-full bg-marca-suave text-marca">
+                <span className="flex size-11 shrink-0 items-center justify-center rounded-full bg-marca-suave text-marca">
                   <Icono className="size-5" strokeWidth={1.75} aria-hidden />
                 </span>
-                <h3 className="mt-4 text-lg font-semibold tracking-tight">{titulo}</h3>
-                <p className="mt-2 text-tinta-suave">{texto}</p>
+                <div>
+                  <h3 className="text-lg font-semibold tracking-tight md:mt-4">{titulo}</h3>
+                  <p className="mt-1 text-tinta-suave md:mt-2">{texto}</p>
+                </div>
               </li>
             ))}
           </ol>
@@ -289,15 +291,15 @@ export default async function Home() {
           campo.
         </p>
 
-        <ol className="mt-8 grid gap-5 md:grid-cols-3">
+        <ol className="mt-6 grid gap-3 md:mt-8 md:grid-cols-3 md:gap-5">
           {SISTEMAS_EN_ORDEN.map((k) => {
             const Icono = ICONO_CICLO[k];
             return (
               <li
                 key={k}
-                className="overflow-hidden rounded-2xl border border-borde bg-superficie shadow-[var(--sombra-baja)]"
+                className="flex overflow-hidden rounded-2xl border border-borde bg-superficie shadow-[var(--sombra-baja)] md:block"
               >
-                <div className="relative aspect-[16/10] bg-marca-suave">
+                <div className="relative w-28 shrink-0 bg-marca-suave md:aspect-[16/10] md:w-auto">
                   <Image
                     src={FOTO_CICLO[k]}
                     alt=""
@@ -306,8 +308,8 @@ export default async function Home() {
                     className="object-cover"
                   />
                 </div>
-                <div className="flex items-start gap-3 p-5">
-                  <span className="flex size-10 shrink-0 items-center justify-center rounded-full bg-marca-suave text-marca">
+                <div className="flex items-start gap-3 p-4 md:p-5">
+                  <span className="hidden size-10 shrink-0 items-center justify-center rounded-full bg-marca-suave text-marca md:flex">
                     <Icono className="size-5" strokeWidth={1.75} aria-hidden />
                   </span>
                   <div>
@@ -336,7 +338,7 @@ export default async function Home() {
           className="object-cover"
         />
         <span className="absolute inset-0 bg-[#052c22]/55" aria-hidden />
-        <div className="relative mx-auto max-w-6xl px-4 py-14 sm:py-16">
+        <div className="relative mx-auto max-w-6xl px-4 py-10 sm:py-16">
           <h2 className="text-2xl font-semibold tracking-tight text-white">
             Cómo corre un ciclo
           </h2>
@@ -344,18 +346,25 @@ export default async function Home() {
             Cinco etapas, desde que el productor publica hasta el romaneo.
           </p>
 
-          <ol className="mt-8 grid gap-3 sm:grid-cols-2 lg:grid-cols-5">
+          <ol className="mt-6 grid gap-2 sm:mt-8 sm:grid-cols-2 sm:gap-3 lg:grid-cols-5">
             {ETAPAS.map((e) => (
               <li
                 key={e.n}
-                className="rounded-2xl bg-superficie/95 p-5 shadow-[var(--sombra-alta)] backdrop-blur-sm"
+                className="flex gap-3 rounded-2xl bg-superficie/95 p-4 shadow-[var(--sombra-alta)] backdrop-blur-sm sm:block sm:p-5"
               >
-                <span className="flex size-9 items-center justify-center rounded-full bg-marca text-sm font-semibold text-marca-contraste">
+                <span className="flex size-9 shrink-0 items-center justify-center rounded-full bg-marca text-sm font-semibold text-marca-contraste">
                   {e.n}
                 </span>
-                <h3 className="mt-3 font-semibold tracking-tight">{e.titulo}</h3>
-                <p className="mt-0.5 text-sm font-medium text-marca">{e.duracion}</p>
-                <p className="mt-2 text-sm text-tinta-suave">{e.detalle}</p>
+                <div>
+                  <h3 className="font-semibold tracking-tight sm:mt-3">
+                    {e.titulo}
+                    <span className="text-sm font-medium text-marca sm:mt-0.5 sm:block">
+                      <span className="sm:hidden"> · </span>
+                      {e.duracion}
+                    </span>
+                  </h3>
+                  <p className="mt-1 text-sm text-tinta-suave sm:mt-2">{e.detalle}</p>
+                </div>
               </li>
             ))}
           </ol>
@@ -385,7 +394,7 @@ export default async function Home() {
               Proyectos y casos cerrados
             </h2>
             <p className="mt-3 text-tinta-suave">
-              Dos abiertos hoy y uno ya cerrado, con lo que dijo el romaneo. Tocá uno para ver la ficha.
+              Dos abiertos hoy y uno ya cerrado, con lo que dijo el romaneo.
             </p>
           </div>
           <BotonLink href="/proyectos" variante="secundario">
@@ -393,9 +402,12 @@ export default async function Home() {
           </BotonLink>
         </div>
 
-        <ul className="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+        <ul
+          className="-mx-4 mt-6 flex snap-x snap-mandatory gap-3 overflow-x-auto px-4 pb-2 sm:mx-0 sm:grid sm:grid-cols-2 sm:gap-4 sm:overflow-visible sm:px-0 sm:pb-0 lg:grid-cols-3"
+          aria-label="Proyectos"
+        >
           {destacados.map((p) => (
-            <li key={p.id}>
+            <li key={p.id} className="w-[85%] shrink-0 snap-start sm:w-auto">
               <ProyectoCard
                 proyecto={p}
                 foto={fotoDelProyecto(p.id)}
@@ -406,7 +418,7 @@ export default async function Home() {
           ))}
 
           {cerrado?.resultado ? (
-            <li>
+            <li className="w-[85%] shrink-0 snap-start sm:w-auto">
               <CasoCerradoCard proyecto={cerrado} foto={fotoCaso} compacta />
             </li>
           ) : null}
@@ -415,7 +427,7 @@ export default async function Home() {
 
       {/* 7. Cierre: crear la cuenta y el contacto, juntos y al final */}
       <section id="consultas" className={`${ANCHO_COMPLETO} bg-marca-fuerte text-white`}>
-        <div className="mx-auto grid max-w-6xl gap-10 px-4 py-12 sm:py-14 lg:grid-cols-2 lg:gap-16">
+        <div className="mx-auto grid max-w-6xl gap-8 px-4 py-10 sm:py-14 lg:grid-cols-2 lg:gap-16">
           <div>
             <h2 className="text-2xl font-semibold tracking-tight">
               Empezá con tu cuenta
@@ -479,13 +491,6 @@ export default async function Home() {
           </div>
         </div>
       </section>
-      <Banda>
-        <p className="mx-auto max-w-2xl text-center text-sm text-tinta-suave">
-          Es el prototipo de la plataforma, con datos de prueba. La publicación
-          de proyectos, la carga de documentación y su validación se pueden
-          recorrer de punta a punta; la participación en proyectos todavía no.
-        </p>
-      </Banda>
     </div>
   );
 }
@@ -503,7 +508,7 @@ function Banda({
 }) {
   return (
     <section className={`${ANCHO_COMPLETO} ${tono}`}>
-      <div className="mx-auto max-w-6xl px-4 py-12 sm:py-14">{children}</div>
+      <div className="mx-auto max-w-6xl px-4 py-10 sm:py-14">{children}</div>
     </section>
   );
 }

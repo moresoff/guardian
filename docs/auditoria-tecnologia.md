@@ -108,7 +108,7 @@ flujo que lo produzca: el registro toma el CUIT como texto.
 
 ## Lo que se agregó en la rama de la simulación
 
-- `/simulacion`: un recorrido de ejemplo para el productor, sin cuenta, con papeles
+- `/simulacion` (retirada: ahora redirige a `/simulador`): era un recorrido de ejemplo para el productor, sin cuenta, con papeles
   ya cargados. Cuatro pasos: elegir el ciclo, ver los papeles leídos, ver los
   controles y ver cómo sigue el proyecto. Usa la misma lectura simulada y una
   función pura de controles (`src/lib/simulacion.ts`), así que muestra los

@@ -1,16 +1,6 @@
-import { GuardianWebsite } from "@/components/GuardianWebsite";
-import { Simulador } from "@/components/simulador";
+import { permanentRedirect } from "next/navigation";
 
-export const metadata = {
-  title: "Probá un ciclo de ejemplo | Guardian",
-  description:
-    "Recorré un ciclo con papeles de ejemplo ya cargados: la lectura, los controles y cómo sigue el proyecto. Sin cuenta.",
-};
-
+/** «Probá un ciclo» se sacó: quien tenía el enlace va al simulador. */
 export default function SimulacionPage() {
-  return (
-    <GuardianWebsite section="simulation">
-      <Simulador />
-    </GuardianWebsite>
-  );
+  permanentRedirect("/simulador");
 }
