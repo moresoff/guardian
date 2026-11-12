@@ -43,7 +43,8 @@ export function SiteFrame({
         {children}
       </main>
       <Pie />
-      {abierta ? null : <RecorridoGuiado />}
+      {/* Solo con sesión: sin ella taparía el ingreso y el registro con su capa. */}
+      {abierta || !conSesion ? null : <RecorridoGuiado />}
     </>
   );
 }
