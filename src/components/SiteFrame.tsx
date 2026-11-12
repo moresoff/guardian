@@ -51,7 +51,8 @@ export function SiteFrame({
           oferta pública.
         </p>
       </footer>
-      <RecorridoGuiado />
+      {/* Solo con sesión: sin ella taparía el ingreso y el registro con su capa. */}
+      {conSesion ? <RecorridoGuiado /> : null}
     </>
   );
 }
